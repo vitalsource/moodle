@@ -49,6 +49,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 $string['accept'] = 'Accept';
+$string['accepted'] = 'Accepted';
 $string['accept_grades'] = 'Accept grades from the tool';
 $string['accept_grades_admin'] = 'Accept grades from the tool';
 $string['accept_grades_admin_help'] = 'Specify whether the tool provider can add, update, read, and delete grades associated with instances of this tool type.
@@ -83,8 +84,13 @@ $string['basicltifieldset'] = 'Custom example fieldset';
 $string['basicltiintro'] = 'Activity Description';
 $string['basicltiname'] = 'Activity Name';
 $string['basicltisettings'] = 'Basic Learning Tool Interoperability Settings';
+$string['cancel'] = 'Cancel';
+$string['cancelled'] = 'Cancelled';
 $string['cannot_delete'] = 'You may not delete this tool configuration.';
 $string['cannot_edit'] = 'You may not edit this tool configuration.';
+$string['capabilities'] = 'Capabilities';
+$string['capabilities_help'] = 'Select those capabilities which you wish to offer to the tool provider.  More than one capability can be selected.';
+$string['click_to_continue'] = '<a href="{$a->link}" target="_top">Click to continue</a>';
 $string['comment'] = 'Comment';
 $string['configpassword'] = 'Default Remote Tool Password';
 $string['configpreferheight'] = 'Default preferred height';
@@ -93,6 +99,7 @@ $string['configpreferwidth'] = 'Default preferred width';
 $string['configresourceurl'] = 'Default Resource URL';
 $string['configtoolurl'] = 'Default Remote Tool URL';
 $string['configtypes'] = 'Enable LTI Applications';
+$string['configured'] = 'Configured';
 $string['course_tool_types'] = 'Course tool types';
 $string['courseid'] = 'Course id number';
 $string['coursemisconf'] = 'Course is misconfigured';
@@ -191,6 +198,7 @@ If using this option, confirm that this Moodle site and the tool provider suppor
 $string['generaltool'] = 'General tool';
 $string['global_tool_types'] = 'Global tool types';
 $string['grading'] = 'Grade Routing';
+$string['guid'] = 'GUID';
 $string['icon_url'] = 'Icon URL';
 $string['icon_url_help'] = 'The icon URL allows the icon that shows up in the course listing for this activity to be modified. Instead of using the default
 LTI icon, an icon which conveys the type of activity may be specified.';
@@ -250,6 +258,8 @@ Tool types listed on this page are separated into three categories:
         Teachers may still use tools from these providers if they have a consumer key and shared secret, or if none is required.
 * **Rejected** - These tools providers are flagged as ones which an administrator has no intention of making available to the entire
         Moodle instance. Teachers may still use tools from these providers if they have a consumer key and shared secret, or if none is required.';
+$string['manage_tools'] = 'Manage External Tools';
+$string['manage_tool_proxies'] = 'Manage Tool Proxies';
 $string['miscellaneous'] = 'Miscellaneous';
 $string['misconfiguredtools'] = 'Misconfigured tool instances were detected';
 $string['missingparameterserror'] = 'The page is misconfigured: "{$a}"';
@@ -267,11 +277,17 @@ External tool activities differ from URL resources in a few ways:
 $string['modulename_link'] = 'mod/lti/view';
 $string['modulenameplural'] = 'External Tools';
 $string['modulenamepluralformatted'] = 'LTI Instances';
+$string['name'] = 'Name';
 $string['never'] = 'Never';
 $string['new_window'] = 'New window';
 $string['no_lti_configured'] = 'There are no active External Tools configured.';
 $string['no_lti_pending'] = 'There are no pending External Tools.';
 $string['no_lti_rejected'] = 'There are no rejected External Tools.';
+$string['no_tp_accepted'] = 'There are no accepted Tool Proxies.';
+$string['no_tp_cancelled'] = 'There are no cancelled Tool Proxies .';
+$string['no_tp_configured'] = 'There are no unregistered Tool Proxies configured.';
+$string['no_tp_pending'] = 'There are no pending Tool Proxies .';
+$string['no_tp_rejected'] = 'There are no rejected Tool Proxies .';
 $string['noattempts'] = 'No attempts have been made on this tool instance';
 $string['noltis'] = 'There are no lti instances';
 $string['noservers'] = 'No servers found';
@@ -289,6 +305,8 @@ $string['organizationurl_help'] = 'The base URL of this Moodle instance.
 
 If this field is left blank, a default value will be used based on the site configuration.';
 $string['pagesize'] = 'Submissions shown per page';
+$string['parameter'] = 'Tool parameters';
+$string['parameter_help'] = 'Tool parameters are settings requested to be passed by the tool provider in the accepted tool proxy.';
 $string['password'] = 'Shared Secret';
 $string['password_admin'] = 'Shared Secret';
 $string['password_admin_help'] = 'The shared secret can be thought of as a password used to authenticate access to the tool. It should be provided
@@ -318,6 +336,13 @@ $string['privacy'] = 'Privacy';
 $string['quickgrade'] = 'Allow quick grading';
 $string['quickgrade_help'] = 'If enabled, multiple tools can be graded on one page. Add grades and comments then click the "Save all my feedback" button to save all changes for that page.';
 $string['redirect'] = 'You will be redirected in few seconds. If you are not, press the button.';
+$string['register'] = 'Register';
+$string['registertype'] = 'Configure a new Tool Proxy';
+$string['registration_options'] = 'Registration Options';
+$string['registrationname'] ='Tool Provider name';
+$string['registrationname_help'] ='Enter the name of the tool provider being registered.';
+$string['registrationurl'] ='Registration URL';
+$string['registrationurl_help'] ='The registration URL should be available from the tool provider as the location to which registration requests should be sent.';
 $string['reject'] = 'Reject';
 $string['rejected'] = 'Rejected';
 $string['resource'] = 'Resource';
@@ -358,6 +383,8 @@ is set to always launch through SSL.
 
 The Launch URL may also be set to an https address to force launching through SSL, and this field may be left blank.';
 $string['send'] = 'Send';
+$string['services'] = 'Services';
+$string['services_help'] = 'Select those services which you wish to offer to the tool provider.  More than one service can be selected.';
 $string['setupoptions'] = 'Setup Options';
 $string['share_email'] = 'Share launcher\'s email with the tool';
 $string['share_email_admin'] = 'Share launcher\'s email with tool';
@@ -396,11 +423,18 @@ $string['size'] = 'Size parameters';
 $string['submission'] = 'Submission';
 $string['submissions'] = 'Submissions';
 $string['submissionsfor'] = 'Submissions for {$a}';
+$string['subplugintype_ltiresource'] = 'LTI service resource';
+$string['subplugintype_ltiresource_plural'] = 'LTI service resources';
+$string['subplugintype_ltiservice'] = 'LTI service';
+$string['subplugintype_ltiservice_plural'] = 'LTI services';
 $string['subplugintype_ltisource'] = 'LTI source';
 $string['subplugintype_ltisource_plural'] = 'LTI sources';
 $string['toggle_debug_data'] = 'Toggle Debug Data';
 $string['tool_config_not_found'] = 'Tool configuration not found for this URL.';
 $string['tool_settings'] = 'Tool Settings';
+$string['toolproxy'] = 'Tool Proxies';
+$string['toolproxyregistration'] = 'Tool Proxy Registration';
+$string['toolregistration'] = 'External Tool Registration';
 $string['toolsetup'] = 'External Tool Configuration';
 $string['toolurl'] = 'Tool Base URL';
 $string['toolurl_help'] = 'The tool base URL is used to match tool launch URLs to the correct tool configuration. Prefixing the URL with http(s) is optional.

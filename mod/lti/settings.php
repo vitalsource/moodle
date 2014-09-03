@@ -59,6 +59,9 @@ foreach (core_plugin_manager::instance()->get_plugins_of_type('ltisource') as $p
     $plugin->load_settings($ADMIN, 'modltifolder', $hassiteconfig);
 }
 
+$tool_proxies_url = new moodle_url('/mod/lti/toolproxies.php');
+$tool_proxies_url = $tool_proxies_url->out();
+
 if ($ADMIN->fulltree) {
     require_once($CFG->dirroot.'/mod/lti/locallib.php');
 
@@ -110,8 +113,13 @@ if ($ADMIN->fulltree) {
             $activeselected = 'class="selected"';
             break;
     }
+    $addtype = get_string('addtype', 'lti');
+    $config = get_string('manage_tool_proxies', 'lti');
 
     $template = "
+<p>
+  <a href=\"{$tool_proxies_url}\">$config</a>
+</p>
 <div id=\"lti_tabs\" class=\"yui-navset\">
     <ul id=\"lti_tab_heading\" class=\"yui-nav\" style=\"display:none\">
         <li {$activeselected}>
@@ -132,6 +140,7 @@ if ($ADMIN->fulltree) {
     </ul>
     <div class=\"yui-content\">
         <div>
+            <div><a style=\"margin-top:.25em\" href=\"{$CFG->wwwroot}/mod/lti/typessettings.php?action=add&amp;sesskey={$USER->sesskey}\">{$addtype}</a></div>
             $configuredtoolshtml
         </div>
         <div>
@@ -183,9 +192,9 @@ if ($ADMIN->fulltree) {
             }
         };
 
-        setupTools('lti_configured', {key:'name', dir:'asc'});
-        setupTools('lti_pending', {key:'timecreated', dir:'desc'});
-        setupTools('lti_rejected', {key:'timecreated', dir:'desc'});
+        setupTools('lti_configured_tools', {key:'name', dir:'asc'});
+        setupTools('lti_pending_tools', {key:'timecreated', dir:'desc'});
+        setupTools('lti_rejected_tools', {key:'timecreated', dir:'desc'});
     });
 //]]
 </script>

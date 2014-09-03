@@ -125,14 +125,23 @@ function lti_parse_grade_delete_message($xml) {
 }
 
 function lti_accepts_grades($ltiinstance) {
+    global $DB;
+
     $acceptsgrades = true;
-    $typeconfig = lti_get_config($ltiinstance);
+    $ltitype = $DB->get_record('lti_types', array('id' => $ltiinstance->typeid));
 
-    $typeacceptgrades = isset($typeconfig['acceptgrades']) ? $typeconfig['acceptgrades'] : LTI_SETTING_DELEGATE;
+    if (is_null($ltitype->toolproxyid)) {
+        $typeconfig = lti_get_config($ltiinstance);
 
-    if (!($typeacceptgrades == LTI_SETTING_ALWAYS ||
-        ($typeacceptgrades == LTI_SETTING_DELEGATE && $ltiinstance->instructorchoiceacceptgrades == LTI_SETTING_ALWAYS))) {
-        $acceptsgrades = false;
+        $typeacceptgrades = isset($typeconfig['acceptgrades']) ? $typeconfig['acceptgrades'] : LTI_SETTING_DELEGATE;
+
+        if (!($typeacceptgrades == LTI_SETTING_ALWAYS ||
+            ($typeacceptgrades == LTI_SETTING_DELEGATE && $ltiinstance->instructorchoiceacceptgrades == LTI_SETTING_ALWAYS))) {
+            $acceptsgrades = false;
+        }
+    } else {
+        $enabledcapabilities = explode("\n", $ltitype->enabledcapability);
+        $acceptsgrades = in_array('Result.autocreate', $enabledcapabilities);
     }
 
     return $acceptsgrades;
