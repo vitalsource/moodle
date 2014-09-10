@@ -178,23 +178,6 @@ class mod_lti_mod_form extends moodleform_mod {
         //$mform->addHelpButton('instructorchoiceallowroster', 'share_roster', 'lti');
 
         //-------------------------------------------------------------------------------
-
-        /**
-        $debugoptions=array();
-        $debugoptions[0] = get_string('debuglaunchoff', 'lti');
-        $debugoptions[1] = get_string('debuglaunchon', 'lti');
-
-        $mform->addElement('select', 'debuglaunch', get_string('debuglaunch', 'lti'), $debugoptions);
-
-        if (isset($this->typeconfig['debuglaunch'])) {
-            if ($this->typeconfig['debuglaunch'] == 0) {
-                $mform->setDefault('debuglaunch', '0');
-            } else if ($this->typeconfig['debuglaunch'] == 1) {
-                $mform->setDefault('debuglaunch', '1');
-            }
-        }
-        */
-
         // Add standard course module grading elements.
         $this->standard_grading_coursemodule_elements();
 

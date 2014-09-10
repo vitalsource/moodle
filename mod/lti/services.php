@@ -56,7 +56,7 @@ foreach ($services as $name => $location) {
             continue;
         }
         $template = $resource->get_template();
-        $template = preg_replace('/\{[a-zA-Z_]+\}/', '[0-9a-zA-Z_:\-]+', $template);
+        $template = preg_replace('/\{[a-zA-Z_]+\}/', '[^/]+', $template);
         $template = preg_replace('/\{\?[0-9a-zA-Z_\-,]+\}$/', '', $template);
         $template = str_replace('/', '\/', $template);
         if (preg_match("/{$template}/", $path) === 1) {
