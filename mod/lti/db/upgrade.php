@@ -111,6 +111,7 @@ function xmldb_lti_upgrade($oldversion) {
         $table->add_field('state', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1');
         $table->add_field('guid', XMLDB_TYPE_CHAR, '255', null, null, null, null);
         $table->add_field('secret', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+        $table->add_field('vendorcode', XMLDB_TYPE_CHAR, '255', null, null, null, null);
         $table->add_field('capabilityoffered', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
         $table->add_field('serviceoffered', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
         $table->add_field('toolproxy', XMLDB_TYPE_TEXT, null, null, null, null, null);
@@ -137,8 +138,7 @@ function xmldb_lti_upgrade($oldversion) {
         $table->add_field('toolproxyid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('course', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
         $table->add_field('coursemoduleid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('value', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('settings', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
         $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 

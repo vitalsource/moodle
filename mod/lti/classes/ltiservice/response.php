@@ -23,7 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class mod_lti_service_response {
+
+namespace mod_lti\ltiservice;
+
+class response {
 
     private $code;
     private $reason;

@@ -27,6 +27,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-$plugin->version   = 2014061200;
+$plugin->version   = 2014092100;
 $plugin->requires  = 2014050800;
 $plugin->component = 'ltiservice_toolsettings';

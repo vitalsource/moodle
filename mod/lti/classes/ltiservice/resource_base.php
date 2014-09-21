@@ -24,12 +24,14 @@
  */
 
 
+namespace mod_lti\ltiservice;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
 
 
-abstract class ltiresource_base {
+abstract class resource_base {
 
     private $service;
     protected $type;

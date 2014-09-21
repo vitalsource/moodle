@@ -26,17 +26,17 @@
 
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
-require_once($CFG->dirroot . '/mod/lti/service/service_response.php');
 
 
-$response = new mod_lti_service_response();
+$response = new \mod_lti\ltiservice\response();
+error_log($response->get_request_method());
 
-$is_get = $response->get_request_method() == 'GET';
+$isget = $response->get_request_method() == 'GET';
 
-if ($is_get) {
-    $response->set_accept($_SERVER['HTTP_ACCEPT']);
+if ($isget) {
+    $response->set_accept(isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : null);
 } else {
-    $response->set_content_type($_SERVER['CONTENT_TYPE']);
+    $response->set_content_type(isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '');
 }
 
 $services = get_plugin_list('ltiservice');
@@ -45,14 +45,13 @@ $ok = false;
 $path = $_SERVER['PATH_INFO'];
 
 foreach ($services as $name => $location) {
-    require_once("{$location}/service.php");
-    $classname = "ltiservice_{$name}";
+    $classname = "\ltiservice_{$name}\\service\\{$name}";
     $service = new $classname();
     $resources = $service->get_resources();
     foreach ($resources as $resource) {
-        if (($is_get && !is_null($response->get_accept()) && (strpos($response->get_accept(), '*/*') === FALSE) &&
+        if (($isget && !is_null($response->get_accept()) && (strpos($response->get_accept(), '*/*') === FALSE) &&
              !in_array($response->get_accept(), $resource->get_formats())) ||
-            (!$is_get && !in_array($response->get_content_type(), $resource->get_formats()))) {
+            (!$isget && !in_array($response->get_content_type(), $resource->get_formats()))) {
             continue;
         }
         $template = $resource->get_template();

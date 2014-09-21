@@ -24,12 +24,9 @@
  */
 
 
-defined('MOODLE_INTERNAL') || die();
+namespace ltiservice_toolsettings\service;
 
-require_once($CFG->dirroot . '/mod/lti/service/service_base.php');
-require_once('resource/systemsettings.php');
-require_once('resource/contextsettings.php');
-require_once('resource/linksettings.php');
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * A service implementing Tool Settings.
@@ -37,7 +34,7 @@ require_once('resource/linksettings.php');
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class ltiservice_toolsettings extends ltiservice_base {
+class toolsettings extends \mod_lti\ltiservice\service_base {
 
     function __construct() {
 
@@ -51,9 +48,9 @@ class ltiservice_toolsettings extends ltiservice_base {
 
         if (is_null($this->resources)) {
             $this->resources = array();
-            $this->resources[] = new ltiresource_systemsettings($this);
-            $this->resources[] = new ltiresource_contextsettings($this);
-            $this->resources[] = new ltiresource_linksettings($this);
+            $this->resources[] = new \ltiservice_toolsettings\resource\systemsettings($this);
+            $this->resources[] = new \ltiservice_toolsettings\resource\contextsettings($this);
+            $this->resources[] = new \ltiservice_toolsettings\resource\linksettings($this);
         }
 
         return $this->resources;
@@ -82,29 +79,28 @@ class ltiservice_toolsettings extends ltiservice_base {
     public static function settings_to_json($settings, $simpleformat, $type, $resource) {
 
         $json = '';
-        if (!is_null($settings)) {
+        if (!is_null($resource)) {
             $indent = '';
             if (!$simpleformat) {
                 $json .= "    {\n      \"@type\":\"{$type}\",\n";
                 $json .= "      \"@id\":\"{$resource->get_endpoint()}\",\n";
                 $json .= '      "custom":';
-                $json .= "{\n";
+                $json .= "{";
                 $indent = '      ';
             }
             $isfirst = true;
-            foreach ($settings as $key => $value) {
-                if (!$isfirst) {
-                    $json .= ",\n";
-                } else {
-                    $isfirst = false;
+            if (!is_null($settings)) {
+                foreach ($settings as $key => $value) {
+                    if (!$isfirst) {
+                        $json .= ",";
+                    } else {
+                        $isfirst = false;
+                    }
+                    $json .= "\n{$indent}  \"{$key}\":\"{$value}\"";
                 }
-                $json .= "{$indent}  \"{$key}\":\"{$value}\"";
             }
             if (!$simpleformat) {
-                if (!$isfirst) {
-                    $json .= "\n";
-                }
-                $json .= "{$indent}}\n    }";
+                $json .= "\n{$indent}}\n    }";
             }
         }
 

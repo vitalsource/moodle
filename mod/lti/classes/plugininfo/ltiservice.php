@@ -15,45 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains a class definition for the Tool Proxy service
+ * LTI service plugin info.
  *
  * @package    mod_lti
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace mod_lti\plugininfo;
 
+use core\plugininfo\base;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/lti/service/service_base.php');
-require_once('resource/toolproxy.php');
 
-/**
- * A service implementing the Tool Proxy.
- *
- * @copyright  2014 Vital Source Technologies http://vitalsource.com
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class ltiservice_toolproxy extends ltiservice_base {
-
-    function __construct() {
-
-        parent::__construct();
-        $this->id = 'toolproxy';
-        $this->name = 'Tool Proxy';
-
-    }
-
-    public function get_resources() {
-
-        if (is_null($this->resources)) {
-            $this->resources = array();
-            $this->resources[] = new ltiresource_toolproxy($this);
-        }
-
-        return $this->resources;
-
-    }
-
+class ltiservice extends base {
 }

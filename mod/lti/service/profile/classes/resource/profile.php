@@ -24,9 +24,9 @@
  */
 
 
-defined('MOODLE_INTERNAL') || die();
+namespace ltiservice_profile\resource;
 
-require_once($CFG->dirroot . '/mod/lti/service/resource_base.php');
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * A resource implementing the Tool Consumer Profile.
@@ -34,7 +34,7 @@ require_once($CFG->dirroot . '/mod/lti/service/resource_base.php');
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class ltiresource_profile extends ltiresource_base {
+class profile extends \mod_lti\ltiservice\resource_base {
 
     function __construct($service) {
 
@@ -63,7 +63,7 @@ class ltiresource_profile extends ltiresource_base {
 
         global $CFG;
 
-        $version = ltiservice_base::LTI_VERSION2P0;
+        $version = \mod_lti\ltiservice\service_base::LTI_VERSION2P0;
         $params = $this->parse_template();
         $ok = $this->get_service()->check_tool_proxy($params['tool_proxy_id']);
         if (!$ok) {
@@ -85,8 +85,7 @@ class ltiresource_profile extends ltiresource_base {
             $services = get_plugin_list('ltiservice');
             foreach ($services as $name => $location) {
                 if (in_array($name, $serviceoffered_arr)) {
-                    require_once("{$location}/service.php");
-                    $classname = "ltiservice_{$name}";
+                    $classname = "\\ltiservice_{$name}\\service\\{$name}";
                     $service = new $classname();
                     $service->set_tool_proxy($tool_proxy);
                     $resources = $service->get_resources();
@@ -184,7 +183,7 @@ EOD;
 
     public function get_endpoint() {
 
-        return parent::get_endpoint() . '?lti_version=' . ltiservice_base::LTI_VERSION2P0;
+        return parent::get_endpoint() . '?lti_version=' . \mod_lti\ltiservice\service_base::LTI_VERSION2P0;
 
     }
 

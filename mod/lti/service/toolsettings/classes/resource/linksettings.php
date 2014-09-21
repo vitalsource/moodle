@@ -24,9 +24,9 @@
  */
 
 
-defined('MOODLE_INTERNAL') || die();
+namespace ltiservice_toolsettings\resource;
 
-require_once($CFG->dirroot . '/mod/lti/service/resource_base.php');
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * A resource implementing the Context-level (ToolProxyBinding) Settings.
@@ -34,7 +34,7 @@ require_once($CFG->dirroot . '/mod/lti/service/resource_base.php');
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class ltiresource_linksettings extends ltiresource_base {
+class linksettings extends \mod_lti\ltiservice\resource_base {
 
     function __construct($service) {
 
@@ -81,7 +81,7 @@ class ltiresource_linksettings extends ltiresource_base {
         if ($ok) {
             $linksettings = lti_get_tool_settings($this->get_service()->get_tool_proxy()->id, $lti->course, $linkid);
             if (!is_null($bubble)) {
-                $contextsetting = new ltiresource_contextsettings($this->get_service());
+                $contextsetting = new \ltiservice_toolsettings\resource\contextsettings($this->get_service());
                 if ($COURSE == 'site') {
                     $contextsetting->params['context_type'] = 'Group';
                 } else {
@@ -91,11 +91,11 @@ class ltiresource_linksettings extends ltiresource_base {
                 $contextsetting->params['vendor_code'] = $this->get_service()->get_tool_proxy()->vendorcode;
                 $contextsetting->params['product_code'] = $this->get_service()->get_tool_proxy()->id;
                 $contextsettings = lti_get_tool_settings($this->get_service()->get_tool_proxy()->id, $lti->course);
-                $systemsetting = new ltiresource_systemsettings($this->get_service());
+                $systemsetting = new \ltiservice_toolsettings\resource\systemsettings($this->get_service());
                 $systemsetting->params['tool_proxy_id'] = $this->get_service()->get_tool_proxy()->id;
                 $systemsettings = lti_get_tool_settings($this->get_service()->get_tool_proxy()->id);
                 if ($bubble == 'distinct') {
-                    ltiservice_toolsettings::distinct_settings($systemsettings, $contextsettings, $linksettings);
+                    \ltiservice_toolsettings\service\toolsettings::distinct_settings($systemsettings, $contextsettings, $linksettings);
                 }
             } else {
                 $contextsettings = null;
@@ -105,25 +105,25 @@ class ltiresource_linksettings extends ltiresource_base {
                 $json = '';
                 if ($simpleformat) {
                     $response->set_content_type($this->formats[1]);
-                    $json .= "{\n";
+                    $json .= "{";
                 } else {
                     $response->set_content_type($this->formats[0]);
                     $json .= "{\n  \"@context\":\"http://purl.imsglobal.org/ctx/lti/v2/ToolSettings\",\n  \"@graph\":[\n";
                 }
-                $settings = ltiservice_toolsettings::settings_to_json($systemsettings, $simpleformat, 'ToolProxy', $systemsetting);
+                $settings = \ltiservice_toolsettings\service\toolsettings::settings_to_json($systemsettings, $simpleformat, 'ToolProxy', $systemsetting);
                 $json .= $settings;
                 $isfirst = strlen($settings) <= 0;
-                $settings = ltiservice_toolsettings::settings_to_json($contextsettings, $simpleformat, 'ToolProxyBinding', $contextsetting);
+                $settings = \ltiservice_toolsettings\service\toolsettings::settings_to_json($contextsettings, $simpleformat, 'ToolProxyBinding', $contextsetting);
                 if (strlen($settings) > 0) {
                     if (!$isfirst) {
-                        $json .= ",\n";
+                        $json .= ",";
                     }
                     $isfirst = false;
                 }
                 $json .= $settings;
-                $settings = ltiservice_toolsettings::settings_to_json($linksettings, $simpleformat, 'LtiLink', $this);
+                $settings = \ltiservice_toolsettings\service\toolsettings::settings_to_json($linksettings, $simpleformat, 'LtiLink', $this);
                 if ((strlen($settings) > 0) && !$isfirst) {
-                    $json .= ",\n";
+                    $json .= ",";
                 }
                 $json .= $settings;
                 if ($simpleformat) {

@@ -182,7 +182,7 @@ function lti_view($instance) {
     $returnurlparams = array('course' => $course->id, 'launch_container' => $launchcontainer, 'instanceid' => $instance->id);
 
     // Add the return URL. We send the launch container along to help us avoid frames-within-frames when the user returns.
-    $url = new moodle_url('/mod/lti/return.php', $returnurlparams);
+    $url = new \moodle_url('/mod/lti/return.php', $returnurlparams);
     $returnurl = $url->out(false);
 
     if ($typeconfig['forcessl'] == '1') {
@@ -222,7 +222,7 @@ function lti_view($instance) {
     if (!empty($key) && !empty($secret)) {
         $parms = lti_sign_parameters($requestparams, $endpoint, "POST", $key, $secret);
 
-        $endpointurl = new moodle_url($endpoint);
+        $endpointurl = new \moodle_url($endpoint);
         $endpointparams = $endpointurl->params();
 
         // Strip querystring params in endpoint url from $parms to avoid duplication.
@@ -276,7 +276,7 @@ function lti_register($tool_proxy) {
 
         // Add the return URL.
         $returnurlparams = array('id' => $tool_proxy->id);
-        $url = new moodle_url('/mod/lti/registrationreturn.php', $returnurlparams);
+        $url = new \moodle_url('/mod/lti/registrationreturn.php', $returnurlparams);
         $returnurl = $url->out(false);
 
         $requestparams['launch_presentation_return_url'] = $returnurl;
@@ -300,7 +300,7 @@ error_log(var_export($requestparams, TRUE));
  * @return stdClass
  */
 function lti_build_sourcedid($instanceid, $userid, $servicesalt, $typeid = null, $launchid = null) {
-    $data = new stdClass();
+    $data = new \stdClass();
 
     $data->instanceid = $instanceid;
     $data->userid = $userid;
@@ -315,7 +315,7 @@ function lti_build_sourcedid($instanceid, $userid, $servicesalt, $typeid = null,
 
     $hash = hash('sha256', $json . $servicesalt, false);
 
-    $container = new stdClass();
+    $container = new \stdClass();
     $container->data = $data;
     $container->hash = $hash;
 
@@ -340,7 +340,7 @@ function lti_build_request($instance, $typeconfig, $course, $typeid = null, $isl
         $instance->cmid = 0;
     }
 
-    $role = lti_get_ims_role($USER, $instance->cmid, $instance->course);
+    $role = lti_get_ims_role($USER, $instance->cmid, $instance->course, $islti2);
 
     $intro = '';
     if (!empty($instance->cmid)) {
@@ -379,7 +379,7 @@ function lti_build_request($instance, $typeconfig, $course, $typeid = null, $isl
          ( $typeconfig['acceptgrades'] == LTI_SETTING_DELEGATE && $instance->instructorchoiceacceptgrades == LTI_SETTING_ALWAYS ) ) ) {
 
         //Add outcome service URL
-        $serviceurl = new moodle_url('/mod/lti/service.php');
+        $serviceurl = new \moodle_url('/mod/lti/service.php');
         $serviceurl = $serviceurl->out();
 
         $forcessl = false;
@@ -545,14 +545,14 @@ function lti_get_tool_table($tools, $id) {
             $delete = get_string('delete', 'lti');
 
             if (empty($type->toolproxyid)) {
-                $baseurl = new moodle_url('/mod/lti/typessettings.php', array(
+                $baseurl = new \moodle_url('/mod/lti/typessettings.php', array(
                         'action' => 'accept',
                         'id' => $type->id,
                         'sesskey' => sesskey(),
                         'tab' => $id
                     ));
             } else {
-                $baseurl = new moodle_url('/mod/lti/toolssettings.php', array(
+                $baseurl = new \moodle_url('/mod/lti/toolssettings.php', array(
                         'action' => 'accept',
                         'id' => $type->id,
                         'sesskey' => sesskey(),
@@ -561,7 +561,7 @@ function lti_get_tool_table($tools, $id) {
             }
 
             $accepthtml = $OUTPUT->action_icon($baseurl,
-                    new pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
+                    new \pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
                     array('title' => $accept, 'class' => 'editing_accept'));
 
             $deleteaction = 'delete';
@@ -578,13 +578,13 @@ function lti_get_tool_table($tools, $id) {
             $updateurl = clone($baseurl);
             $updateurl->param('action', 'update');
             $updatehtml = $OUTPUT->action_icon($updateurl,
-                    new pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
+                    new \pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
                     array('title' => $update, 'class' => 'editing_update'));
 
             $deleteurl = clone($baseurl);
             $deleteurl->param('action', $deleteaction);
             $deletehtml = $OUTPUT->action_icon($deleteurl,
-                    new pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
+                    new \pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
                     array('title' => $delete, 'class' => 'editing_delete'));
             $html .= "
             <tr>
@@ -638,21 +638,21 @@ EOD;
             $update = get_string('update', 'lti');
             $delete = get_string('delete', 'lti');
 
-            $baseurl = new moodle_url('/mod/lti/registersettings.php', array(
+            $baseurl = new \moodle_url('/mod/lti/registersettings.php', array(
                     'action' => 'accept',
                     'id' => $tool_proxy->id,
                     'sesskey' => sesskey(),
                     'tab' => $id
                 ));
 
-            $registerurl = new moodle_url('/mod/lti/register.php', array(
+            $registerurl = new \moodle_url('/mod/lti/register.php', array(
                     'id' => $tool_proxy->id,
                     'sesskey' => sesskey(),
                     'tab' => 'tool_proxy'
                 ));
 
             $accepthtml = $OUTPUT->action_icon($registerurl,
-                    new pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
+                    new \pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
                     array('title' => $accept, 'class' => 'editing_accept'));
 
             $deleteaction = 'delete';
@@ -668,7 +668,7 @@ EOD;
             $updateurl = clone($baseurl);
             $updateurl->param('action', 'update');
             $updatehtml = $OUTPUT->action_icon($updateurl,
-                    new pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
+                    new \pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
                     array('title' => $update, 'class' => 'editing_update'));
             if ($tool_proxy->state == LTI_TOOL_PROXY_STATE_CANCELLED) {
                 $updatehtml = '';
@@ -677,7 +677,7 @@ EOD;
             $deleteurl = clone($baseurl);
             $deleteurl->param('action', $deleteaction);
             $deletehtml = $OUTPUT->action_icon($deleteurl,
-                    new pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
+                    new \pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
                     array('title' => $delete, 'class' => 'editing_delete'));
             $html .= <<< EOD
             <tr>
@@ -815,7 +815,7 @@ function lti_map_keyname($key) {
  * @param int $cmid The course module id of the LTI activity
  * @return string A role string suitable for passing with an LTI launch
  */
-function lti_get_ims_role($user, $cmid, $courseid) {
+function lti_get_ims_role($user, $cmid, $courseid, $islti2) {
     $roles = array();
 
     if (empty($cmid)) {
@@ -840,7 +840,11 @@ function lti_get_ims_role($user, $cmid, $courseid) {
     }
 
     if (is_siteadmin($user)) {
-        array_push($roles, 'urn:lti:sysrole:ims/lis/Administrator', 'urn:lti:instrole:ims/lis/Administrator');
+        if (!$islti2) {
+            array_push($roles, 'urn:lti:sysrole:ims/lis/Administrator', 'urn:lti:instrole:ims/lis/Administrator');
+        } else {
+            array_push($roles, 'http://purl.imsglobal.org/vocab/lis/v2/person#Administrator');
+        }
     }
 
     return join(',', $roles);
@@ -1139,7 +1143,7 @@ function lti_get_type_config_from_instance($id) {
     $instance = $DB->get_record('lti', array('id' => $id));
     $config = lti_get_config($instance);
 
-    $type = new stdClass();
+    $type = new \stdClass();
     $type->lti_fix = $id;
     if (isset($config['toolurl'])) {
         $type->lti_toolurl = $config['toolurl'];
@@ -1176,7 +1180,7 @@ function lti_get_type_type_config($id) {
     $basicltitype = $DB->get_record('lti_types', array('id' => $id));
     $config = lti_get_type_config($id);
 
-    $type = new stdClass();
+    $type = new \stdClass();
 
     $type->lti_typename = $basicltitype->name;
 
@@ -1286,7 +1290,7 @@ function lti_update_type($type, $config) {
     if ($DB->update_record('lti_types', $type)) {
         foreach ($config as $key => $value) {
             if (substr($key, 0, 4)=='lti_' && !is_null($value)) {
-                $record = new StdClass();
+                $record = new \StdClass();
                 $record->typeid = $type->id;
                 $record->name = substr($key, 4);
                 $record->value = $value;
@@ -1328,7 +1332,7 @@ function lti_add_type($type, $config) {
     if ($id) {
         foreach ($config as $key => $value) {
             if (substr($key, 0, 4)=='lti_' && !is_null($value)) {
-                $record = new StdClass();
+                $record = new \StdClass();
                 $record->typeid = $id;
                 $record->name = substr($key, 4);
                 $record->value = $value;
@@ -1390,7 +1394,7 @@ function lti_get_tool_proxy($id) {
 function lti_get_tool_proxy_config($id) {
     $toolproxy = lti_get_tool_proxy($id);
 
-    $tp = new stdClass();
+    $tp = new \stdClass();
     $tp->lti_registrationname = $toolproxy->name;
     $tp->toolproxyid = $toolproxy->id;
     $tp->state = $toolproxy->state;
@@ -1404,7 +1408,7 @@ function lti_get_tool_proxy_config($id) {
 function lti_add_tool_proxy($config) {
     global $USER, $DB;
 //error_log(var_export($config, TRUE));
-    $tool_proxy = new stdClass();
+    $tool_proxy = new \stdClass();
     if (isset($config->lti_registrationname)) {
         $tool_proxy->name = trim($config->lti_registrationname);
     }
@@ -1542,10 +1546,9 @@ function lti_set_tool_settings($settings, $toolproxyid, $courseid = null, $insta
     $json = json_encode($settings);
     $record = $DB->get_record('lti_tool_settings', array('toolproxyid' => $toolproxyid, 'course' => $courseid, 'coursemoduleid' => $instanceid));
     if ($record !== false) {
-        $record->timemodified = time();
         $DB->update_record('lti_tool_settings', array('id' => $record->id, 'settings' => $json, 'timemodified' => time()));
     } else {
-        $record = new stdClass();
+        $record = new \stdClass();
         $record->toolproxyid = $toolproxyid;
         $record->course = $courseid;
         $record->coursemoduleid = $instanceid;
@@ -1722,7 +1725,7 @@ function lti_should_log_request($rawbody) {
     }
 
     try {
-        $xml = new SimpleXMLElement($rawbody);
+        $xml = new \SimpleXMLElement($rawbody);
         $ns  = $xml->getNamespaces();
         $ns  = array_shift($ns);
         $xml->registerXPathNamespace('lti', $ns);
@@ -1854,8 +1857,7 @@ function lti_get_services() {
     $services = array();
     $defined_services = get_plugin_list('ltiservice');
     foreach ($defined_services as $name => $location) {
-        require_once("{$location}/service.php");
-        $classname = "ltiservice_{$name}";
+        $classname = "\\ltiservice_{$name}\\service\\{$name}";
         $services[] = new $classname();
     }
 
@@ -1876,8 +1878,7 @@ function lti_get_service_by_id($service_id) {
 //error_log(var_export($defined_services, TRUE));
     if (array_key_exists($service_id, $defined_services)) {
         $location = $defined_services[$service_id];
-        require_once("{$location}/service.php");
-        $classname = "ltiservice_{$service_id}";
+        $classname = "\\ltiservice_{$service_id}\\service\\{$service_id}";
         $service = new $classname();
     }
 //error_log(var_export($service, TRUE));

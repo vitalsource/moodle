@@ -24,9 +24,10 @@
  */
 
 
+namespace ltiservice_toolproxy\resource;
+
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/lti/service/resource_base.php');
 require_once($CFG->dirroot . '/mod/lti/OAuth.php');
 require_once($CFG->dirroot . '/mod/lti/TrivialStore.php');
 
@@ -39,7 +40,7 @@ use moodle\mod\lti as lti;
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class ltiresource_toolproxy extends ltiresource_base {
+class toolproxy extends \mod_lti\ltiservice\resource_base {
 
     function __construct($service) {
 
@@ -73,11 +74,11 @@ class ltiresource_toolproxy extends ltiresource_base {
             }
             $resources = $tool_proxy_json->tool_profile->resource_handler;
             foreach ($resources as $resource) {
-                $icon = new stdClass();
+                $icon = new \stdClass();
                 if (isset($resource->icon_info[0]->default_location->path)) {
                     $icon->path = $resource->icon_info[0]->default_location->path;
                 }
-                $tool = new stdClass();
+                $tool = new \stdClass();
                 $tool->name = $resource->resource_name->default_value;
                 $messages = $resource->message;
                 foreach ($messages as $message) {
@@ -87,17 +88,17 @@ class ltiresource_toolproxy extends ltiresource_base {
                         $tool->parameter = $message->parameter;
                     }
                 }
-                $config = new stdClass();
+                $config = new \stdClass();
                 $config->lti_toolurl = "{$base_url}{$tool->path}";
                 $config->lti_typename = $tool->name;
                 $config->lti_coursevisible = 1;
                 $config->lti_forcessl = 0;
 
-                $type = new stdClass();
+                $type = new \stdClass();
                 $type->state = LTI_TOOL_STATE_PENDING;
                 $type->toolproxyid = $tool_proxy->id;
                 $type->enabledcapability = implode("\n", $tool->enabled_capability);
-                $type->parameter = ltiresource_toolproxy::lti_extract_parameters($tool->parameter);
+                $type->parameter = \ltiservice_toolproxy\resource\toolproxy::lti_extract_parameters($tool->parameter);
                 if (!empty($icon->path)) {
                     $type->icon = "{$base_url}{$icon->path}";
                     if (!empty($secure_base_url)) {

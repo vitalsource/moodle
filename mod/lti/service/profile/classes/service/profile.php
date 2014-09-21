@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for the ltiservice_profile service.
+ * This file contains a class definition for the Tool Consumer Profile service
  *
  * @package    mod_lti
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
@@ -24,9 +24,36 @@
  */
 
 
+namespace ltiservice_profile\service;
+
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * A service implementing the Tool Consumer Profile.
+ *
+ * @copyright  2014 Vital Source Technologies http://vitalsource.com
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class profile extends \mod_lti\ltiservice\service_base {
 
-$plugin->version   = 2014092100;
-$plugin->requires  = 2014050800;
-$plugin->component = 'ltiservice_profile';
+    function __construct() {
+
+        parent::__construct();
+        $this->id = 'profile';
+        $this->name = 'Tool Consumer Profile';
+        $this->unsigned = true;
+
+    }
+
+    public function get_resources() {
+
+        if (is_null($this->resources)) {
+            $this->resources = array();
+            $this->resources[] = new \ltiservice_profile\resource\profile($this);
+        }
+
+        return $this->resources;
+
+    }
+
+}

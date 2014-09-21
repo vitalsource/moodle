@@ -24,16 +24,18 @@
  */
 
 
+namespace mod_lti\ltiservice;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
-require_once($CFG->dirroot.'/mod/lti/OAuthBody.php');
+require_once($CFG->dirroot . '/mod/lti/OAuthBody.php');
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149
 use moodle\mod\lti as lti;
 
 
-abstract class ltiservice_base {
+abstract class service_base {
 
     const LTI_VERSION2P0 = 'LTI-2p0';
 
@@ -88,7 +90,7 @@ abstract class ltiservice_base {
 
     public static function get_service_path() {
 
-        $url = new moodle_url('/mod/lti/services.php');
+        $url = new \moodle_url('/mod/lti/services.php');
 
         return $url->out(false);  // ???
 
@@ -113,7 +115,7 @@ abstract class ltiservice_base {
 
         $ok = false;
         $tool_proxy = null;
-
+        $h = lti\OAuthUtil::get_headers();
         $consumer_key = lti\getOAuthKeyFromHeaders();
         if (is_null($tool_proxy_guid)) {
             $tool_proxy_guid = $consumer_key;
@@ -144,6 +146,7 @@ abstract class ltiservice_base {
             // TODO: Switch to core oauthlib once implemented - MDL-30149
             lti\handleOAuthBodyPOST($consumer_key, $secret, $body);
         } catch (Exception $e) {
+error_log(var_export($e, TRUE));
             $ok = false;
         }
 
