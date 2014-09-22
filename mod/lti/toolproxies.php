@@ -53,7 +53,7 @@ $rejected = get_string('rejected', 'lti');
 $cancelled = get_string('cancelled', 'lti');
 
 $name = get_string('name', 'lti');
-$guid = get_string('guid', 'lti');
+$url = get_string('registrationurl', 'lti');
 $action = get_string('action', 'lti');
 $createdon = get_string('createdon', 'lti');
 
@@ -171,7 +171,7 @@ $template = "
 
                 var configuredColumns = [
                     {key:'name', label:'$name', sortable:true},
-                    {key:'guid', label:'$guid', sortable:true},
+                    {key:'url', label:'$url', sortable:true},
                     {key:'timecreated', label:'$createdon', sortable:true},
                     {key:'action', label:'$action'}
                 ];
@@ -180,7 +180,7 @@ $template = "
                 dataSource.responseSchema = {
                     fields: [
                         {key:'name'},
-                        {key:'guid'},
+                        {key:'url'},
                         {key:'timecreated'},
                         {key:'action'}
                     ]

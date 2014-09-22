@@ -551,6 +551,7 @@ function lti_get_tool_table($tools, $id) {
                         'sesskey' => sesskey(),
                         'tab' => $id
                     ));
+                $ref = $type->baseurl;
             } else {
                 $baseurl = new \moodle_url('/mod/lti/toolssettings.php', array(
                         'action' => 'accept',
@@ -558,6 +559,7 @@ function lti_get_tool_table($tools, $id) {
                         'sesskey' => sesskey(),
                         'tab' => $id
                     ));
+                $ref = $type->tpname;
             }
 
             $accepthtml = $OUTPUT->action_icon($baseurl,
@@ -581,18 +583,22 @@ function lti_get_tool_table($tools, $id) {
                     new \pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
                     array('title' => $update, 'class' => 'editing_update'));
 
-            $deleteurl = clone($baseurl);
-            $deleteurl->param('action', $deleteaction);
-            $deletehtml = $OUTPUT->action_icon($deleteurl,
-                    new \pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
-                    array('title' => $delete, 'class' => 'editing_delete'));
+            if (($type->state != LTI_TOOL_STATE_REJECTED) || empty($type->toolproxyid)) {
+                $deleteurl = clone($baseurl);
+                $deleteurl->param('action', $deleteaction);
+                $deletehtml = $OUTPUT->action_icon($deleteurl,
+                        new \pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
+                        array('title' => $delete, 'class' => 'editing_delete'));
+            } else {
+                $deletehtml = '';
+            }
             $html .= "
             <tr>
                 <td>
                     {$type->name}
                 </td>
                 <td>
-                    {$type->baseurl}
+                    {$ref}
                 </td>
                 <td>
                     {$date}
@@ -616,7 +622,7 @@ function lti_get_tool_proxy_table($toolproxies, $id) {
 
     if (!empty($toolproxies)) {
         $typename = get_string('typename', 'lti');
-        $guid = get_string('guid', 'lti');
+        $url = get_string('registrationurl', 'lti');
         $action = get_string('action', 'lti');
         $createdon = get_string('createdon', 'lti');
 
@@ -626,7 +632,7 @@ function lti_get_tool_proxy_table($toolproxies, $id) {
                 <thead>
                     <tr>
                         <th>{$typename}</th>
-                        <th>{$guid}</th>
+                        <th>{$url}</th>
                         <th>{$createdon}</th>
                         <th>{$action}</th>
                     </tr>
@@ -685,7 +691,7 @@ EOD;
                     {$toolproxy->name}
                 </td>
                 <td>
-                    {$toolproxy->guid}
+                    {$toolproxy->regurl}
                 </td>
                 <td>
                     {$date}
@@ -924,12 +930,14 @@ function lti_filter_get_types($course) {
     global $DB;
 
     if (!empty($course)) {
-        $filter = array('course' => $course);
+        $where = "WHERE t.course = {$course}";
     } else {
-        $filter = array();
+        $where = '';
     }
-
-    return $DB->get_records('lti_types', $filter);
+    $query = "SELECT t.id, t.name, t.baseurl, t.state, t.toolproxyid, t.timecreated, tp.name tpname
+                FROM {lti_types} t LEFT OUTER JOIN {lti_tool_proxies} tp ON t.toolproxyid = tp.id
+                {$where}";
+    return $DB->get_records_sql($query);
 }
 
 /**
@@ -962,7 +970,7 @@ function lti_get_types_for_add_instance() {
         array('siteid' => $SITE->id, 'courseid' => $COURSE->id, 'active' => LTI_TOOL_STATE_CONFIGURED));
 
     $types = array();
-    $types[0] = (object)array('name' => get_string('automatic', 'lti'), 'course' => 0);
+    $types[0] = (object)array('name' => get_string('automatic', 'lti'), 'course' => 0, 'toolproxyid' => null);
 
     foreach ($admintypes as $type) {
         $types[$type->id] = $type;

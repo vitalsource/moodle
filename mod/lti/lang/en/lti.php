@@ -73,7 +73,7 @@ $string['allowinstructorcustom'] = 'Allow teachers to add custom parameters';
 $string['allowsetting'] = 'Allow tool to store 8K of settings in Moodle';
 $string['always'] = 'Always';
 $string['automatic'] = 'Automatic, based on Launch URL';
-$string['baseurl'] = 'Base URL';
+$string['baseurl'] = 'Base URL/Tool Registration Name';
 $string['basiclti'] = 'LTI';
 $string['basiclti_base_string'] = 'LTI OAuth Base String';
 $string['basiclti_endpoint'] = 'LTI Launch Endpoint';
@@ -198,7 +198,6 @@ If using this option, confirm that this Moodle site and the tool provider suppor
 $string['generaltool'] = 'General tool';
 $string['global_tool_types'] = 'Global tool types';
 $string['grading'] = 'Grade Routing';
-$string['guid'] = 'GUID';
 $string['icon_url'] = 'Icon URL';
 $string['icon_url_help'] = 'The icon URL allows the icon that shows up in the course listing for this activity to be modified. Instead of using the default
 LTI icon, an icon which conveys the type of activity may be specified.';
