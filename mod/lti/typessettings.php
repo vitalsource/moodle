@@ -30,7 +30,7 @@
 //
 // BasicLTI4Moodle is copyright 2009 by Marc Alier Forment, Jordi Piguillem and Nikolas Galanis
 // of the Universitat Politecnica de Catalunya http://www.upc.edu
-// Contact info: Marc Alier Forment granludo @ gmail.com or marc.alier @ upc.edu
+// Contact info: Marc Alier Forment granludo @ gmail.com or marc.alier @ upc.edu.
 
 /**
  * This file contains the script used to clone Moodle admin setting page.
@@ -56,17 +56,18 @@ $action       = optional_param('action', null, PARAM_ALPHANUMEXT);
 $id           = optional_param('id', null, PARAM_INT);
 $tab          = optional_param('tab', '', PARAM_ALPHAEXT);
 
-// no guest autologin
+// No guest autologin.
 require_login(0, false);
 
 require_sesskey();
 
-// Check this is not for a tool created from a tool proxy
+// Check this is not for a tool created from a tool proxy.
 if (!empty($id)) {
     $type = lti_get_type_type_config($id);
     if (!empty($type->toolproxyid)) {
         $sesskey = required_param('sesskey', PARAM_RAW);
-        $redirect = new moodle_url('/mod/lti/toolssettings.php', array('action' => $action, 'id' => $id, 'sesskey' => $sesskey, 'tab' => $tab));
+        $redirect = new moodle_url('/mod/lti/toolssettings.php',
+            array('action' => $action, 'id' => $id, 'sesskey' => $sesskey, 'tab' => $tab));
         redirect($redirect);
     }
 } else {
@@ -79,7 +80,7 @@ if (!empty($id)) {
 }
 $PAGE->set_url($pageurl);
 
-admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page
+admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page.
 
 $redirect = "$CFG->wwwroot/$CFG->admin/settings.php?section=modsettinglti&tab={$tab}";
 

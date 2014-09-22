@@ -30,7 +30,7 @@
 //
 // BasicLTI4Moodle is copyright 2009 by Marc Alier Forment, Jordi Piguillem and Nikolas Galanis
 // of the Universitat Politecnica de Catalunya http://www.upc.edu
-// Contact info: Marc Alier Forment granludo @ gmail.com or marc.alier @ upc.edu
+// Contact info: Marc Alier Forment granludo @ gmail.com or marc.alier @ upc.edu.
 
 /**
  * This file contains en_utf8 translation of the Basic LTI module
@@ -294,13 +294,13 @@ $string['noservers'] = 'No servers found';
 $string['notypes'] = 'There are currently no LTI tools setup in Moodle. Click the Install link above to add some.';
 $string['noviewusers'] = 'No users were found with permissions to use this tool';
 $string['optionalsettings'] = 'Optional settings';
-$string['organization'] ='Organization details';
-$string['organizationdescr'] ='Organization Description';
-$string['organizationid'] ='Organization ID';
+$string['organization'] = 'Organization details';
+$string['organizationdescr'] = 'Organization Description';
+$string['organizationid'] = 'Organization ID';
 $string['organizationid_help'] = 'A unique identifier for this Moodle instance. Typically, the DNS name of the organization is used.
 
 If this field is left blank, the host name of this Moodle site will be used as the default value.';
-$string['organizationurl'] ='Organization URL';
+$string['organizationurl'] = 'Organization URL';
 $string['organizationurl_help'] = 'The base URL of this Moodle instance.
 
 If this field is left blank, a default value will be used based on the site configuration.';
@@ -339,10 +339,10 @@ $string['redirect'] = 'You will be redirected in few seconds. If you are not, pr
 $string['register'] = 'Register';
 $string['registertype'] = 'Configure a new Tool Registration';
 $string['registration_options'] = 'Registration Options';
-$string['registrationname'] ='Tool Provider name';
-$string['registrationname_help'] ='Enter the name of the tool provider being registered.';
-$string['registrationurl'] ='Registration URL';
-$string['registrationurl_help'] ='The registration URL should be available from the tool provider as the location to which registration requests should be sent.';
+$string['registrationname'] = 'Tool Provider name';
+$string['registrationname_help'] = 'Enter the name of the tool provider being registered.';
+$string['registrationurl'] = 'Registration URL';
+$string['registrationurl_help'] = 'The registration URL should be available from the tool provider as the location to which registration requests should be sent.';
 $string['reject'] = 'Reject';
 $string['rejected'] = 'Rejected';
 $string['resource'] = 'Resource';

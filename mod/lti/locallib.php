@@ -30,7 +30,7 @@
 //
 // BasicLTI4Moodle is copyright 2009 by Marc Alier Forment, Jordi Piguillem and Nikolas Galanis
 // of the Universitat Politecnica de Catalunya http://www.upc.edu
-// Contact info: Marc Alier Forment granludo @ gmail.com or marc.alier @ upc.edu
+// Contact info: Marc Alier Forment granludo @ gmail.com or marc.alier @ upc.edu.
 
 /**
  * This file contains the library of functions and constants for the lti module
@@ -48,7 +48,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-// TODO: Switch to core oauthlib once implemented - MDL-30149
+// TODO: Switch to core oauthlib once implemented - MDL-30149.
 use moodle\mod\lti as lti;
 
 require_once($CFG->dirroot.'/mod/lti/OAuth.php');
@@ -100,7 +100,7 @@ function lti_view($instance) {
     if ($typeid) {
         $typeconfig = lti_get_type_config($typeid);
     } else {
-        //There is no admin configuration for this tool. Use configuration in the lti instance record plus some defaults.
+        // There is no admin configuration for this tool. Use configuration in the lti instance record plus some defaults.
         $typeconfig = (array)$instance;
 
         $typeconfig['sendname'] = $instance->instructorchoicesendname;
@@ -111,7 +111,7 @@ function lti_view($instance) {
         $typeconfig['forcessl'] = '0';
     }
 
-    //Default the organizationid if not specified
+    // Default the organizationid if not specified.
     if (empty($typeconfig['organizationid'])) {
         $urlparts = parse_url($CFG->wwwroot);
 
@@ -143,12 +143,12 @@ function lti_view($instance) {
     $endpoint = !empty($instance->toolurl) ? $instance->toolurl : $typeconfig['toolurl'];
     $endpoint = trim($endpoint);
 
-    //If the current request is using SSL and a secure tool URL is specified, use it
+    // If the current request is using SSL and a secure tool URL is specified, use it.
     if (lti_request_is_using_ssl() && !empty($instance->securetoolurl)) {
         $endpoint = trim($instance->securetoolurl);
     }
 
-    //If SSL is forced, use the secure tool url if specified. Otherwise, make sure https is on the normal launch URL.
+    // If SSL is forced, use the secure tool url if specified. Otherwise, make sure https is on the normal launch URL.
     if ($typeconfig['forcessl'] == '1') {
         if (!empty($instance->securetoolurl)) {
             $endpoint = trim($instance->securetoolurl);
@@ -176,7 +176,8 @@ function lti_view($instance) {
     if (isset($typeconfig['customparameters'])) {
         $customstr = $typeconfig['customparameters'];
     }
-    $requestparams = array_merge($requestparams, lti_build_custom_parameters($toolproxy, $tool, $instance, $allparams, $customstr, $instance->instructorcustomparameters, $islti2));
+    $requestparams = array_merge($requestparams, lti_build_custom_parameters($toolproxy, $tool, $instance, $allparams, $customstr,
+        $instance->instructorcustomparameters, $islti2));
 
     $launchcontainer = lti_get_launch_container($instance, $typeconfig);
     $returnurlparams = array('course' => $course->id, 'launch_container' => $launchcontainer, 'instanceid' => $instance->id);
@@ -235,7 +236,7 @@ function lti_view($instance) {
         }
 
     } else {
-        //If no key and secret, do the launch unsigned.
+        // If no key and secret, do the launch unsigned.
         $returnurlparams['unsigned'] = '1';
         $parms = $requestparams;
     }
@@ -252,12 +253,12 @@ function lti_view($instance) {
  *
  * $param object $instance       Tool Proxy instance object
  */
-function lti_register($tool_proxy) {
+function lti_register($toolproxy) {
     global $PAGE, $CFG;
 
-    $key = $tool_proxy->guid;
-    $secret = $tool_proxy->secret;
-    $endpoint = $tool_proxy->regurl;
+    $key = $toolproxy->guid;
+    $secret = $toolproxy->secret;
+    $endpoint = $toolproxy->regurl;
 
     $requestparams = array();
     $requestparams['lti_message_type'] = 'ToolProxyRegistrationRequest';
@@ -266,26 +267,25 @@ function lti_register($tool_proxy) {
     $requestparams['reg_password'] = $secret;
 
     // Add the profile URL.
-    $profile_service = lti_get_service_by_id('profile');
-    if (!is_null($profile_service)) {
-        $tool_proxy->state = LTI_TOOL_PROXY_STATE_PENDING;
-        lti_update_tool_proxy($tool_proxy);
+    $profileservice = lti_get_service_by_id('profile');
+    if (!is_null($profileservice)) {
+        $toolproxy->state = LTI_TOOL_PROXY_STATE_PENDING;
+        lti_update_tool_proxy($toolproxy);
 
-        $profile_service->set_tool_proxy($tool_proxy);
-        $requestparams['tc_profile_url'] = $profile_service->parse_value('$ToolConsumerProfile.url');
+        $profileservice->set_tool_proxy($toolproxy);
+        $requestparams['tc_profile_url'] = $profileservice->parse_value('$ToolConsumerProfile.url');
 
         // Add the return URL.
-        $returnurlparams = array('id' => $tool_proxy->id);
+        $returnurlparams = array('id' => $toolproxy->id);
         $url = new \moodle_url('/mod/lti/registrationreturn.php', $returnurlparams);
         $returnurl = $url->out(false);
 
         $requestparams['launch_presentation_return_url'] = $returnurl;
-error_log(var_export($requestparams, TRUE));
         $content = lti_post_launch_html($requestparams, $endpoint, false);
 
         echo $content;
     } else {
-        redirect('', 'Profile service not found'); // TODO lang string
+        redirect('', 'Profile service not found'); // TODO lang string.
     }
 }
 
@@ -376,9 +376,9 @@ function lti_build_request($instance, $typeconfig, $course, $typeid = null, $isl
 
     if ( isset($placementsecret) && ($islti2 ||
          $typeconfig['acceptgrades'] == LTI_SETTING_ALWAYS ||
-         ( $typeconfig['acceptgrades'] == LTI_SETTING_DELEGATE && $instance->instructorchoiceacceptgrades == LTI_SETTING_ALWAYS ) ) ) {
+         ($typeconfig['acceptgrades'] == LTI_SETTING_DELEGATE && $instance->instructorchoiceacceptgrades == LTI_SETTING_ALWAYS))) {
 
-        //Add outcome service URL
+        // Add outcome service URL.
         $serviceurl = new \moodle_url('/mod/lti/service.php');
         $serviceurl = $serviceurl->out();
 
@@ -394,17 +394,17 @@ function lti_build_request($instance, $typeconfig, $course, $typeid = null, $isl
         $requestparams['lis_outcome_service_url'] = $serviceurl;
     }
 
-    // Send user's name and email data if appropriate
-    if ( $islti2 || $typeconfig['sendname'] == LTI_SETTING_ALWAYS ||
+    // Send user's name and email data if appropriate.
+    if ($islti2 || $typeconfig['sendname'] == LTI_SETTING_ALWAYS ||
          ( $typeconfig['sendname'] == LTI_SETTING_DELEGATE && $instance->instructorchoicesendname == LTI_SETTING_ALWAYS ) ) {
-        $requestparams['lis_person_name_given'] =  $USER->firstname;
-        $requestparams['lis_person_name_family'] =  $USER->lastname;
-        $requestparams['lis_person_name_full'] =  $USER->firstname." ".$USER->lastname;
+        $requestparams['lis_person_name_given'] = $USER->firstname;
+        $requestparams['lis_person_name_family'] = $USER->lastname;
+        $requestparams['lis_person_name_full'] = $USER->firstname . ' ' . $USER->lastname;
         $requestparams['ext_user_username'] = $USER->username;
     }
 
-    if ( $islti2 || $typeconfig['sendemailaddr'] == LTI_SETTING_ALWAYS ||
-         ( $typeconfig['sendemailaddr'] == LTI_SETTING_DELEGATE && $instance->instructorchoicesendemailaddr == LTI_SETTING_ALWAYS ) ) {
+    if ($islti2 || $typeconfig['sendemailaddr'] == LTI_SETTING_ALWAYS ||
+         ($typeconfig['sendemailaddr'] == LTI_SETTING_DELEGATE && $instance->instructorchoicesendemailaddr == LTI_SETTING_ALWAYS)) {
         $requestparams['lis_person_contact_email_primary'] = $USER->email;
     }
 
@@ -461,12 +461,12 @@ function lti_build_standard_request($instance, $orgid, $islti2) {
 
     $requestparams['launch_presentation_locale'] = current_language();
 
-    // Make sure we let the tool know what LMS they are being called from
+    // Make sure we let the tool know what LMS they are being called from.
     $requestparams['ext_lms'] = 'moodle-2';
     $requestparams['tool_consumer_info_product_family_code'] = 'moodle';
     $requestparams['tool_consumer_info_version'] = strval($CFG->version);
 
-    // Add oauth_callback to be compliant with the 1.0A spec
+    // Add oauth_callback to be compliant with the 1.0A spec.
     $requestparams['oauth_callback'] = 'about:blank';
 
     if (!$islti2) {
@@ -476,7 +476,7 @@ function lti_build_standard_request($instance, $orgid, $islti2) {
     }
     $requestparams['lti_message_type'] = 'basic-lti-launch-request';
 
-    if ( $orgid ) {
+    if ($orgid) {
         $requestparams["tool_consumer_instance_guid"] = $orgid;
     }
     if (!empty($CFG->mod_lti_institution_name)) {
@@ -492,7 +492,7 @@ function lti_build_custom_parameters($toolproxy, $tool, $instance, $params, $cus
 
     // Concatenate the custom parameters from the administrator and the instructor
     // Instructor parameters are only taken into consideration if the administrator
-    // has given permission
+    // has given permission.
     $custom = array();
     if ($customstr) {
         $custom = lti_split_custom_parameters($toolproxy, $tool, $params, $customstr, $islti2);
@@ -611,10 +611,10 @@ function lti_get_tool_table($tools, $id) {
     return $html;
 }
 
-function lti_get_tool_proxy_table($tool_proxies, $id) {
+function lti_get_tool_proxy_table($toolproxies, $id) {
     global $OUTPUT;
 
-    if (!empty($tool_proxies)) {
+    if (!empty($toolproxies)) {
         $typename = get_string('typename', 'lti');
         $guid = get_string('guid', 'lti');
         $action = get_string('action', 'lti');
@@ -632,21 +632,21 @@ function lti_get_tool_proxy_table($tool_proxies, $id) {
                     </tr>
                 </thead>
 EOD;
-        foreach ($tool_proxies as $tool_proxy) {
-            $date = userdate($tool_proxy->timecreated, get_string('strftimedatefullshort', 'core_langconfig'));
+        foreach ($toolproxies as $toolproxy) {
+            $date = userdate($toolproxy->timecreated, get_string('strftimedatefullshort', 'core_langconfig'));
             $accept = get_string('register', 'lti');
             $update = get_string('update', 'lti');
             $delete = get_string('delete', 'lti');
 
             $baseurl = new \moodle_url('/mod/lti/registersettings.php', array(
                     'action' => 'accept',
-                    'id' => $tool_proxy->id,
+                    'id' => $toolproxy->id,
                     'sesskey' => sesskey(),
                     'tab' => $id
                 ));
 
             $registerurl = new \moodle_url('/mod/lti/register.php', array(
-                    'id' => $tool_proxy->id,
+                    'id' => $toolproxy->id,
                     'sesskey' => sesskey(),
                     'tab' => 'tool_proxy'
                 ));
@@ -657,11 +657,11 @@ EOD;
 
             $deleteaction = 'delete';
 
-            if ($tool_proxy->state != LTI_TOOL_PROXY_STATE_CONFIGURED) {
+            if ($toolproxy->state != LTI_TOOL_PROXY_STATE_CONFIGURED) {
                 $accepthtml = '';
             }
 
-            if (($tool_proxy->state == LTI_TOOL_PROXY_STATE_CONFIGURED) || ($tool_proxy->state == LTI_TOOL_PROXY_STATE_PENDING)) {
+            if (($toolproxy->state == LTI_TOOL_PROXY_STATE_CONFIGURED) || ($toolproxy->state == LTI_TOOL_PROXY_STATE_PENDING)) {
                 $delete = get_string('cancel', 'lti');
             }
 
@@ -670,7 +670,7 @@ EOD;
             $updatehtml = $OUTPUT->action_icon($updateurl,
                     new \pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
                     array('title' => $update, 'class' => 'editing_update'));
-            if ($tool_proxy->state == LTI_TOOL_PROXY_STATE_CANCELLED) {
+            if ($toolproxy->state == LTI_TOOL_PROXY_STATE_CANCELLED) {
                 $updatehtml = '';
             }
 
@@ -682,10 +682,10 @@ EOD;
             $html .= <<< EOD
             <tr>
                 <td>
-                    {$tool_proxy->name}
+                    {$toolproxy->name}
                 </td>
                 <td>
-                    {$tool_proxy->guid}
+                    {$toolproxy->guid}
                 </td>
                 <td>
                     {$date}
@@ -720,7 +720,7 @@ function lti_split_custom_parameters($toolproxy, $tool, $params, $customstr, $is
             continue;
         }
         $key = trim(core_text::substr($line, 0, $pos));
-        $val = trim(core_text::substr($line, $pos+1, strlen($line)));
+        $val = trim(core_text::substr($line, $pos + 1, strlen($line)));
         $val = lti_parse_custom_parameter($toolproxy, $tool, $params, $val);
         $key2 = lti_map_keyname($key);
         $retval['custom_'.$key2] = $val;
@@ -819,9 +819,9 @@ function lti_get_ims_role($user, $cmid, $courseid, $islti2) {
     $roles = array();
 
     if (empty($cmid)) {
-        //If no cmid is passed, check if the user is a teacher in the course
-        //This allows other modules to programmatically "fake" a launch without
-        //a real LTI instance
+        // If no cmid is passed, check if the user is a teacher in the course
+        // This allows other modules to programmatically "fake" a launch without
+        // a real LTI instance.
         $coursecontext = context_course::instance($courseid);
 
         if (has_capability('moodle/course:manageactivities', $coursecontext)) {
@@ -958,7 +958,8 @@ function lti_get_types_for_add_instance() {
                  AND (course = :siteid OR course = :courseid)
                  AND state = :active";
 
-    $admintypes = $DB->get_records_sql($query, array('siteid' => $SITE->id, 'courseid' => $COURSE->id, 'active' => LTI_TOOL_STATE_CONFIGURED));
+    $admintypes = $DB->get_records_sql($query,
+        array('siteid' => $SITE->id, 'courseid' => $COURSE->id, 'active' => LTI_TOOL_STATE_CONFIGURED));
 
     $types = array();
     $types[0] = (object)array('name' => get_string('automatic', 'lti'), 'course' => 0);
@@ -1018,16 +1019,16 @@ function lti_get_best_tool_by_url($url, $tools, $courseid = null) {
         $toolbaseurllower = lti_get_url_thumbprint($tool->baseurl);
 
         if ($urllower === $toolbaseurllower) {
-            //100 points for exact thumbprint match
+            // 100 points for exact thumbprint match.
             $tool->_matchscore += 100;
         } else if (substr($urllower, 0, strlen($toolbaseurllower)) === $toolbaseurllower) {
-            //50 points if tool thumbprint starts with the base URL thumbprint
+            // 50 points if tool thumbprint starts with the base URL thumbprint.
             $tool->_matchscore += 50;
         }
 
-        //Prefer course tools over site tools
+        // Prefer course tools over site tools.
         if (!empty($courseid)) {
-            //Minus 10 points for not matching the course id (global tools)
+            // Minus 10 points for not matching the course id (global tools).
             if ($tool->course != $courseid) {
                 $tool->_matchscore -= 10;
             }
@@ -1043,7 +1044,7 @@ function lti_get_best_tool_by_url($url, $tools, $courseid = null) {
 
     }, (object)array('_matchscore' => -1));
 
-    //None of the tools are suitable for this URL
+    // None of the tools are suitable for this URL.
     if ($bestmatch->_matchscore <= 0) {
         return null;
     }
@@ -1054,8 +1055,8 @@ function lti_get_best_tool_by_url($url, $tools, $courseid = null) {
 function lti_get_shared_secrets_by_key($key) {
     global $DB;
 
-    //Look up the shared secret for the specified key in both the types_config table (for configured tools)
-    //And in the lti resource table for ad-hoc tools
+    // Look up the shared secret for the specified key in both the types_config table (for configured tools)
+    // And in the lti resource table for ad-hoc tools.
     $query = "SELECT t2.value
                 FROM {lti_types_config} t1
                 JOIN {lti_types_config} t2 ON t1.typeid = t2.typeid
@@ -1075,15 +1076,15 @@ function lti_get_shared_secrets_by_key($key) {
                FROM {lti}
               WHERE resourcekey = :key3";
 
-    $sharedsecrets = $DB->get_records_sql($query, array('configured1' => LTI_TOOL_STATE_CONFIGURED, 'configured2' => LTI_TOOL_STATE_CONFIGURED,
-                                                        'key1' => $key, 'key2' => $key, 'key3' => $key));
+    $sharedsecrets = $DB->get_records_sql($query, array('configured1' => LTI_TOOL_STATE_CONFIGURED,
+        'configured2' => LTI_TOOL_STATE_CONFIGURED, 'key1' => $key, 'key2' => $key, 'key3' => $key));
 
     $values = array_map(function($item) {
         return $item->value;
     }, $sharedsecrets);
 
-    //There should really only be one shared secret per key. But, we can't prevent
-    //more than one getting entered. For instance, if the same key is used for two tool providers.
+    // There should really only be one shared secret per key. But, we can't prevent
+    // more than one getting entered. For instance, if the same key is used for two tool providers.
     return $values;
 }
 
@@ -1095,7 +1096,7 @@ function lti_get_shared_secrets_by_key($key) {
 function lti_delete_type($id) {
     global $DB;
 
-    //We should probably just copy the launch URL to the tool instances in this case... using a single query
+    // We should probably just copy the launch URL to the tool instances in this case... using a single query.
     /*
     $instances = $DB->get_records('lti', array('typeid' => $id));
     foreach ($instances as $instance) {
@@ -1289,7 +1290,7 @@ function lti_update_type($type, $config) {
 
     if ($DB->update_record('lti_types', $type)) {
         foreach ($config as $key => $value) {
-            if (substr($key, 0, 4)=='lti_' && !is_null($value)) {
+            if (substr($key, 0, 4) == 'lti_' && !is_null($value)) {
                 $record = new \StdClass();
                 $record->typeid = $type->id;
                 $record->name = substr($key, 4);
@@ -1322,16 +1323,16 @@ function lti_add_type($type, $config) {
         $type->course = $SITE->id;
     }
 
-    //Create a salt value to be used for signing passed data to extension services
-    //The outcome service uses the service salt on the instance. This can be used
-    //for communication with services not related to a specific LTI instance.
+    // Create a salt value to be used for signing passed data to extension services
+    // The outcome service uses the service salt on the instance. This can be used
+    // for communication with services not related to a specific LTI instance.
     $config->lti_servicesalt = uniqid('', true);
 
     $id = $DB->insert_record('lti_types', $type);
 
     if ($id) {
         foreach ($config as $key => $value) {
-            if (substr($key, 0, 4)=='lti_' && !is_null($value)) {
+            if (substr($key, 0, 4) == 'lti_' && !is_null($value)) {
                 $record = new \StdClass();
                 $record->typeid = $id;
                 $record->name = substr($key, 4);
@@ -1352,22 +1353,22 @@ function lti_add_type($type, $config) {
  * @param int $state One of the LTI_TOOL_PROXY_STATE_* constants
  * @return array
  */
-function lti_filter_tool_proxy_types(array $tool_proxies, $state) {
+function lti_filter_tool_proxy_types(array $toolproxies, $state) {
     $return = array();
-    foreach ($tool_proxies as $key => $tool_proxy) {
-        if ($tool_proxy->state == $state) {
-            $return[$key] = $tool_proxy;
+    foreach ($toolproxies as $key => $toolproxy) {
+        if ($toolproxy->state == $state) {
+            $return[$key] = $toolproxy;
         }
     }
     return $return;
 }
 
-function lti_get_tool_proxy_from_guid($tool_proxy_guid) {
+function lti_get_tool_proxy_from_guid($toolproxyguid) {
     global $DB;
 
-    $tool_proxy = $DB->get_record('lti_tool_proxies', array('guid' => $tool_proxy_guid));
+    $toolproxy = $DB->get_record('lti_tool_proxies', array('guid' => $toolproxyguid));
 
-    return $tool_proxy;
+    return $toolproxy;
 }
 
 /**
@@ -1401,45 +1402,44 @@ function lti_get_tool_proxy_config($id) {
     $tp->lti_registrationurl = $toolproxy->regurl;
     $tp->lti_capabilities = explode("\n", $toolproxy->capabilityoffered);
     $tp->lti_services = explode("\n", $toolproxy->serviceoffered);
-//error_log(var_export($tp, TRUE));
+
     return $tp;
 }
 
 function lti_add_tool_proxy($config) {
     global $USER, $DB;
-//error_log(var_export($config, TRUE));
-    $tool_proxy = new \stdClass();
+
+    $toolproxy = new \stdClass();
     if (isset($config->lti_registrationname)) {
-        $tool_proxy->name = trim($config->lti_registrationname);
+        $toolproxy->name = trim($config->lti_registrationname);
     }
     if (isset($config->lti_registrationurl)) {
-        $tool_proxy->regurl = trim($config->lti_registrationurl);
+        $toolproxy->regurl = trim($config->lti_registrationurl);
     }
     if (isset($config->lti_capabilities)) {
-        $tool_proxy->capabilityoffered = implode("\n", $config->lti_capabilities);
+        $toolproxy->capabilityoffered = implode("\n", $config->lti_capabilities);
     }
     if (isset($config->lti_services)) {
-        $tool_proxy->serviceoffered = implode("\n", $config->lti_services);
+        $toolproxy->serviceoffered = implode("\n", $config->lti_services);
     }
     if (isset($config->toolproxyid) && !empty($config->toolproxyid)) {
-        $tool_proxy->id = $config->toolproxyid;
-//        if (isset($tool_proxy->capabilityoffered)) {
-        if (!isset($tool_proxy->state) || ($tool_proxy->state != LTI_TOOL_PROXY_STATE_ACCEPTED)) {
-            $tool_proxy->state = LTI_TOOL_PROXY_STATE_CONFIGURED;
-            $tool_proxy->guid = random_string();
-            $tool_proxy->secret = random_string();
+        $toolproxy->id = $config->toolproxyid;
+        if (!isset($toolproxy->state) || ($toolproxy->state != LTI_TOOL_PROXY_STATE_ACCEPTED)) {
+            $toolproxy->state = LTI_TOOL_PROXY_STATE_CONFIGURED;
+            $toolproxy->guid = random_string();
+            $toolproxy->secret = random_string();
         }
-        $id = lti_update_tool_proxy($tool_proxy);
+        $id = lti_update_tool_proxy($toolproxy);
     } else {
-        $tool_proxy->state = LTI_TOOL_PROXY_STATE_CONFIGURED;
-        $tool_proxy->timemodified = time();
-        $tool_proxy->timecreated = $tool_proxy->timemodified;
-        if (!isset($tool_proxy->createdby)) {
-            $tool_proxy->createdby = $USER->id;
+        $toolproxy->state = LTI_TOOL_PROXY_STATE_CONFIGURED;
+        $toolproxy->timemodified = time();
+        $toolproxy->timecreated = $toolproxy->timemodified;
+        if (!isset($toolproxy->createdby)) {
+            $toolproxy->createdby = $USER->id;
         }
-        $tool_proxy->guid = random_string();
-        $tool_proxy->secret = random_string();
-        $id = $DB->insert_record('lti_tool_proxies', $tool_proxy);
+        $toolproxy->guid = random_string();
+        $toolproxy->secret = random_string();
+        $id = $DB->insert_record('lti_tool_proxies', $toolproxy);
     }
 
     return $id;
@@ -1452,12 +1452,11 @@ function lti_add_tool_proxy($config) {
  *
  * @return Record id number
  */
-function lti_update_tool_proxy($tool_proxy) {
+function lti_update_tool_proxy($toolproxy) {
     global $DB;
 
-    $tool_proxy->timemodified = time();
-//error_log(var_export($tool_proxy, TRUE));
-    $id = $DB->update_record('lti_tool_proxies', $tool_proxy);
+    $toolproxy->timemodified = time();
+    $id = $DB->update_record('lti_tool_proxies', $toolproxy);
 
     return $id;
 }
@@ -1525,7 +1524,8 @@ function lti_get_tool_settings($toolproxyid, $courseid = null, $instanceid = nul
     global $DB;
 
     $settings = array();
-    $settingsstr = $DB->get_field('lti_tool_settings', 'settings', array('toolproxyid' => $toolproxyid, 'course' => $courseid, 'coursemoduleid' => $instanceid));
+    $settingsstr = $DB->get_field('lti_tool_settings', 'settings', array('toolproxyid' => $toolproxyid,
+        'course' => $courseid, 'coursemoduleid' => $instanceid));
     if ($settingsstr !== false) {
         $settings = json_decode($settingsstr, true);
     }
@@ -1544,7 +1544,8 @@ function lti_set_tool_settings($settings, $toolproxyid, $courseid = null, $insta
     global $DB;
 
     $json = json_encode($settings);
-    $record = $DB->get_record('lti_tool_settings', array('toolproxyid' => $toolproxyid, 'course' => $courseid, 'coursemoduleid' => $instanceid));
+    $record = $DB->get_record('lti_tool_settings', array('toolproxyid' => $toolproxyid,
+        'course' => $courseid, 'coursemoduleid' => $instanceid));
     if ($record !== false) {
         $DB->update_record('lti_tool_settings', array('id' => $record->id, 'settings' => $json, 'timemodified' => time()));
     } else {
@@ -1569,19 +1570,16 @@ function lti_set_tool_settings($settings, $toolproxyid, $courseid = null, $insta
  * @param $oauth_consumoer_secret       Secret
  */
 function lti_sign_parameters($oldparms, $endpoint, $method, $oauthconsumerkey, $oauthconsumersecret) {
-    //global $lastbasestring;
+
     $parms = $oldparms;
 
     $testtoken = '';
 
-    // TODO: Switch to core oauthlib once implemented - MDL-30149
+    // TODO: Switch to core oauthlib once implemented - MDL-30149.
     $hmacmethod = new lti\OAuthSignatureMethod_HMAC_SHA1();
     $testconsumer = new lti\OAuthConsumer($oauthconsumerkey, $oauthconsumersecret, null);
     $accreq = lti\OAuthRequest::from_consumer_and_token($testconsumer, $testtoken, $method, $endpoint, $parms);
     $accreq->sign_request($hmacmethod, $testconsumer, $testtoken);
-
-    // Pass this back up "out of band" for debugging
-    //$lastbasestring = $accreq->get_signature_base_string();
 
     $newparms = $accreq->get_parameters();
 
@@ -1596,9 +1594,10 @@ function lti_sign_parameters($oldparms, $endpoint, $method, $oauthconsumerkey, $
  * @param $debug        Debug (true/false)
  */
 function lti_post_launch_html($newparms, $endpoint, $debug=false) {
-    $r = "<form action=\"".$endpoint."\" name=\"ltiLaunchForm\" id=\"ltiLaunchForm\" method=\"post\" encType=\"application/x-www-form-urlencoded\">\n";
+    $r = "<form action=\"" . $endpoint .
+        "\" name=\"ltiLaunchForm\" id=\"ltiLaunchForm\" method=\"post\" encType=\"application/x-www-form-urlencoded\">\n";
 
-    // Contruct html for the launch parameters
+    // Contruct html for the launch parameters.
     foreach ($newparms as $key => $value) {
         $key = htmlspecialchars($key);
         $value = htmlspecialchars($value);
@@ -1629,16 +1628,15 @@ function lti_post_launch_html($newparms, $endpoint, $debug=false) {
         $r .= "<a id=\"displayText\" href=\"javascript:basicltiDebugToggle();\">";
         $r .= get_string("toggle_debug_data", "lti")."</a>\n";
         $r .= "<div id=\"basicltiDebug\" style=\"display:none\">\n";
-        $r .=  "<b>".get_string("basiclti_endpoint", "lti")."</b><br/>\n";
+        $r .= "<b>".get_string("basiclti_endpoint", "lti")."</b><br/>\n";
         $r .= $endpoint . "<br/>\n&nbsp;<br/>\n";
-        $r .=  "<b>".get_string("basiclti_parameters", "lti")."</b><br/>\n";
+        $r .= "<b>".get_string("basiclti_parameters", "lti")."</b><br/>\n";
         foreach ($newparms as $key => $value) {
             $key = htmlspecialchars($key);
             $value = htmlspecialchars($value);
             $r .= "$key = $value<br/>\n";
         }
         $r .= "&nbsp;<br/>\n";
-        //$r .= "<p><b>".get_string("basiclti_base_string", "lti")."</b><br/>\n".$lastbasestring."</p>\n";
         $r .= "</div>\n";
     }
     $r .= "</form>\n";
@@ -1678,9 +1676,9 @@ function lti_get_launch_container($lti, $toolconfig) {
 
     $devicetype = core_useragent::get_device_type();
 
-    //Scrolling within the object element doesn't work on iOS or Android
-    //Opening the popup window also had some issues in testing
-    //For mobile devices, always take up the entire screen to ensure the best experience
+    // Scrolling within the object element doesn't work on iOS or Android
+    // Opening the popup window also had some issues in testing
+    // For mobile devices, always take up the entire screen to ensure the best experience.
     if ($devicetype === core_useragent::DEVICETYPE_MOBILE || $devicetype === core_useragent::DEVICETYPE_TABLET ) {
         $launchcontainer = LTI_LAUNCH_CONTAINER_REPLACE_MOODLE_WINDOW;
     }
@@ -1697,7 +1695,7 @@ function lti_ensure_url_is_https($url) {
     if (!strstr($url, '://')) {
         $url = 'https://' . $url;
     } else {
-        //If the URL starts with http, replace with https
+        // If the URL starts with http, replace with https.
         if (stripos($url, 'http://') === 0) {
             $url = 'https://' . substr($url, 7);
         }
@@ -1812,37 +1810,37 @@ function lti_force_type_config_settings($instance, array $typeconfig) {
  */
 function lti_get_capabilities() {
 
-  $capabilities = array(
-     'basic-lti-launch-request' => '',
-     'Context.id' => 'context_id',
-     'CourseSection.title' => 'context_title',
-     'CourseSection.label' => 'context_label',
-     'CourseSection.sourcedId' => 'lis_course_section_sourcedid',
-     'CourseSection.longDescription' => '$COURSE->summary',
-     'CourseSection.timeFrame.begin' => '$COURSE->startdate',
-     'ResourceLink.id' => 'resource_link_id',
-     'ResourceLink.title' => 'resource_link_title',
-     'ResourceLink.description' => 'resource_link_description',
-     'User.id' => 'user_id',
-     'User.username' => '$USER->username',
-     'Person.name.full' => 'lis_person_name_full',
-     'Person.name.given' => 'lis_person_name_given',
-     'Person.name.family' => 'lis_person_name_family',
-     'Person.email.primary' => 'lis_person_contact_email_primary',
-     'Person.sourcedId' => 'lis_person_sourcedid',
-     'Person.name.middle' => '$USER->middlename',
-     'Person.address.street1' => '$USER->address',
-     'Person.address.locality' => '$USER->city',
-     'Person.address.country' => '$USER->country',
-     'Person.address.timezone' => '$USER->timezone',
-     'Person.phone.primary' => '$USER->phone1',
-     'Person.phone.mobile' => '$USER->phone2',
-     'Person.webaddress' => '$USER->url',
-     'Membership.role' => 'roles',
-     'Result.sourcedId' => 'lis_result_sourcedid',
-     'Result.autocreate' => 'lis_outcome_service_url');
+    $capabilities = array(
+       'basic-lti-launch-request' => '',
+       'Context.id' => 'context_id',
+       'CourseSection.title' => 'context_title',
+       'CourseSection.label' => 'context_label',
+       'CourseSection.sourcedId' => 'lis_course_section_sourcedid',
+       'CourseSection.longDescription' => '$COURSE->summary',
+       'CourseSection.timeFrame.begin' => '$COURSE->startdate',
+       'ResourceLink.id' => 'resource_link_id',
+       'ResourceLink.title' => 'resource_link_title',
+       'ResourceLink.description' => 'resource_link_description',
+       'User.id' => 'user_id',
+       'User.username' => '$USER->username',
+       'Person.name.full' => 'lis_person_name_full',
+       'Person.name.given' => 'lis_person_name_given',
+       'Person.name.family' => 'lis_person_name_family',
+       'Person.email.primary' => 'lis_person_contact_email_primary',
+       'Person.sourcedId' => 'lis_person_sourcedid',
+       'Person.name.middle' => '$USER->middlename',
+       'Person.address.street1' => '$USER->address',
+       'Person.address.locality' => '$USER->city',
+       'Person.address.country' => '$USER->country',
+       'Person.address.timezone' => '$USER->timezone',
+       'Person.phone.primary' => '$USER->phone1',
+       'Person.phone.mobile' => '$USER->phone2',
+       'Person.webaddress' => '$USER->url',
+       'Membership.role' => 'roles',
+       'Result.sourcedId' => 'lis_result_sourcedid',
+       'Result.autocreate' => 'lis_outcome_service_url');
 
-  return $capabilities;
+    return $capabilities;
 
 }
 
@@ -1855,8 +1853,8 @@ function lti_get_services() {
     global $CFG;
 
     $services = array();
-    $defined_services = get_plugin_list('ltiservice');
-    foreach ($defined_services as $name => $location) {
+    $definedservices = get_plugin_list('ltiservice');
+    foreach ($definedservices as $name => $location) {
         $classname = "\\ltiservice_{$name}\\service\\{$name}";
         $services[] = new $classname();
     }
@@ -1870,18 +1868,16 @@ function lti_get_services() {
  *
  * @return object Service
  */
-function lti_get_service_by_id($service_id) {
+function lti_get_service_by_id($serviceid) {
     global $CFG;
 
     $service = null;
-    $defined_services = get_plugin_list('ltiservice');
-//error_log(var_export($defined_services, TRUE));
-    if (array_key_exists($service_id, $defined_services)) {
-        $location = $defined_services[$service_id];
-        $classname = "\\ltiservice_{$service_id}\\service\\{$service_id}";
+    $definedservices = get_plugin_list('ltiservice');
+    if (array_key_exists($serviceid, $definedservices)) {
+        $location = $definedservices[$serviceid];
+        $classname = "\\ltiservice_{$serviceid}\\service\\{$serviceid}";
         $service = new $classname();
     }
-//error_log(var_export($service, TRUE));
 
     return $service;
 

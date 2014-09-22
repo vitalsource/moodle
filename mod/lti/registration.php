@@ -27,10 +27,10 @@ require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lti/lib.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
 
-$id = required_param('id', PARAM_INT); // Tool Proxy ID
+$id = required_param('id', PARAM_INT); // Tool Proxy ID.
 
-$tool_proxy = $DB->get_record('lti_tool_proxies', array('id' => $id), '*', MUST_EXIST);
+$toolproxy = $DB->get_record('lti_tool_proxies', array('id' => $id), '*', MUST_EXIST);
 
 require_login(0, false);
 
-lti_register($tool_proxy);
+lti_register($toolproxy);

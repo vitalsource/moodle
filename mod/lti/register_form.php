@@ -37,38 +37,35 @@ class mod_lti_register_types_form extends moodleform {
 
         $mform->addElement('header', 'setup', get_string('registration_options', 'lti'));
 
-        //-------------------------------------------------------------------------------
-        // Tool Provider name
+        // Tool Provider name.
 
         $mform->addElement('text', 'lti_registrationname', get_string('registrationname', 'lti'));
         $mform->setType('lti_registrationname', PARAM_TEXT);
         $mform->addHelpButton('lti_registrationname', 'registrationname', 'lti');
         $mform->addRule('lti_registrationname', null, 'required', null, 'client');
 
-        //-------------------------------------------------------------------------------
-        // Registration URL
+        // Registration URL.
 
-        $mform->addElement('text', 'lti_registrationurl', get_string('registrationurl', 'lti'), array('size'=>'64'));
+        $mform->addElement('text', 'lti_registrationurl', get_string('registrationurl', 'lti'), array('size' => '64'));
         $mform->setType('lti_registrationurl', PARAM_TEXT);
         $mform->addHelpButton('lti_registrationurl', 'registrationurl', 'lti');
 
-        //-------------------------------------------------------------------------------
-        // LTI Capabilities
+        // LTI Capabilities.
 
         $options = array_keys(lti_get_capabilities());
         natcasesort($options);
         $attributes = array( 'multiple' => 1, 'size' => min(count($options), 10) );
-        $mform->addElement('select', 'lti_capabilities', get_string('capabilities', 'lti'), array_combine($options, $options), $attributes);
+        $mform->addElement('select', 'lti_capabilities', get_string('capabilities', 'lti'),
+            array_combine($options, $options), $attributes);
         $mform->setType('lti_capabilities', PARAM_TEXT);
         $mform->addHelpButton('lti_capabilities', 'capabilities', 'lti');
 
-        //-------------------------------------------------------------------------------
-        // LTI Services
+        // LTI Services.
 
         $services = lti_get_services();
         $options = array();
         foreach ($services as $service) {
-          $options[$service->get_id()] = $service->get_name();
+            $options[$service->get_id()] = $service->get_name();
         }
         $attributes = array( 'multiple' => 1, 'size' => min(count($options), 10) );
         $mform->addElement('select', 'lti_services', get_string('services', 'lti'), $options, $attributes);
@@ -86,8 +83,7 @@ class mod_lti_register_types_form extends moodleform {
         $mform->addElement('hidden', 'course', $courseid);
         $mform->setType('course', PARAM_INT);
 
-        //-------------------------------------------------------------------------------
-        // Add standard buttons, common to all modules
+        // Add standard buttons, common to all modules.
 
         $this->add_action_buttons();
 

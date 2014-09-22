@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class systemsettings extends \mod_lti\ltiservice\resource_base {
 
-    function __construct($service) {
+    public function __construct($service) {
 
         parent::__construct($service);
         $this->id = 'ToolProxySettings';
@@ -61,12 +61,12 @@ class systemsettings extends \mod_lti\ltiservice\resource_base {
         $contenttype = $response->get_accept();
         $simpleformat = !is_null($contenttype) && ($contenttype == $this->formats[1]);
         if ($ok) {
-          $ok = (is_null($bubble) || ((($bubble == 'distinct') || ($bubble == 'all')))) &&
+            $ok = (is_null($bubble) || ((($bubble == 'distinct') || ($bubble == 'all')))) &&
                (!$simpleformat || is_null($bubble) || ($bubble != 'all')) &&
                (is_null($bubble) || ($response->get_request_method() == 'GET'));
-          if (!$ok) {
-            $response->set_code(406);
-          }
+            if (!$ok) {
+                $response->set_code(406);
+            }
         }
 
         if ($ok) {
@@ -80,14 +80,15 @@ class systemsettings extends \mod_lti\ltiservice\resource_base {
                     $response->set_content_type($this->formats[0]);
                     $json .= "{\n  \"@context\":\"http://purl.imsglobal.org/ctx/lti/v2/ToolSettings\",\n  \"@graph\":[\n";
                 }
-                $json .= \ltiservice_toolsettings\service\toolsettings::settings_to_json($systemsettings, $simpleformat, 'ToolProxy', $this);
+                $json .= \ltiservice_toolsettings\service\toolsettings::settings_to_json($systemsettings, $simpleformat,
+                    'ToolProxy', $this);
                 if ($simpleformat) {
                     $json .= "\n}";
                 } else {
                     $json .= "\n  ]\n}";
                 }
                 $response->set_body($json);
-            } else { // PUT
+            } else { // PUT.
                 $settings = null;
                 if ($response->get_content_type() == $this->formats[0]) {
                     $json = json_decode($response->get_request_data());
@@ -99,7 +100,7 @@ class systemsettings extends \mod_lti\ltiservice\resource_base {
                     if ($ok) {
                         $settings = $json->{"@graph"}[0]->custom;
                     }
-                } else {  // simple JSON
+                } else {  // Simple JSON.
                     $json = json_decode($response->get_request_data(), true);
                     $ok = !is_null($json);
                     if ($ok) {
@@ -112,7 +113,7 @@ class systemsettings extends \mod_lti\ltiservice\resource_base {
                 if ($ok) {
                     lti_set_tool_settings($settings, $this->get_service()->get_tool_proxy()->id);
                 } else {
-                    $response->set-code(406);
+                    $response->set_code(406);
                 }
             }
         }

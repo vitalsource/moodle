@@ -30,23 +30,23 @@ class response {
 
     private $code;
     private $reason;
-    private $request_method;
+    private $requestmethod;
     private $accept;
-    private $content_type;
+    private $contenttype;
     private $data;
     private $body;
-    private $response_codes;
+    private $responsecodes;
 
-    function __construct() {
+    public function __construct() {
 
         $this->code = 200;
         $this->reason = null;
-        $this->request_method = $_SERVER['REQUEST_METHOD'];
+        $this->requestmethod = $_SERVER['REQUEST_METHOD'];
         $this->accept = null;
-        $this->content_type = null;
+        $this->contenttype = null;
         $this->data = null;
         $this->body = null;
-        $this->response_codes = array(
+        $this->responsecodes = array(
             200 => 'OK',
             201 => 'Created',
             202 => 'Accepted',
@@ -76,10 +76,10 @@ class response {
 
     public function get_reason() {
         if (is_null($this->reason)) {
-            $this->reason = $this->response_codes[$this->code];
+            $this->reason = $this->responsecodes[$this->code];
         }
         if (is_null($this->reason)) {
-            $this->reason = $this->response_codes[($this->code / 100) * 100];
+            $this->reason = $this->responsecodes[($this->code / 100) * 100];
         }
         return $this->reason;
     }
@@ -89,7 +89,7 @@ class response {
     }
 
     public function get_request_method() {
-        return $this->request_method;
+        return $this->requestmethod;
     }
 
     public function get_accept() {
@@ -101,11 +101,11 @@ class response {
     }
 
     public function get_content_type() {
-        return $this->content_type;
+        return $this->contenttype;
     }
 
-    public function set_content_type($content_type) {
-        $this->content_type = $content_type;
+    public function set_content_type($contenttype) {
+        $this->contenttype = $contenttype;
     }
 
     public function get_request_data() {
@@ -123,8 +123,8 @@ class response {
     public function send() {
         header("HTTP/1.0 {$this->code} {$this->get_reason()}");
         if (($this->code >= 200) && ($this->code < 300)) {
-            if (!is_null($this->content_type)) {
-                header("Content-Type: {$this->content_type};charset=UTF-8");
+            if (!is_null($this->contenttype)) {
+                header("Content-Type: {$this->contenttype};charset=UTF-8");
             }
             if (!is_null($this->body)) {
                 echo $this->body;

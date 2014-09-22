@@ -29,7 +29,6 @@ require_once($CFG->dirroot . '/mod/lti/locallib.php');
 
 
 $response = new \mod_lti\ltiservice\response();
-error_log($response->get_request_method());
 
 $isget = $response->get_request_method() == 'GET';
 
@@ -49,7 +48,7 @@ foreach ($services as $name => $location) {
     $service = new $classname();
     $resources = $service->get_resources();
     foreach ($resources as $resource) {
-        if (($isget && !is_null($response->get_accept()) && (strpos($response->get_accept(), '*/*') === FALSE) &&
+        if (($isget && !is_null($response->get_accept()) && (strpos($response->get_accept(), '*/*') === false) &&
              !in_array($response->get_accept(), $resource->get_formats())) ||
             (!$isget && !in_array($response->get_content_type(), $resource->get_formats()))) {
             continue;

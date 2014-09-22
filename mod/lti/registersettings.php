@@ -34,17 +34,17 @@ $action       = optional_param('action', null, PARAM_ALPHANUMEXT);
 $id           = optional_param('id', null, PARAM_INT);
 $tab          = optional_param('tab', '', PARAM_ALPHAEXT);
 
-// no guest autologin
+// No guest autologin.
 require_login(0, false);
 
-$is_update = !empty($id);
+$isupdate = !empty($id);
 $pageurl = new moodle_url('/mod/lti/registersettings.php');
-if ($is_update) {
+if ($isupdate) {
     $pageurl->param('id', $id);
 }
 $PAGE->set_url($pageurl);
 
-admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page
+admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page.
 
 $redirect = new moodle_url('/mod/lti/toolproxies.php', array('tab' => $tab));
 $redirect = $redirect->out();
@@ -57,7 +57,7 @@ if ($action == 'delete') {
 }
 
 $data = array();
-if ($is_update) {
+if ($isupdate) {
     $data['isupdate'] = true;
 }
 
@@ -76,9 +76,9 @@ if ($form->is_cancelled()) {
     echo $OUTPUT->heading(get_string('toolregistration', 'lti'));
     echo $OUTPUT->box_start('generalbox');
     if ($action == 'update') {
-        $tool_proxy = lti_get_tool_proxy_config($id);
-        $form->set_data($tool_proxy);
-        if ($tool_proxy->state == LTI_TOOL_PROXY_STATE_ACCEPTED) {
+        $toolproxy = lti_get_tool_proxy_config($id);
+        $form->set_data($toolproxy);
+        if ($toolproxy->state == LTI_TOOL_PROXY_STATE_ACCEPTED) {
             $form->disable_fields();
         } else {
             $form->required_fields();

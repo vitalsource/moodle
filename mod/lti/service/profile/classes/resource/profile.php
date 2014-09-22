@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class profile extends \mod_lti\ltiservice\resource_base {
 
-    function __construct($service) {
+    public function __construct($service) {
 
         parent::__construct($service);
         $this->id = 'ToolConsumerProfile';
@@ -50,9 +50,9 @@ class profile extends \mod_lti\ltiservice\resource_base {
     public function get_path() {
 
         $path = $this->template;
-        $tool_proxy = $this->get_service()->get_tool_proxy();
-        if (!is_null($tool_proxy)) {
-            $path = str_replace('{tool_proxy_id}', $tool_proxy->guid, $path);
+        $toolproxy = $this->get_service()->get_tool_proxy();
+        if (!is_null($toolproxy)) {
+            $path = str_replace('{tool_proxy_id}', $toolproxy->guid, $path);
         }
 
         return $path;
@@ -71,29 +71,29 @@ class profile extends \mod_lti\ltiservice\resource_base {
         } else if (optional_param('lti_version', '', PARAM_ALPHANUMEXT) != $version) {
             $response->set_code(400);
         } else {
-            $tool_proxy = $this->get_service()->get_tool_proxy();
+            $toolproxy = $this->get_service()->get_tool_proxy();
             $response->set_content_type($this->formats[0]);
 
-            $server_path = $CFG->wwwroot;
-            $service_path = $this->get_service()->get_service_path();
-            $id = $service_path . $this->get_path();
+            $serverpath = $CFG->wwwroot;
+            $servicepath = $this->get_service()->get_service_path();
+            $id = $servicepath . $this->get_path();
             $now = date('Y-m-d\TH:iO');
-            $capabilityoffered_arr = explode("\n", $tool_proxy->capabilityoffered);
-            $serviceoffered_arr = explode("\n", $tool_proxy->serviceoffered);
+            $capabilityofferedarr = explode("\n", $toolproxy->capabilityoffered);
+            $serviceofferedarr = explode("\n", $toolproxy->serviceoffered);
             $serviceoffered = '';
             $sep = '';
             $services = get_plugin_list('ltiservice');
             foreach ($services as $name => $location) {
-                if (in_array($name, $serviceoffered_arr)) {
+                if (in_array($name, $serviceofferedarr)) {
                     $classname = "\\ltiservice_{$name}\\service\\{$name}";
                     $service = new $classname();
-                    $service->set_tool_proxy($tool_proxy);
+                    $service->set_tool_proxy($toolproxy);
                     $resources = $service->get_resources();
                     foreach ($resources as $resource) {
                         $formats = implode("\", \"", $resource->get_formats());
                         $methods = implode("\", \"", $resource->get_methods());
-                        $capabilityoffered_arr = array_merge($capabilityoffered_arr, $resource->get_variables());
-                        $path = $service_path . preg_replace('/\{?.*\}$/', '', $resource->get_path());
+                        $capabilityofferedarr = array_merge($capabilityofferedarr, $resource->get_variables());
+                        $path = $servicepath . preg_replace('/\{?.*\}$/', '', $resource->get_path());
                         $serviceoffered .= <<< EOD
 {$sep}
     {
@@ -108,7 +108,7 @@ EOD;
                     }
                 }
             }
-            $capabilityoffered = implode("\",\n    \"", $capabilityoffered_arr);
+            $capabilityoffered = implode("\",\n    \"", $capabilityofferedarr);
             if (strlen($capabilityoffered) > 0) {
                 $capabilityoffered = "\n    \"{$capabilityoffered}\"";
             }
@@ -118,7 +118,7 @@ EOD;
             $code = 'moodle';
             $vendorname = 'Moodle.org';
             $vendorcode = 'mdl';
-            $prod_version = strval($CFG->version);
+            $prodversion = strval($CFG->version);
             if (!empty($CFG->mod_lti_institution_name)) {
                 $consumername = $CFG->mod_lti_institution_name;
                 $consumerdesc = '';
@@ -137,7 +137,7 @@ EOD;
   "@type":"ToolConsumerProfile",
   "@id":"{$id}",
   "lti_version":"{$version}",
-  "guid":"{$tool_proxy->guid}",
+  "guid":"{$toolproxy->guid}",
   "product_instance":{
     "guid":"{$orgid}",
     "product_info":{
@@ -145,7 +145,7 @@ EOD;
         "default_value":"{$name}",
         "key":"product.name"
       },
-      "product_version":"{$prod_version}",
+      "product_version":"{$prodversion}",
       "product_family":{
         "code":"{$code}",
         "vendor":{

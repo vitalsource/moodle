@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
 require_once($CFG->dirroot . '/mod/lti/OAuthBody.php');
 
-// TODO: Switch to core oauthlib once implemented - MDL-30149
+// TODO: Switch to core oauthlib once implemented - MDL-30149.
 use moodle\mod\lti as lti;
 
 
@@ -42,16 +42,16 @@ abstract class service_base {
     protected $id;
     protected $name;
     protected $unsigned;
-    private $tool_proxy;
+    private $toolproxy;
     protected $resources;
 
 
-    function __construct() {
+    public function __construct() {
 
         $this->id = null;
         $this->name = null;
         $this->unsigned = false;
-        $this->tool_proxy = null;
+        $this->toolproxy = null;
         $this->resources = null;
 
     }
@@ -76,13 +76,13 @@ abstract class service_base {
 
     public function get_tool_proxy() {
 
-        return $this->tool_proxy;
+        return $this->toolproxy;
 
     }
 
-    public function set_tool_proxy($tool_proxy) {
+    public function set_tool_proxy($toolproxy) {
 
-        $this->tool_proxy = $tool_proxy;
+        $this->toolproxy = $toolproxy;
 
     }
 
@@ -92,7 +92,7 @@ abstract class service_base {
 
         $url = new \moodle_url('/mod/lti/services.php');
 
-        return $url->out(false);  // ???
+        return $url->out(false);
 
     }
 
@@ -102,7 +102,7 @@ abstract class service_base {
             $this->resources = $this->get_resources();
         }
         if (!is_null($this->resources)) {
-            foreach($this->resources as $resource) {
+            foreach ($this->resources as $resource) {
                 $value = $resource->parse_value($value);
             }
         }
@@ -111,42 +111,42 @@ abstract class service_base {
 
     }
 
-    public function check_tool_proxy($tool_proxy_guid, $body = null) {
+    public function check_tool_proxy($toolproxyguid, $body = null) {
 
         $ok = false;
-        $tool_proxy = null;
+        $toolproxy = null;
         $h = lti\OAuthUtil::get_headers();
-        $consumer_key = lti\getOAuthKeyFromHeaders();
-        if (is_null($tool_proxy_guid)) {
-            $tool_proxy_guid = $consumer_key;
+        $consumerkey = lti\get_oauth_key_from_headers();
+        if (is_null($toolproxyguid)) {
+            $toolproxyguid = $consumerkey;
         }
 
-        if (!is_null($tool_proxy_guid)) {
-            $tool_proxy = lti_get_tool_proxy_from_guid($tool_proxy_guid);
-            if ($tool_proxy !== false) {
-                if (!$this->is_unsigned() && ($tool_proxy->guid == $consumer_key)) {
-                    $ok = $this->check_signature($tool_proxy->guid, $tool_proxy->secret, $body);
+        if (!is_null($toolproxyguid)) {
+            $toolproxy = lti_get_tool_proxy_from_guid($toolproxyguid);
+            if ($toolproxy !== false) {
+                if (!$this->is_unsigned() && ($toolproxy->guid == $consumerkey)) {
+                    $ok = $this->check_signature($toolproxy->guid, $toolproxy->secret, $body);
                 } else {
                     $ok = $this->is_unsigned();
                 }
             }
         }
         if ($ok) {
-            $this->tool_proxy = $tool_proxy;
+            $this->toolproxy = $toolproxy;
         }
 
         return $ok;
 
     }
 
-    private function check_signature($consumer_key, $secret, $body) {
+    private function check_signature($consumerkey, $secret, $body) {
 
         $ok = true;
         try {
-            // TODO: Switch to core oauthlib once implemented - MDL-30149
-            lti\handleOAuthBodyPOST($consumer_key, $secret, $body);
+            // TODO: Switch to core oauthlib once implemented - MDL-30149.
+            lti\handle_oauth_body_post($consumerkey, $secret, $body);
         } catch (Exception $e) {
-error_log(var_export($e, TRUE));
+            debugging($e->getMessage() . "\n");
             $ok = false;
         }
 

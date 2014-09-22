@@ -34,12 +34,12 @@ $action       = optional_param('action', '', PARAM_ALPHANUMEXT);
 $id           = optional_param('id', '', PARAM_INT);
 $tab          = optional_param('tab', '', PARAM_ALPHAEXT);
 
-// no guest autologin
+// No guest autologin.
 require_login(0, false);
 
 require_sesskey();
 
-// Check this is for a tool created from a tool proxy
+// Check this is for a tool created from a tool proxy.
 $err = empty($id);
 if (!$err) {
     $type = lti_get_type_type_config($id);
@@ -47,7 +47,8 @@ if (!$err) {
 }
 if ($err) {
     $sesskey = required_param('sesskey', PARAM_RAW);
-    $redirect = new moodle_url('/mod/lti/typessettings.php', array('action' => $action, 'id' => $id, 'sesskey' => $sesskey, 'tab' => $tab));
+    $redirect = new moodle_url('/mod/lti/typessettings.php',
+        array('action' => $action, 'id' => $id, 'sesskey' => $sesskey, 'tab' => $tab));
     redirect($redirect);
 }
 
@@ -57,7 +58,7 @@ if (!empty($id)) {
 }
 $PAGE->set_url($pageurl);
 
-admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page
+admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page.
 
 $redirect = "$CFG->wwwroot/$CFG->admin/settings.php?section=modsettinglti&tab={$tab}";
 

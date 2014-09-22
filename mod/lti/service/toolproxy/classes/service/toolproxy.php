@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class toolproxy extends \mod_lti\ltiservice\service_base {
 
-    function __construct() {
+    public function __construct() {
 
         parent::__construct();
         $this->id = 'toolproxy';

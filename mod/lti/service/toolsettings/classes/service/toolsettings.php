@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class toolsettings extends \mod_lti\ltiservice\service_base {
 
-    function __construct() {
+    public function __construct() {
 
         parent::__construct();
         $this->id = 'toolsettings';
@@ -57,20 +57,20 @@ class toolsettings extends \mod_lti\ltiservice\service_base {
 
     }
 
-    public static function distinct_settings(&$systemsettings, &$contextSettings, $linksettings) {
+    public static function distinct_settings(&$systemsettings, &$contextsettings, $linksettings) {
 
         if (!is_null($systemsettings)) {
             foreach ($systemsettings as $key => $value) {
-                if ((!is_null($contextSettings) && array_key_exists($key, $contextSettings)) ||
+                if ((!is_null($contextsettings) && array_key_exists($key, $contextsettings)) ||
                     (!is_null($linksettings) && array_key_exists($key, $linksettings))) {
                     unset($systemsettings[$key]);
                 }
             }
         }
-        if (!is_null($contextSettings)) {
-            foreach ($contextSettings as $key => $value) {
+        if (!is_null($contextsettings)) {
+            foreach ($contextsettings as $key => $value) {
                 if (!is_null($linksettings) && array_key_exists($key, $linksettings)) {
-                    unset($contextSettings[$key]);
+                    unset($contextsettings[$key]);
                 }
             }
         }

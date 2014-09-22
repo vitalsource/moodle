@@ -41,10 +41,10 @@ switch ($action) {
         $toolurl = required_param('toolurl', PARAM_RAW);
         $toolid = optional_param('toolid', 0, PARAM_INT);
 
-        if(empty($toolid) && !empty($toolurl)){
+        if (empty($toolid) && !empty($toolurl)) {
             $tool = lti_get_tool_by_url_match($toolurl, $courseid);
 
-            if(!empty($tool)){
+            if (!empty($tool)) {
                 $toolid = $tool->id;
 
                 $response->toolid = $tool->id;
@@ -56,7 +56,7 @@ switch ($action) {
         }
 
         if (!empty($toolid)) {
-            // Look up privacy settings
+            // Look up privacy settings.
             $query = '
                 SELECT name, value
                 FROM {lti_types_config}
@@ -66,7 +66,7 @@ switch ($action) {
             ';
 
             $privacyconfigs = $DB->get_records_sql($query, array('typeid' => $toolid));
-            foreach($privacyconfigs as $config){
+            foreach ($privacyconfigs as $config) {
                 $configname = $config->name;
                 $response->$configname = $config->value;
             }

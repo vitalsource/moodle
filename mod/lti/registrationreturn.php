@@ -32,7 +32,7 @@ $msg = optional_param('lti_msg', null, PARAM_RAW);
 $err = optional_param('lti_errormsg', null, PARAM_RAW);
 $id = optional_param('id', null, PARAM_INT);
 
-// no guest autologin
+// No guest autologin.
 require_login(0, false);
 
 if (is_null($top)) {
@@ -88,8 +88,8 @@ EOD;
 
     $redirect = new moodle_url('/mod/lti/toolproxies.php');
     if (!empty($id)) {
-        $tool_proxy = $DB->get_record('lti_tool_proxies', array('id' => $id));
-        switch($tool_proxy->state) {
+        $toolproxy = $DB->get_record('lti_tool_proxies', array('id' => $id));
+        switch($toolproxy->state) {
             case LTI_TOOL_PROXY_STATE_ACCEPTED:
                 $tab = 'tp_accepted';
                 break;

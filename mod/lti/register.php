@@ -36,27 +36,27 @@ $redirect = $redirect->out();
 
 require_sesskey();
 
-$url = new moodle_url('/mod/lti/register.php', array('id'=>$id));
+$url = new moodle_url('/mod/lti/register.php', array('id' => $id));
 $PAGE->set_url($url);
 
-admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page
+admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page.
 
 
 $PAGE->set_heading(get_string('toolproxyregistration', 'lti'));
 $PAGE->set_title("{$SITE->shortname}: " . get_string('toolproxyregistration', 'lti'));
 $PAGE->navbar->add(get_string('lti_administration', 'lti'), $redirect);
 
-// Print the page header
+// Print the page header.
 echo $OUTPUT->header();
 
 echo $OUTPUT->heading(get_string('toolproxyregistration', 'lti'));
 
 echo $OUTPUT->box_start('generalbox');
 
-// Request the registration request content with an object tag
+// Request the registration request content with an object tag.
 echo '<object id="contentframe" height="600px" width="100%" type="text/html" data="registration.php?id='.$id.'"></object>';
 
-//Output script to make the object tag be as large as possible
+// Output script to make the object tag be as large as possible.
 $resize = '
         <script type="text/javascript">
         //<![CDATA[
@@ -86,6 +86,6 @@ $resize = '
 
 echo $resize;
 
-// Finish the page
+// Finish the page.
 echo $OUTPUT->box_end();
 echo $OUTPUT->footer();

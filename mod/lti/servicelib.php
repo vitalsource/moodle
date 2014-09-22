@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot.'/mod/lti/OAuthBody.php');
 
-// TODO: Switch to core oauthlib once implemented - MDL-30149
+// TODO: Switch to core oauthlib once implemented - MDL-30149.
 use moodle\mod\lti as lti;
 
 define('LTI_ITEM_TYPE', 'mod');
@@ -48,7 +48,7 @@ function lti_get_response_xml($codemajor, $description, $messageref, $messagetyp
     $statusinfo->addChild('imsx_severity', 'status');
     $statusinfo->addChild('imsx_description', $description);
     $statusinfo->addChild('imsx_messageRefIdentifier', $messageref);
-    $incomingtype = str_replace('Response','Request', $messagetype);
+    $incomingtype = str_replace('Response', 'Request', $messagetype);
     $statusinfo->addChild('imsx_operationRefIdentifier', $incomingtype);
 
     $xml->addChild('imsx_POXBody')->addChild($messagetype);
@@ -175,7 +175,8 @@ function lti_update_grade($ltiinstance, $userid, $launchid, $gradeval) {
 
     $status = grade_update(LTI_SOURCE, $ltiinstance->course, LTI_ITEM_TYPE, LTI_ITEM_MODULE, $ltiinstance->id, 0, $grade, $params);
 
-    $record = $DB->get_record('lti_submission', array('ltiid' => $ltiinstance->id, 'userid' => $userid, 'launchid' => $launchid), 'id');
+    $record = $DB->get_record('lti_submission', array('ltiid' => $ltiinstance->id, 'userid' => $userid,
+        'launchid' => $launchid), 'id');
     if ($record) {
         $id = $record->id;
     } else {
@@ -244,14 +245,14 @@ function lti_verify_message($key, $sharedsecrets, $body, $headers = null) {
         $signaturefailed = false;
 
         try {
-            // TODO: Switch to core oauthlib once implemented - MDL-30149
-            lti\handleOAuthBodyPOST($key, $secret, $body, $headers);
+            // TODO: Switch to core oauthlib once implemented - MDL-30149.
+            lti\handle_oauth_body_post($key, $secret, $body, $headers);
         } catch (Exception $e) {
             $signaturefailed = true;
         }
 
         if (!$signaturefailed) {
-            return $secret;//Return the secret used to sign the message)
+            return $secret; // Return the secret used to sign the message).
         }
     }
 
@@ -285,7 +286,7 @@ function lti_extend_lti_services($data) {
     $plugins = get_plugin_list_with_function('ltisource', $data->messagetype);
     if (!empty($plugins)) {
         try {
-            // There can only be one
+            // There can only be one.
             if (count($plugins) > 1) {
                 throw new coding_exception('More than one ltisource plugin handler found');
             }

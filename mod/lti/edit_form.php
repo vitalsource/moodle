@@ -30,7 +30,7 @@
 //
 // BasicLTI4Moodle is copyright 2009 by Marc Alier Forment, Jordi Piguillem and Nikolas Galanis
 // of the Universitat Politecnica de Catalunya http://www.upc.edu
-// Contact info: Marc Alier Forment granludo @ gmail.com or marc.alier @ upc.edu
+// Contact info: Marc Alier Forment granludo @ gmail.com or marc.alier @ upc.edu.
 
 /**
  * This file defines de main basiclti configuration form
@@ -60,8 +60,7 @@ class mod_lti_edit_types_form extends moodleform{
 
         $istool = $this->_customdata->istool;
 
-        //-------------------------------------------------------------------------------
-        // Add basiclti elements
+        // Add basiclti elements.
         $mform->addElement('header', 'setup', get_string('tool_settings', 'lti'));
 
         $mform->addElement('text', 'lti_typename', get_string('typename', 'lti'));
@@ -69,7 +68,7 @@ class mod_lti_edit_types_form extends moodleform{
         $mform->addHelpButton('lti_typename', 'typename', 'lti');
         $mform->addRule('lti_typename', null, 'required', null, 'client');
 
-        $mform->addElement('text', 'lti_toolurl', get_string('toolurl', 'lti'), array('size'=>'64'));
+        $mform->addElement('text', 'lti_toolurl', get_string('toolurl', 'lti'), array('size' => '64'));
         $mform->setType('lti_toolurl', PARAM_TEXT);
         $mform->addHelpButton('lti_toolurl', 'toolurl', 'lti');
         if (!$istool) {
@@ -89,13 +88,13 @@ class mod_lti_edit_types_form extends moodleform{
         }
 
         if ($istool) {
-            $mform->addElement('textarea', 'lti_parameters', get_string('parameter', 'lti'), array('rows'=>4, 'cols'=>60));
+            $mform->addElement('textarea', 'lti_parameters', get_string('parameter', 'lti'), array('rows' => 4, 'cols' => 60));
             $mform->setType('lti_parameters', PARAM_TEXT);
             $mform->addHelpButton('lti_parameters', 'parameter', 'lti');
             $mform->disabledIf('lti_parameters', null);
         }
 
-        $mform->addElement('textarea', 'lti_customparameters', get_string('custom', 'lti'), array('rows'=>4, 'cols'=>60));
+        $mform->addElement('textarea', 'lti_customparameters', get_string('custom', 'lti'), array('rows' => 4, 'cols' => 60));
         $mform->setType('lti_customparameters', PARAM_TEXT);
         $mform->addHelpButton('lti_customparameters', 'custom', 'lti');
 
@@ -110,7 +109,7 @@ class mod_lti_edit_types_form extends moodleform{
         $mform->addElement('hidden', 'typeid');
         $mform->setType('typeid', PARAM_INT);
 
-        $launchoptions=array();
+        $launchoptions = array();
         $launchoptions[LTI_LAUNCH_CONTAINER_EMBED] = get_string('embed', 'lti');
         $launchoptions[LTI_LAUNCH_CONTAINER_EMBED_NO_BLOCKS] = get_string('embed_no_blocks', 'lti');
         $launchoptions[LTI_LAUNCH_CONTAINER_REPLACE_MOODLE_WINDOW] = get_string('existing_window', 'lti');
@@ -122,10 +121,10 @@ class mod_lti_edit_types_form extends moodleform{
         $mform->setType('lti_launchcontainer', PARAM_INT);
 
         if (!$istool) {
-            // Add privacy preferences fieldset where users choose whether to send their data
+            // Add privacy preferences fieldset where users choose whether to send their data.
             $mform->addElement('header', 'privacy', get_string('privacy', 'lti'));
 
-            $options=array();
+            $options = array();
             $options[0] = get_string('never', 'lti');
             $options[1] = get_string('always', 'lti');
             $options[2] = get_string('delegate', 'lti');
@@ -140,19 +139,13 @@ class mod_lti_edit_types_form extends moodleform{
             $mform->setDefault('lti_sendemailaddr', '2');
             $mform->addHelpButton('lti_sendemailaddr', 'share_email_admin', 'lti');
 
-            //-------------------------------------------------------------------------------
-            // LTI Extensions
+            // LTI Extensions.
 
-            // Add grading preferences fieldset where the tool is allowed to return grades
+            // Add grading preferences fieldset where the tool is allowed to return grades.
             $mform->addElement('select', 'lti_acceptgrades', get_string('accept_grades_admin', 'lti'), $options);
             $mform->setType('lti_acceptgrades', PARAM_INT);
             $mform->setDefault('lti_acceptgrades', '2');
             $mform->addHelpButton('lti_acceptgrades', 'accept_grades_admin', 'lti');
-
-            // Add grading preferences fieldset where the tool is allowed to retrieve rosters
-            //$mform->addElement('select', 'lti_allowroster', get_string('share_roster_admin', 'lti'), $options);
-            //$mform->setDefault('lti_allowroster', '2');
-            //$mform->addHelpButton('lti_allowroster', 'share_roster_admin', 'lti');
 
             $mform->addElement('checkbox', 'lti_forcessl', '&nbsp;', ' ' . get_string('force_ssl', 'lti'), $options);
             $mform->setType('lti_forcessl', PARAM_BOOL);
@@ -165,11 +158,10 @@ class mod_lti_edit_types_form extends moodleform{
             $mform->addHelpButton('lti_forcessl', 'force_ssl', 'lti');
 
             if (!empty($this->_customdata->isadmin)) {
-                //-------------------------------------------------------------------------------
-                // Add setup parameters fieldset
+                // Add setup parameters fieldset.
                 $mform->addElement('header', 'setupoptions', get_string('miscellaneous', 'lti'));
 
-                // Adding option to change id that is placed in context_id
+                // Adding option to change id that is placed in context_id.
                 $idoptions = array();
                 $idoptions[0] = get_string('id', 'lti');
                 $idoptions[1] = get_string('courseid', 'lti');
@@ -185,14 +177,15 @@ class mod_lti_edit_types_form extends moodleform{
         }
 
         /* Suppress this for now - Chuck
-        $mform->addElement('text', 'lti_organizationdescr', get_string('organizationdescr', 'lti'));
-        $mform->setType('lti_organizationdescr', PARAM_TEXT);
-        $mform->addHelpButton('lti_organizationdescr', 'organizationdescr', 'lti');
-        */
+         * mform->addElement('text', 'lti_organizationdescr', get_string('organizationdescr', 'lti'))
+         * mform->setType('lti_organizationdescr', PARAM_TEXT)
+         * mform->addHelpButton('lti_organizationdescr', 'organizationdescr', 'lti')
+         */
 
-        //-------------------------------------------------------------------------------
+        /*
         // Add a hidden element to signal a tool fixing operation after a problematic backup - restore process
         //$mform->addElement('hidden', 'lti_fix');
+        */
 
         $tab = optional_param('tab', '', PARAM_ALPHAEXT);
         $mform->addElement('hidden', 'tab', $tab);
@@ -202,8 +195,7 @@ class mod_lti_edit_types_form extends moodleform{
         $mform->addElement('hidden', 'course', $courseid);
         $mform->setType('course', PARAM_INT);
 
-        //-------------------------------------------------------------------------------
-        // Add standard buttons, common to all modules
+        // Add standard buttons, common to all modules.
         $this->add_action_buttons();
 
     }

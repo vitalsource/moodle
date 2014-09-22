@@ -27,7 +27,7 @@ require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
 
-// no guest autologin
+// No guest autologin.
 require_login(0, false);
 
 $pageurl = new moodle_url('/mod/lti/toolproxies.php');
@@ -35,7 +35,7 @@ $PAGE->set_url($pageurl);
 
 $redirect = "$CFG->wwwroot/$CFG->admin/settings.php?section=modsettinglti";
 
-admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page
+admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page.
 
 $PAGE->set_title("{$SITE->shortname}: " . get_string('toolregistration', 'lti'));
 $PAGE->navbar->add(get_string('lti_administration', 'lti'), $redirect);
@@ -100,6 +100,8 @@ switch ($tab) {
 $registertype = get_string('registertype', 'lti');
 $config = get_string('manage_tools', 'lti');
 
+$registertypeurl = "{$CFG->wwwroot}/mod/lti/registersettings.php?action=add&amp;sesskey={$USER->sesskey}&amp;tab=tool_proxy";
+
 $template = "
 <p>
   <a href=\"{$redirect}\">$config</a>
@@ -134,7 +136,7 @@ $template = "
     </ul>
     <div class=\"yui-content\">
         <div>
-            <div><a style=\"margin-top:.25em\" href=\"{$CFG->wwwroot}/mod/lti/registersettings.php?action=add&amp;sesskey={$USER->sesskey}&amp;tab=tool_proxy\">{$registertype}</a></div>
+            <div><a style=\"margin-top:.25em\" href=\"{$registertypeurl}\">{$registertype}</a></div>
             $configuredtoolproxieshtml
         </div>
         <div>

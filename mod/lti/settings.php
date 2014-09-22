@@ -30,7 +30,7 @@
 //
 // BasicLTI4Moodle is copyright 2009 by Marc Alier Forment, Jordi Piguillem and Nikolas Galanis
 // of the Universitat Politecnica de Catalunya http://www.upc.edu
-// Contact info: Marc Alier Forment granludo @ gmail.com or marc.alier @ upc.edu
+// Contact info: Marc Alier Forment granludo @ gmail.com or marc.alier @ upc.edu.
 
 /**
  * This file defines the global lti administration form
@@ -48,19 +48,23 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-/** @var admin_settingpage $settings */
+/*
+ * @var admin_settingpage $settings
+ */
 $modltifolder = new admin_category('modltifolder', new lang_string('pluginname', 'mod_lti'), $module->is_enabled() === false);
 $ADMIN->add('modsettings', $modltifolder);
 
 $ADMIN->add('modltifolder', $settings);
 
 foreach (core_plugin_manager::instance()->get_plugins_of_type('ltisource') as $plugin) {
-    /** @var \mod_lti\plugininfo\ltisource $plugin */
+    /*
+     * @var \mod_lti\plugininfo\ltisource $plugin
+     */
     $plugin->load_settings($ADMIN, 'modltifolder', $hassiteconfig);
 }
 
-$tool_proxies_url = new moodle_url('/mod/lti/toolproxies.php');
-$tool_proxies_url = $tool_proxies_url->out();
+$toolproxiesurl = new moodle_url('/mod/lti/toolproxies.php');
+$toolproxiesurl = $toolproxiesurl->out();
 
 if ($ADMIN->fulltree) {
     require_once($CFG->dirroot.'/mod/lti/locallib.php');
@@ -116,31 +120,33 @@ if ($ADMIN->fulltree) {
     $addtype = get_string('addtype', 'lti');
     $config = get_string('manage_tool_proxies', 'lti');
 
-    $template = "
+    $addtypeurl = "{$CFG->wwwroot}/mod/lti/typessettings.php?action=add&amp;sesskey={$USER->sesskey}";
+
+    $template = <<< EOD
 <p>
-  <a href=\"{$tool_proxies_url}\">$config</a>
+  <a href="{$toolproxiesurl}">$config</a>
 </p>
-<div id=\"lti_tabs\" class=\"yui-navset\">
-    <ul id=\"lti_tab_heading\" class=\"yui-nav\" style=\"display:none\">
+<div id="lti_tabs" class="yui-navset">
+    <ul id="lti_tab_heading" class="yui-nav" style="display:none">
         <li {$activeselected}>
-            <a href=\"#tab1\">
+            <a href="#tab1">
                 <em>$active</em>
             </a>
         </li>
         <li {$pendingselected}>
-            <a href=\"#tab2\">
+            <a href="#tab2">
                 <em>$pending</em>
             </a>
         </li>
         <li {$rejectedselected}>
-            <a href=\"#tab3\">
+            <a href="#tab3">
                 <em>$rejected</em>
             </a>
         </li>
     </ul>
-    <div class=\"yui-content\">
+    <div class="yui-content">
         <div>
-            <div><a style=\"margin-top:.25em\" href=\"{$CFG->wwwroot}/mod/lti/typessettings.php?action=add&amp;sesskey={$USER->sesskey}\">{$addtype}</a></div>
+            <div><a style="margin-top:.25em" href="{$addtypeurl}">{$addtype}</a></div>
             $configuredtoolshtml
         </div>
         <div>
@@ -152,7 +158,7 @@ if ($ADMIN->fulltree) {
     </div>
 </div>
 
-<script type=\"text/javascript\">
+<script type="text/javascript">
 //<![CDATA[
     YUI().use('yui2-tabview', 'yui2-datatable', function(Y) {
         //If javascript is disabled, they will just see the three tabs one after another
@@ -198,8 +204,9 @@ if ($ADMIN->fulltree) {
     });
 //]]
 </script>
-";
-    $settings->add(new admin_setting_heading('lti_types', new lang_string('external_tool_types', 'lti') . $OUTPUT->help_icon('main_admin', 'lti'), $template));
+EOD;
+    $settings->add(new admin_setting_heading('lti_types', new lang_string('external_tool_types', 'lti') .
+        $OUTPUT->help_icon('main_admin', 'lti'), $template));
 }
 
 if (count($modltifolder->children) <= 1) {

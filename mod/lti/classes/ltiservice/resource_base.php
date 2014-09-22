@@ -43,7 +43,7 @@ abstract class resource_base {
     protected $params;
 
 
-    function __construct($service) {
+    public function __construct($service) {
 
         $this->service = $service;
         $this->type = 'RestService';
@@ -114,9 +114,9 @@ abstract class resource_base {
         foreach ($this->params as $key => $value) {
             $url = str_replace('{' . $key . '}', $value, $url);
         }
-        $tool_proxy = $this->get_service()->get_tool_proxy();
-        if (!is_null($tool_proxy)) {
-            $url = str_replace('{tool_proxy_id}', $tool_proxy->guid, $url);
+        $toolproxy = $this->get_service()->get_tool_proxy();
+        if (!is_null($toolproxy)) {
+            $url = str_replace('{tool_proxy_id}', $toolproxy->guid, $url);
         }
 
         return $url;
@@ -152,6 +152,6 @@ abstract class resource_base {
 
         return $this->params;
 
-  }
+    }
 
 }
