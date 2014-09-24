@@ -267,26 +267,22 @@ function lti_register($toolproxy) {
     $requestparams['reg_password'] = $secret;
 
     // Add the profile URL.
-    $profileservice = lti_get_service_by_id('profile');
-    if (!is_null($profileservice)) {
-        $toolproxy->state = LTI_TOOL_PROXY_STATE_PENDING;
-        lti_update_tool_proxy($toolproxy);
+    $toolproxy->state = LTI_TOOL_PROXY_STATE_PENDING;
+    lti_update_tool_proxy($toolproxy);
 
-        $profileservice->set_tool_proxy($toolproxy);
-        $requestparams['tc_profile_url'] = $profileservice->parse_value('$ToolConsumerProfile.url');
+    $profileservice = lti_get_service_by_name('profile');
+    $profileservice->set_tool_proxy($toolproxy);
+    $requestparams['tc_profile_url'] = $profileservice->parse_value('$ToolConsumerProfile.url');
 
-        // Add the return URL.
-        $returnurlparams = array('id' => $toolproxy->id);
-        $url = new \moodle_url('/mod/lti/registrationreturn.php', $returnurlparams);
-        $returnurl = $url->out(false);
+    // Add the return URL.
+    $returnurlparams = array('id' => $toolproxy->id);
+    $url = new \moodle_url('/mod/lti/registrationreturn.php', $returnurlparams);
+    $returnurl = $url->out(false);
 
-        $requestparams['launch_presentation_return_url'] = $returnurl;
-        $content = lti_post_launch_html($requestparams, $endpoint, false);
+    $requestparams['launch_presentation_return_url'] = $returnurl;
+    $content = lti_post_launch_html($requestparams, $endpoint, false);
 
-        echo $content;
-    } else {
-        redirect('', 'Profile service not found'); // TODO lang string.
-    }
+    echo $content;
 }
 
 /**
@@ -1876,17 +1872,78 @@ function lti_get_services() {
  *
  * @return object Service
  */
-function lti_get_service_by_id($serviceid) {
-    global $CFG;
+function lti_get_service_by_name($servicename) {
 
     $service = null;
-    $definedservices = get_plugin_list('ltiservice');
-    if (array_key_exists($serviceid, $definedservices)) {
-        $location = $definedservices[$serviceid];
-        $classname = "\\ltiservice_{$serviceid}\\service\\{$serviceid}";
+    $classname = "\\ltiservice_{$servicename}\\service\\{$servicename}";
+    if (class_exists($classname)) {
         $service = new $classname();
     }
 
     return $service;
+
+}
+
+/**
+ * Finds a service by id
+ *
+ * @return object Service
+ */
+function lti_get_service_by_resource_id($services, $resourceid) {
+
+    $service = null;
+    foreach ($services as $aservice) {
+        foreach ($aservice->get_resources() as $resource) {
+            if ($resource->get_id() === $resourceid) {
+                $service = $aservice;
+                break 2;
+            }
+        }
+    }
+
+    return $service;
+
+}
+
+/**
+ * Extracts the named contexts from a tool proxy
+ *
+ * @param object $json
+ *
+ * @return array Contexts
+ */
+function lti_get_contexts($json) {
+
+    $contexts = array();
+    if (isset($json->{'@context'})) {
+        foreach ($json->{'@context'} as $context) {
+            if (is_object($context)) {
+                $contexts = array_merge(get_object_vars($context), $contexts);
+            }
+        }
+    }
+
+    return $contexts;
+
+}
+
+/**
+ * Converts an ID to a fully-qualified ID
+ *
+ * @param array $contexts
+ * @param string $id
+ *
+ * @return string Fully-qualified ID
+ */
+function lti_get_fqid($contexts, $id) {
+
+    $parts = explode(':', $id, 2);
+    if (count($parts) > 1) {
+        if (array_key_exists($parts[0], $contexts)) {
+            $id = $contexts[$parts[0]] . $parts[1];
+        }
+    }
+
+    return $id;
 
 }

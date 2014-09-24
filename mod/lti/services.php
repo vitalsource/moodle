@@ -38,14 +38,11 @@ if ($isget) {
     $response->set_content_type(isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '');
 }
 
-$services = get_plugin_list('ltiservice');
-
 $ok = false;
 $path = $_SERVER['PATH_INFO'];
 
-foreach ($services as $name => $location) {
-    $classname = "\ltiservice_{$name}\\service\\{$name}";
-    $service = new $classname();
+$services = lti_get_services();
+foreach ($services as $service) {
     $resources = $service->get_resources();
     foreach ($resources as $resource) {
         if (($isget && !is_null($response->get_accept()) && (strpos($response->get_accept(), '*/*') === false) &&

@@ -25,6 +25,7 @@
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->dirroot.'/mod/lti/locallib.php');
 
 $id = required_param('id', PARAM_INT);
 $tab = optional_param('tab', '', PARAM_ALPHAEXT);
@@ -35,6 +36,30 @@ $redirect = new moodle_url('/mod/lti/toolproxies.php', array('tab' => $tab));
 $redirect = $redirect->out();
 
 require_sesskey();
+
+$toolproxies = $DB->get_records('lti_tool_proxies');
+
+$duplicate = false;
+foreach ($toolproxies as $key => $toolproxy) {
+    if (($toolproxy->state == LTI_TOOL_PROXY_STATE_PENDING) || ($toolproxy->state == LTI_TOOL_PROXY_STATE_ACCEPTED)) {
+        if ($toolproxy->regurl == $toolproxies[$id]->regurl) {
+            $duplicate = true;
+            break;
+        }
+    }
+}
+
+$redirect = new moodle_url('/mod/lti/toolproxies.php');
+if ($duplicate) {
+    $sesskey = required_param('sesskey', PARAM_RAW);
+    redirect($redirect,  get_string('duplicateregurl', 'lti'));
+}
+
+
+$profileservice = lti_get_service_by_name('profile');
+if (is_null($profileservice)) {
+    redirect($redirect,  get_string('noprofileservice', 'lti'));
+}
 
 $url = new moodle_url('/mod/lti/register.php', array('id' => $id));
 $PAGE->set_url($url);

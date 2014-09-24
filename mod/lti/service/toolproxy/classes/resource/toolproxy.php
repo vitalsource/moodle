@@ -54,15 +54,111 @@ class toolproxy extends \mod_lti\ltiservice\resource_base {
 
     public function execute($response) {
 
-        $ok = $this->get_service()->check_tool_proxy(null, $response->get_request_data());
+        $ok = $this->check_tool_proxy(null, $response->get_request_data());
         $toolproxy = $this->get_service()->get_tool_proxy();
+        $tools = array();
+
+        // Ensure all required elements are present in the Tool Proxy.
         if ($ok) {
             $toolproxyjson = json_decode($response->get_request_data());
             $ok = !is_null($toolproxyjson);
-            $ok = $ok && isset($toolproxyjson->tool_profile->product_instance->product_info->product_family->vendor->code);
-            $ok = $ok && isset($toolproxyjson->security_contract->shared_secret);
-            $ok = $ok && isset($toolproxyjson->tool_profile->resource_handler);
+            if (!$ok) {
+                debugging('Tool proxy is not properly formed JSON');
+            } else {
+                $ok = isset($toolproxyjson->tool_profile->product_instance->product_info->product_family->vendor->code);
+                $ok = $ok && isset($toolproxyjson->security_contract->shared_secret);
+                $ok = $ok && isset($toolproxyjson->tool_profile->resource_handler);
+                if (!$ok) {
+                    debugging('One or more missing elements from tool proxy: vendor code, shared secret or resource handlers');
+                }
+            }
         }
+
+        // Check all capabilities requested were offered.
+        if ($ok) {
+            $offeredcapabilities = explode("\n", $toolproxy->capabilityoffered);
+            $resources = $toolproxyjson->tool_profile->resource_handler;
+            $errors = array();
+            foreach ($resources as $resource) {
+                if (isset($resource->message)) {
+                    foreach ($resource->message as $message) {
+                        if (!in_array($message->message_type, $offeredcapabilities)) {
+                            $errors[] = $message->message_type;
+                        } else if (isset($resource->parameter)) {
+                            foreach ($message->parameter as $parameter) {
+                                if (isset($parameter->variable) && !in_array($parameter->variable, $offeredcapabilities)) {
+                                    $errors[] = $parameter->variable;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (count($errors) > 0) {
+                $ok = false;
+                debugging('Tool proxy contains capabilities which were not offered: ' . implode(', ', $errors));
+                break;
+            }
+        }
+
+        // Check all services requested were offered (only tool services currently supported).
+        if ($ok && isset($toolproxyjson->security_contract->tool_service)) {
+            $contexts = lti_get_contexts($toolproxyjson);
+            $profileservice = lti_get_service_by_name('profile');
+            $profileservice->set_tool_proxy($toolproxy);
+            $context = $profileservice->get_service_path() . $profileservice->get_resources()[0]->get_path() . '#';
+            $offeredservices = explode("\n", $toolproxy->serviceoffered);
+            $services = lti_get_services();
+            $tpservices = $toolproxyjson->security_contract->tool_service;
+            $errors = array();
+            foreach ($tpservices as $service) {
+                $fqid = lti_get_fqid($contexts, $service->service);
+                if (substr($fqid, 0, strlen($context)) !== $context) {
+                    $errors[] = $service->service;
+                } else {
+                    $id = explode('#', $fqid, 2);
+                    $aservice = lti_get_service_by_resource_id($services, $id[1]);
+                    $classname = explode('\\', get_class($aservice));
+                    if (is_null($aservice) || !in_array($classname[count($classname) - 1], $offeredservices)) {
+                        $errors[] = $service->service;
+                    }
+                }
+            }
+            if (count($errors) > 0) {
+                $ok = false;
+                debugging('Tool proxy contains services which were not offered: ' . implode(', ', $errors));
+            }
+        }
+
+        // Extract all launchable tools from the resource handlers.
+        if ($ok) {
+            $resources = $toolproxyjson->tool_profile->resource_handler;
+            foreach ($resources as $resource) {
+                $found = false;
+                $tool = new \stdClass();
+                foreach ($resource->message as $message) {
+                    if ($message->message_type == 'basic-lti-launch-request') {
+                        $found = true;
+                        $tool->path = $message->path;
+                        $tool->enabled_capability = $message->enabled_capability;
+                        $tool->parameter = $message->parameter;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    continue;
+                }
+
+                $tool->name = $resource->resource_name->default_value;
+                $tools[] = $tool;
+            }
+            $ok = count($tools) > 0;
+            if (!$ok) {
+                debugging('No launchable messages found in tool proxy');
+            }
+        }
+
+        // Add tools and custom parameters.
         if ($ok) {
             $baseurl = '';
             if (isset($toolproxyjson->tool_profile->base_url_choice[0]->default_base_url)) {
@@ -72,22 +168,7 @@ class toolproxy extends \mod_lti\ltiservice\resource_base {
             if (isset($toolproxyjson->tool_profile->base_url_choice[0]->secure_base_url)) {
                 $securebaseurl = $toolproxyjson->tool_profile->base_url_choice[0]->secure_base_url;
             }
-            $resources = $toolproxyjson->tool_profile->resource_handler;
-            foreach ($resources as $resource) {
-                $icon = new \stdClass();
-                if (isset($resource->icon_info[0]->default_location->path)) {
-                    $icon->path = $resource->icon_info[0]->default_location->path;
-                }
-                $tool = new \stdClass();
-                $tool->name = $resource->resource_name->default_value;
-                $messages = $resource->message;
-                foreach ($messages as $message) {
-                    if ($message->message_type == 'basic-lti-launch-request') {
-                        $tool->path = $message->path;
-                        $tool->enabled_capability = $message->enabled_capability;
-                        $tool->parameter = $message->parameter;
-                    }
-                }
+            foreach ($tools as $tool) {
                 $config = new \stdClass();
                 $config->lti_toolurl = "{$baseurl}{$tool->path}";
                 $config->lti_typename = $tool->name;
@@ -99,19 +180,23 @@ class toolproxy extends \mod_lti\ltiservice\resource_base {
                 $type->toolproxyid = $toolproxy->id;
                 $type->enabledcapability = implode("\n", $tool->enabled_capability);
                 $type->parameter = self::lti_extract_parameters($tool->parameter);
-                if (!empty($icon->path)) {
-                    $type->icon = "{$baseurl}{$icon->path}";
+
+                if (isset($resource->icon_info[0]->default_location->path)) {
+                    $iconpath = $resource->icon_info[0]->default_location->path;
+                    $type->icon = "{$baseurl}{$iconpath}";
                     if (!empty($securebaseurl)) {
-                        $type->secureicon = "{$securebaseurl}{$icon->path}";
+                        $type->secureicon = "{$securebaseurl}{$iconpath}";
                     }
                 }
-                $ok = (lti_add_type($type, $config) !== false);
+                $ok = $ok && (lti_add_type($type, $config) !== false);
             }
             if (isset($toolproxyjson->custom)) {
                 lti_set_tool_settings($toolproxyjson->custom, $toolproxy->id);
             }
         }
+
         if ($ok) {
+            // If all went OK accept the tool proxy.
             $toolproxy->state = LTI_TOOL_PROXY_STATE_ACCEPTED;
             $toolproxy->toolproxy = $response->get_request_data();
             $toolproxy->secret = $toolproxyjson->security_contract->shared_secret;
@@ -130,6 +215,7 @@ EOD;
             $response->set_content_type('application/vnd.ims.lti.v2.toolproxy.id+json');
             $response->set_body($body);
         } else {
+            // Otherwise reject the tool proxy.
             $toolproxy->state = LTI_TOOL_PROXY_STATE_REJECTED;
             $response->set_code(400);
         }

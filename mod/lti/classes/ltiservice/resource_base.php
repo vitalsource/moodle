@@ -125,6 +125,37 @@ abstract class resource_base {
 
     public abstract function execute($response);
 
+    public function check_tool_proxy($toolproxyguid, $body = null) {
+
+        $ok = false;
+        if ($this->get_service()->check_tool_proxy($toolproxyguid, $body)) {
+            $toolproxyjson = $this->get_service()->get_tool_proxy()->toolproxy;
+            if (is_null($toolproxyjson)) {
+                $ok = true;
+            } else {
+                $toolproxy = json_decode($toolproxyjson);
+                if (!is_null($toolproxy) && isset($toolproxy->security_contract->tool_service)) {
+                    $contexts = lti_get_contexts($toolproxy);
+                    $tpservices = $toolproxy->security_contract->tool_service;
+                    foreach ($tpservices as $service) {
+                        $fqid = lti_get_fqid($contexts, $service->service);
+                        $id = explode('#', $fqid, 2);
+                        if ($this->get_id() === $id[1]) {
+                            $ok = true;
+                            break;
+                        }
+                    }
+                }
+                if (!$ok) {
+                    debugging('Requested service not included in tool proxy: ' . $this->get_id());
+                }
+            }
+        }
+
+        return $ok;
+
+    }
+
     public function parse_value($value) {
 
         return $value;

@@ -72,7 +72,7 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
                 $lti = $DB->get_record('lti', array('id' => $linkid), 'course,typeid', MUST_EXIST);
                 $ltitype = $DB->get_record('lti_types', array('id' => $lti->typeid));
                 $toolproxy = $DB->get_record('lti_tool_proxies', array('id' => $ltitype->toolproxyid));
-                $ok = $this->get_service()->check_tool_proxy($toolproxy->guid, $response->get_request_data());
+                $ok = $this->check_tool_proxy($toolproxy->guid, $response->get_request_data());
             }
             if (!$ok) {
                 $response->set_code(401);
