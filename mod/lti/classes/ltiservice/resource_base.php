@@ -31,18 +31,40 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
 
 
+/**
+ * The mod_lti\ltiservice\resource_base class.
+ *
+ * @package    mod_lti
+ * @since      Moodle 2.8
+ * @copyright  2014 Vital Source Technologies http://vitalsource.com
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 abstract class resource_base {
 
+    /** @var object Service associated with this resource. */
     private $service;
+    /** @var string Type for this resource. */
     protected $type;
+    /** @var string ID for this resource. */
     protected $id;
+    /** @var string Template for this resource. */
     protected $template;
+    /** @var array Custom parameter substitution variables associated with this resource. */
     protected $variables;
+    /** @var array Media types supported by this resource. */
     protected $formats;
+    /** @var array HTTP actions supported by this resource. */
     protected $methods;
+    /** @var array Template variables parsed from the resource template. */
     protected $params;
 
 
+    /**
+     * Class constructor.
+     *
+     * @param object Service instance
+     */
     public function __construct($service) {
 
         $this->service = $service;
@@ -57,54 +79,99 @@ abstract class resource_base {
 
     }
 
-    public function get_path() {
-
-        return $this->get_template();
-
-    }
-
-    public function get_type() {
-
-        return $this->type;
-
-    }
-
-    public function get_service() {
-
-        return $this->service;
-
-    }
-
+    /**
+     * Get the resource ID.
+     *
+     * @return string
+     */
     public function get_id() {
 
         return $this->id;
 
     }
 
+    /**
+     * Get the resource template.
+     *
+     * @return string
+     */
     public function get_template() {
 
         return $this->template;
 
     }
 
+    /**
+     * Get the resource path.
+     *
+     * @return string
+     */
+    public function get_path() {  // TODO: duplicate of get_template, one could be removed.
+
+        return $this->get_template();
+
+    }
+
+    /**
+     * Get the resource type.
+     *
+     * @return string
+     */
+    public function get_type() {
+
+        return $this->type;
+
+    }
+
+    /**
+     * Get the resource's service.
+     *
+     * @return object
+     */
+    public function get_service() {
+
+        return $this->service;
+
+    }
+
+    /**
+     * Get the resource methods.
+     *
+     * @return array
+     */
     public function get_methods() {
 
         return $this->methods;
 
     }
 
+    /**
+     * Get the resource media types.
+     *
+     * @return array
+     */
     public function get_formats() {
 
         return $this->formats;
 
     }
 
+    /**
+     * Get the resource template variables.
+     *
+     * @return array
+     */
     public function get_variables() {
 
         return $this->variables;
 
     }
 
+    /**
+     * Get the resource fully qualified endpoint.
+     *
+     * @return string
+     */
     public function get_endpoint() {
 
         global $CFG;
@@ -123,8 +190,18 @@ abstract class resource_base {
 
     }
 
+    /**
+     * Execute the request for this resource.
+     *
+     * @param object $response  Response object for this request.
+     */
     public abstract function execute($response);
 
+    /**
+     * Check to make sure the request is valid.
+     *
+     * @return boolean
+     */
     public function check_tool_proxy($toolproxyguid, $body = null) {
 
         $ok = false;
@@ -156,12 +233,24 @@ abstract class resource_base {
 
     }
 
+    /**
+     * Parse a value for custom parameter substitution variables.
+     *
+     * @param string $value String to be parsed
+     *
+     * @return string
+     */
     public function parse_value($value) {
 
         return $value;
 
     }
 
+    /**
+     * Parse the template for variables.
+     *
+     * @return array
+     */
     protected function parse_template() {
 
         if (is_null($this->params)) {

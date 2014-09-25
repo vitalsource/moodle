@@ -102,41 +102,41 @@ $config = get_string('manage_tools', 'lti');
 
 $registertypeurl = "{$CFG->wwwroot}/mod/lti/registersettings.php?action=add&amp;sesskey={$USER->sesskey}&amp;tab=tool_proxy";
 
-$template = "
+$template = <<< EOD
 <p>
-  <a href=\"{$redirect}\">$config</a>
+  <a href="{$redirect}">$config</a>
 </p>
-<div id=\"tp_tabs\" class=\"yui-navset\">
-    <ul id=\"tp_tab_heading\" class=\"yui-nav\" style=\"display:none\">
+<div id="tp_tabs" class="yui-navset">
+    <ul id="tp_tab_heading" class="yui-nav" style="display:none">
         <li {$configuredselected}>
-            <a href=\"#tab1\">
+            <a href="#tab1">
                 <em>$configured</em>
             </a>
         </li>
         <li {$pendingselected}>
-            <a href=\"#tab2\">
+            <a href="#tab2">
                 <em>$pending</em>
             </a>
         </li>
         <li {$acceptedselected}>
-            <a href=\"#tab3\">
+            <a href="#tab3">
                 <em>$accepted</em>
             </a>
         </li>
         <li {$rejectedselected}>
-            <a href=\"#tab4\">
+            <a href="#tab4">
                 <em>$rejected</em>
             </a>
         </li>
         <li {$cancelledselected}>
-            <a href=\"#tab5\">
+            <a href="#tab5">
                 <em>$cancelled</em>
             </a>
         </li>
     </ul>
-    <div class=\"yui-content\">
+    <div class="yui-content">
         <div>
-            <div><a style=\"margin-top:.25em\" href=\"{$registertypeurl}\">{$registertype}</a></div>
+            <div><a style="margin-top:.25em" href="{$registertypeurl}">{$registertype}</a></div>
             $configuredtoolproxieshtml
         </div>
         <div>
@@ -154,7 +154,7 @@ $template = "
     </div>
 </div>
 
-<script type=\"text/javascript\">
+<script type="text/javascript">
 //<![CDATA[
     YUI().use('yui2-tabview', 'yui2-datatable', function(Y) {
         //If javascript is disabled, they will just see the three tabs one after another

@@ -26,16 +26,25 @@
 
 namespace ltiservice_toolsettings\resource;
 
+use ltiservice_toolsettings\service\toolsettings;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * A resource implementing the System-level (ToolProxy) Settings.
  *
+ * @package    mod_lti
+ * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class systemsettings extends \mod_lti\ltiservice\resource_base {
 
+    /**
+     * Class constructor.
+     *
+     * @param object Service instance
+     */
     public function __construct($service) {
 
         parent::__construct($service);
@@ -49,6 +58,11 @@ class systemsettings extends \mod_lti\ltiservice\resource_base {
 
     }
 
+    /**
+     * Execute the request for this resource.
+     *
+     * @param object $response  Response object for this request.
+     */
     public function execute($response) {
 
         $params = $this->parse_template();
@@ -80,7 +94,7 @@ class systemsettings extends \mod_lti\ltiservice\resource_base {
                     $response->set_content_type($this->formats[0]);
                     $json .= "{\n  \"@context\":\"http://purl.imsglobal.org/ctx/lti/v2/ToolSettings\",\n  \"@graph\":[\n";
                 }
-                $json .= \ltiservice_toolsettings\service\toolsettings::settings_to_json($systemsettings, $simpleformat,
+                $json .= toolsettings::settings_to_json($systemsettings, $simpleformat,
                     'ToolProxy', $this);
                 if ($simpleformat) {
                     $json .= "\n}";
@@ -120,6 +134,13 @@ class systemsettings extends \mod_lti\ltiservice\resource_base {
 
     }
 
+    /**
+     * Parse a value for custom parameter substitution variables.
+     *
+     * @param string $value String to be parsed
+     *
+     * @return string
+     */
     public function parse_value($value) {
 
         $value = str_replace('$ToolProxy.custom.url', parent::get_endpoint(), $value);

@@ -26,16 +26,25 @@
 
 namespace ltiservice_profile\resource;
 
+use \mod_lti\ltiservice\service_base;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * A resource implementing the Tool Consumer Profile.
  *
+ * @package    mod_lti
+ * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class profile extends \mod_lti\ltiservice\resource_base {
 
+    /**
+     * Class constructor.
+     *
+     * @param object Service instance
+     */
     public function __construct($service) {
 
         parent::__construct($service);
@@ -59,11 +68,16 @@ class profile extends \mod_lti\ltiservice\resource_base {
 
     }
 
+    /**
+     * Execute the request for this resource.
+     *
+     * @param object $response  Response object for this request.
+     */
     public function execute($response) {
 
         global $CFG;
 
-        $version = \mod_lti\ltiservice\service_base::LTI_VERSION2P0;
+        $version = service_base::LTI_VERSION2P0;
         $params = $this->parse_template();
         $ok = $this->get_service()->check_tool_proxy($params['tool_proxy_id']);
         if (!$ok) {
@@ -82,7 +96,7 @@ class profile extends \mod_lti\ltiservice\resource_base {
             $serviceofferedarr = explode("\n", $toolproxy->serviceoffered);
             $serviceoffered = '';
             $sep = '';
-            $services = get_plugin_list('ltiservice');
+            $services = core_component::get_plugin_list('ltiservice');
             foreach ($services as $name => $location) {
                 if (in_array($name, $serviceofferedarr)) {
                     $classname = "\\ltiservice_{$name}\\service\\{$name}";
@@ -181,12 +195,24 @@ EOD;
         }
     }
 
+    /**
+     * Get the resource fully qualified endpoint.
+     *
+     * @return string
+     */
     public function get_endpoint() {
 
-        return parent::get_endpoint() . '?lti_version=' . \mod_lti\ltiservice\service_base::LTI_VERSION2P0;
+        return parent::get_endpoint() . '?lti_version=' . service_base::LTI_VERSION2P0;
 
     }
 
+    /**
+     * Parse a value for custom parameter substitution variables.
+     *
+     * @param string $value String to be parsed
+     *
+     * @return string
+     */
     public function parse_value($value) {
 
         $value = str_replace('$ToolConsumerProfile.url', $this->get_endpoint(), $value);

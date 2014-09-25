@@ -31,11 +31,16 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * A service implementing Tool Settings.
  *
+ * @package    mod_lti
+ * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class toolsettings extends \mod_lti\ltiservice\service_base {
 
+    /**
+     * Class constructor.
+     */
     public function __construct() {
 
         parent::__construct();
@@ -44,6 +49,11 @@ class toolsettings extends \mod_lti\ltiservice\service_base {
 
     }
 
+    /**
+     * Get the resources for this service.
+     *
+     * @return array
+     */
     public function get_resources() {
 
         if (is_null($this->resources)) {
@@ -57,6 +67,13 @@ class toolsettings extends \mod_lti\ltiservice\service_base {
 
     }
 
+    /**
+     * Get the distinct settings from each level by removing any duplicates from higher levels.
+     *
+     * @param array &$systemsettings   System level settings
+     * @param array &$contextsettings  Context level settings
+     * @param array $linksettings      Link level settings
+     */
     public static function distinct_settings(&$systemsettings, &$contextsettings, $linksettings) {
 
         if (!is_null($systemsettings)) {
@@ -76,6 +93,16 @@ class toolsettings extends \mod_lti\ltiservice\service_base {
         }
     }
 
+    /**
+     * Get the JSON representation of the settings.
+     *
+     * @param array $settings        Settings
+     * @param boolean $simpleformat  <code>true</code> if simple JSON is to be returned
+     * @param string $type           JSON-LD type
+     * @param object $resource       Resource handling the request
+     *
+     * @return string
+     */
     public static function settings_to_json($settings, $simpleformat, $type, $resource) {
 
         $json = '';

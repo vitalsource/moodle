@@ -26,16 +26,27 @@
 
 namespace ltiservice_toolsettings\resource;
 
+use ltiservice_toolsettings\resource\systemsettings;
+use ltiservice_toolsettings\resource\contextsettings;
+use ltiservice_toolsettings\service\toolsettings;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * A resource implementing the Context-level (ToolProxyBinding) Settings.
  *
+ * @package    mod_lti
+ * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class linksettings extends \mod_lti\ltiservice\resource_base {
 
+    /**
+     * Class constructor.
+     *
+     * @param object Service instance
+     */
     public function __construct($service) {
 
         parent::__construct($service);
@@ -49,6 +60,11 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
 
     }
 
+    /**
+     * Execute the request for this resource.
+     *
+     * @param object $response  Response object for this request.
+     */
     public function execute($response) {
         global $DB, $COURSE;
 
@@ -81,7 +97,7 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
         if ($ok) {
             $linksettings = lti_get_tool_settings($this->get_service()->get_tool_proxy()->id, $lti->course, $linkid);
             if (!is_null($bubble)) {
-                $contextsetting = new \ltiservice_toolsettings\resource\contextsettings($this->get_service());
+                $contextsetting = new contextsettings($this->get_service());
                 if ($COURSE == 'site') {
                     $contextsetting->params['context_type'] = 'Group';
                 } else {
@@ -91,12 +107,11 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
                 $contextsetting->params['vendor_code'] = $this->get_service()->get_tool_proxy()->vendorcode;
                 $contextsetting->params['product_code'] = $this->get_service()->get_tool_proxy()->id;
                 $contextsettings = lti_get_tool_settings($this->get_service()->get_tool_proxy()->id, $lti->course);
-                $systemsetting = new \ltiservice_toolsettings\resource\systemsettings($this->get_service());
+                $systemsetting = new systemsettings($this->get_service());
                 $systemsetting->params['tool_proxy_id'] = $this->get_service()->get_tool_proxy()->id;
                 $systemsettings = lti_get_tool_settings($this->get_service()->get_tool_proxy()->id);
                 if ($bubble == 'distinct') {
-                    \ltiservice_toolsettings\service\toolsettings::distinct_settings($systemsettings, $contextsettings,
-                        $linksettings);
+                    toolsettings::distinct_settings($systemsettings, $contextsettings, $linksettings);
                 }
             } else {
                 $contextsettings = null;
@@ -111,12 +126,10 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
                     $response->set_content_type($this->formats[0]);
                     $json .= "{\n  \"@context\":\"http://purl.imsglobal.org/ctx/lti/v2/ToolSettings\",\n  \"@graph\":[\n";
                 }
-                $settings = \ltiservice_toolsettings\service\toolsettings::settings_to_json($systemsettings, $simpleformat,
-                    'ToolProxy', $systemsetting);
+                $settings = toolsettings::settings_to_json($systemsettings, $simpleformat, 'ToolProxy', $systemsetting);
                 $json .= $settings;
                 $isfirst = strlen($settings) <= 0;
-                $settings = \ltiservice_toolsettings\service\toolsettings::settings_to_json($contextsettings, $simpleformat,
-                    'ToolProxyBinding', $contextsetting);
+                $settings = toolsettings::settings_to_json($contextsettings, $simpleformat, 'ToolProxyBinding', $contextsetting);
                 if (strlen($settings) > 0) {
                     if (!$isfirst) {
                         $json .= ",";
@@ -124,8 +137,7 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
                     $isfirst = false;
                 }
                 $json .= $settings;
-                $settings = \ltiservice_toolsettings\service\toolsettings::settings_to_json($linksettings, $simpleformat,
-                    'LtiLink', $this);
+                $settings = toolsettings::settings_to_json($linksettings, $simpleformat, 'LtiLink', $this);
                 if ((strlen($settings) > 0) && !$isfirst) {
                     $json .= ",";
                 }
@@ -167,6 +179,13 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
         }
     }
 
+    /**
+     * Parse a value for custom parameter substitution variables.
+     *
+     * @param string $value String to be parsed
+     *
+     * @return string
+     */
     public function parse_value($value) {
 
         $id = optional_param('id', 0, PARAM_INT); // Course Module ID.

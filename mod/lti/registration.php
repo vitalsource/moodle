@@ -33,4 +33,7 @@ $toolproxy = $DB->get_record('lti_tool_proxies', array('id' => $id), '*', MUST_E
 
 require_login(0, false);
 
+$systemcontext = context_system::instance();
+require_capability('moodle/site:config', $systemcontext);
+
 lti_register($toolproxy);

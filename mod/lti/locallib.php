@@ -1820,26 +1820,26 @@ function lti_get_capabilities() {
        'CourseSection.title' => 'context_title',
        'CourseSection.label' => 'context_label',
        'CourseSection.sourcedId' => 'lis_course_section_sourcedid',
-       'CourseSection.longDescription' => '$COURSE->summary',
-       'CourseSection.timeFrame.begin' => '$COURSE->startdate',
+       'CourseSection.longDescription' => 'format_text($COURSE->summary)',
+       'CourseSection.timeFrame.begin' => 'format_string($COURSE->startdate)',
        'ResourceLink.id' => 'resource_link_id',
        'ResourceLink.title' => 'resource_link_title',
        'ResourceLink.description' => 'resource_link_description',
        'User.id' => 'user_id',
-       'User.username' => '$USER->username',
+       'User.username' => 'format_string($USER->username)',
        'Person.name.full' => 'lis_person_name_full',
        'Person.name.given' => 'lis_person_name_given',
        'Person.name.family' => 'lis_person_name_family',
        'Person.email.primary' => 'lis_person_contact_email_primary',
        'Person.sourcedId' => 'lis_person_sourcedid',
-       'Person.name.middle' => '$USER->middlename',
-       'Person.address.street1' => '$USER->address',
-       'Person.address.locality' => '$USER->city',
-       'Person.address.country' => '$USER->country',
-       'Person.address.timezone' => '$USER->timezone',
-       'Person.phone.primary' => '$USER->phone1',
-       'Person.phone.mobile' => '$USER->phone2',
-       'Person.webaddress' => '$USER->url',
+       'Person.name.middle' => 'format_string($USER->middlename)',
+       'Person.address.street1' => 'format_string($USER->address)',
+       'Person.address.locality' => 'format_string($USER->city)',
+       'Person.address.country' => 'format_string($USER->country)',
+       'Person.address.timezone' => 'format_string($USER->timezone)',
+       'Person.phone.primary' => 'format_string($USER->phone1)',
+       'Person.phone.mobile' => 'format_string($USER->phone2)',
+       'Person.webaddress' => 'format_string($USER->url)',
        'Membership.role' => 'roles',
        'Result.sourcedId' => 'lis_result_sourcedid',
        'Result.autocreate' => 'lis_outcome_service_url');
@@ -1857,7 +1857,7 @@ function lti_get_services() {
     global $CFG;
 
     $services = array();
-    $definedservices = get_plugin_list('ltiservice');
+    $definedservices = core_component::get_plugin_list('ltiservice');
     foreach ($definedservices as $name => $location) {
         $classname = "\\ltiservice_{$name}\\service\\{$name}";
         $services[] = new $classname();

@@ -26,17 +26,38 @@
 
 namespace mod_lti\ltiservice;
 
+
+/**
+ * The mod_lti\ltiservice\response class.
+ *
+ * @package    mod_lti
+ * @since      Moodle 2.8
+ * @copyright  2014 Vital Source Technologies http://vitalsource.com
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 class response {
 
+    /** @var int HTTP response code. */
     private $code;
+    /** @var string HTTP response reason. */
     private $reason;
+    /** @var string HTTP request method. */
     private $requestmethod;
+    /** @var string HTTP request accept header. */
     private $accept;
+    /** @var string HTTP response content type. */
     private $contenttype;
+    /** @var string HTTP request body. */
     private $data;
+    /** @var string HTTP response body. */
     private $body;
+    /** @var array HTTP response codes. */
     private $responsecodes;
 
+    /**
+     * Class constructor.
+     */
     public function __construct() {
 
         $this->code = 200;
@@ -65,15 +86,30 @@ class response {
 
     }
 
+    /**
+     * Get the response code.
+     *
+     * @return int
+     */
     public function get_code() {
         return $this->code;
     }
 
+    /**
+     * Set the response code.
+     *
+     * @param int $code Response code
+     */
     public function set_code($code) {
         $this->code = $code;
         $this->reason = null;
     }
 
+    /**
+     * Get the response reason.
+     *
+     * @return string
+     */
     public function get_reason() {
         if (is_null($this->reason)) {
             $this->reason = $this->responsecodes[$this->code];
@@ -84,42 +120,90 @@ class response {
         return $this->reason;
     }
 
+    /**
+     * Set the response reason.
+     *
+     * @param string $reason Reason
+     */
     public function set_reason($reason) {
         $this->reason = $reason;
     }
 
+    /**
+     * Get the request method.
+     *
+     * @return string
+     */
     public function get_request_method() {
         return $this->requestmethod;
     }
 
+    /**
+     * Get the request accept header.
+     *
+     * @return string
+     */
     public function get_accept() {
         return $this->accept;
     }
 
+    /**
+     * Set the request accept header.
+     *
+     * @param string $accept Accept header value
+     */
     public function set_accept($accept) {
         $this->accept = $accept;
     }
 
+    /**
+     * Get the response content type.
+     *
+     * @return string
+     */
     public function get_content_type() {
         return $this->contenttype;
     }
 
+    /**
+     * Set the response content type.
+     *
+     * @param string $contenttype Content type
+     */
     public function set_content_type($contenttype) {
         $this->contenttype = $contenttype;
     }
 
+    /**
+     * Get the request body.
+     *
+     * @return string
+     */
     public function get_request_data() {
         return $this->data;
     }
 
+    /**
+     * Set the response body.
+     *
+     * @param string $data Body data
+     */
     public function set_request_data($data) {
         $this->data = $data;
     }
 
+    /**
+     * Set the response body.
+     *
+     * @param atring $body Body data
+     */
     public function set_body($body) {
         $this->body = $body;
     }
 
+    /**
+     * Send the response.
+     */
     public function send() {
         header("HTTP/1.0 {$this->code} {$this->get_reason()}");
         if (($this->code >= 200) && ($this->code < 300)) {

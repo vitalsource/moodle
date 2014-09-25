@@ -31,11 +31,16 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * A service implementing the Tool Proxy.
  *
+ * @package    mod_lti
+ * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class toolproxy extends \mod_lti\ltiservice\service_base {
 
+    /**
+     * Class constructor.
+     */
     public function __construct() {
 
         parent::__construct();
@@ -44,6 +49,11 @@ class toolproxy extends \mod_lti\ltiservice\service_base {
 
     }
 
+    /**
+     * Get the resources for this service.
+     *
+     * @return array
+     */
     public function get_resources() {
 
         if (is_null($this->resources)) {

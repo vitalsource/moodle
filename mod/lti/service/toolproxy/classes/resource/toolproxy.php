@@ -37,11 +37,18 @@ use moodle\mod\lti as lti;
 /**
  * A resource implementing the Tool Proxy.
  *
+ * @package    mod_lti
+ * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class toolproxy extends \mod_lti\ltiservice\resource_base {
 
+    /**
+     * Class constructor.
+     *
+     * @param object Service instance
+     */
     public function __construct($service) {
 
         parent::__construct($service);
@@ -52,6 +59,11 @@ class toolproxy extends \mod_lti\ltiservice\resource_base {
 
     }
 
+    /**
+     * Execute the request for this resource.
+     *
+     * @param object $response  Response object for this request.
+     */
     public function execute($response) {
 
         $ok = $this->check_tool_proxy(null, $response->get_request_data());
@@ -97,7 +109,6 @@ class toolproxy extends \mod_lti\ltiservice\resource_base {
             if (count($errors) > 0) {
                 $ok = false;
                 debugging('Tool proxy contains capabilities which were not offered: ' . implode(', ', $errors));
-                break;
             }
         }
 

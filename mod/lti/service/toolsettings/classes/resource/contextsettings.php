@@ -26,16 +26,26 @@
 
 namespace ltiservice_toolsettings\resource;
 
+use ltiservice_toolsettings\resource\systemsettings;
+use ltiservice_toolsettings\service\toolsettings;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * A resource implementing the Context-level (ToolProxyBinding) Settings.
  *
+ * @package    mod_lti
+ * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class contextsettings extends \mod_lti\ltiservice\resource_base {
 
+    /**
+     * Class constructor.
+     *
+     * @param object Service instance
+     */
     public function __construct($service) {
 
         parent::__construct($service);
@@ -49,6 +59,11 @@ class contextsettings extends \mod_lti\ltiservice\resource_base {
 
     }
 
+    /**
+     * Execute the request for this resource.
+     *
+     * @param object $response  Response object for this request.
+     */
     public function execute($response) {
 
         $params = $this->parse_template();
@@ -77,11 +92,11 @@ class contextsettings extends \mod_lti\ltiservice\resource_base {
             $systemsetting = null;
             $contextsettings = lti_get_tool_settings($this->get_service()->get_tool_proxy()->id, $contextid);
             if (!is_null($bubble)) {
-                $systemsetting = new \ltiservice_toolsettings\resource\systemsettings($this->get_service());
+                $systemsetting = new systemsettings($this->get_service());
                 $systemsetting->params['tool_proxy_id'] = $productcode;
                 $systemsettings = lti_get_tool_settings($this->get_service()->get_tool_proxy()->id);
                 if ($bubble == 'distinct') {
-                    \ltiservice_toolsettings\service\toolsettings::distinct_settings($systemsettings, $contextsettings, null);
+                    toolsettings::distinct_settings($systemsettings, $contextsettings, null);
                 }
             } else {
                 $systemsettings = null;
@@ -95,12 +110,10 @@ class contextsettings extends \mod_lti\ltiservice\resource_base {
                     $response->set_content_type($this->formats[0]);
                     $json .= "{\n  \"@context\":\"http://purl.imsglobal.org/ctx/lti/v2/ToolSettings\",\n  \"@graph\":[\n";
                 }
-                $settings = \ltiservice_toolsettings\service\toolsettings::settings_to_json($systemsettings, $simpleformat,
-                    'ToolProxy', $systemsetting);
+                $settings = toolsettings::settings_to_json($systemsettings, $simpleformat, 'ToolProxy', $systemsetting);
                 $json .= $settings;
                 $isfirst = strlen($settings) <= 0;
-                $settings = \ltiservice_toolsettings\service\toolsettings::settings_to_json($contextsettings, $simpleformat,
-                    'ToolProxyBinding', $this);
+                $settings = toolsettings::settings_to_json($contextsettings, $simpleformat, 'ToolProxyBinding', $this);
                 if ((strlen($settings) > 0) && !$isfirst) {
                     $json .= ",";
                 }
@@ -142,6 +155,13 @@ class contextsettings extends \mod_lti\ltiservice\resource_base {
         }
     }
 
+    /**
+     * Parse a value for custom parameter substitution variables.
+     *
+     * @param string $value String to be parsed
+     *
+     * @return string
+     */
     public function parse_value($value) {
         global $COURSE;
 

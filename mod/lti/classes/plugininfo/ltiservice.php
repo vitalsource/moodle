@@ -29,5 +29,15 @@ use core\plugininfo\base;
 defined('MOODLE_INTERNAL') || die();
 
 
+/**
+ * The mod_lti\plugininfo\ltiservice class.
+ *
+ * @package    mod_lti
+ * @since      Moodle 2.8
+ * @copyright  2014 Vital Source Technologies http://vitalsource.com
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 class ltiservice extends base {
+    // No need for any code here as everything is handled by the parent class.
 }

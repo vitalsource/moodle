@@ -35,17 +35,34 @@ require_once($CFG->dirroot . '/mod/lti/OAuthBody.php');
 use moodle\mod\lti as lti;
 
 
+/**
+ * The mod_lti\ltiservice\service_base class.
+ *
+ * @package    mod_lti
+ * @since      Moodle 2.8
+ * @copyright  2014 Vital Source Technologies http://vitalsource.com
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 abstract class service_base {
 
     const LTI_VERSION2P0 = 'LTI-2p0';
 
+    /** @var string ID for the service. */
     protected $id;
+    /** @var string Human readable name for the service. */
     protected $name;
+    /** @var boolean <code>true</code> if requests for this service do not need to be signed. */
     protected $unsigned;
+    /** @var stdClass Tool proxy object for the current service request. */
     private $toolproxy;
+    /** @var array Instances of the resources associated with this service. */
     protected $resources;
 
 
+    /**
+     * Class constructor.
+     */
     public function __construct() {
 
         $this->id = null;
@@ -56,38 +73,73 @@ abstract class service_base {
 
     }
 
+    /**
+     * Get the service ID.
+     *
+     * @return string
+     */
     public function get_id() {
 
         return $this->id;
 
     }
 
+    /**
+     * Get the service name.
+     *
+     * @return string
+     */
     public function get_name() {
 
         return $this->name;
 
     }
 
+    /**
+     * Get whether the service requests need to be signed.
+     *
+     * @return boolean
+     */
     public function is_unsigned() {
 
         return $this->unsigned;
 
     }
 
+    /**
+     * Get the tool proxy object.
+     *
+     * @return stdClass
+     */
     public function get_tool_proxy() {
 
         return $this->toolproxy;
 
     }
 
+    /**
+     * Set the tool proxy object.
+     *
+     * @var stdClass
+     */
     public function set_tool_proxy($toolproxy) {
 
         $this->toolproxy = $toolproxy;
 
     }
 
+    /**
+     * Get the resources for this service.
+     *
+     * @return array
+     */
     abstract public function get_resources();
 
+    /**
+     * Get the path for service requests.
+     *
+     * @return string
+     */
     public static function get_service_path() {
 
         $url = new \moodle_url('/mod/lti/services.php');
@@ -96,6 +148,13 @@ abstract class service_base {
 
     }
 
+    /**
+     * Parse a string for custom substitution parameter variables supported by this service's resources.
+     *
+     * @param string $value  Value to be parsed
+     *
+     * @return string
+     */
     public function parse_value($value) {
 
         if (is_null($this->resources)) {
@@ -111,6 +170,14 @@ abstract class service_base {
 
     }
 
+    /**
+     * Check that the request has been properly signed.
+     *
+     * @param string $toolproxyguid  Tool Proxy GUID
+     * @param string $body           Request body (null if none)
+     *
+     * @return boolean
+     */
     public function check_tool_proxy($toolproxyguid, $body = null) {
 
         $ok = false;
@@ -139,13 +206,22 @@ abstract class service_base {
 
     }
 
+    /**
+     * Check the request signature.
+     *
+     * @param string $consumerkey    Consumer key
+     * @param string $secret         Shared secret
+     * @param string $body           Request body
+     *
+     * @return boolean
+     */
     private function check_signature($consumerkey, $secret, $body) {
 
         $ok = true;
         try {
             // TODO: Switch to core oauthlib once implemented - MDL-30149.
             lti\handle_oauth_body_post($consumerkey, $secret, $body);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             debugging($e->getMessage() . "\n");
             $ok = false;
         }
@@ -155,4 +231,3 @@ abstract class service_base {
     }
 
 }
-
