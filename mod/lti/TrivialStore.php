@@ -101,10 +101,11 @@ class TrivialOAuthDataStore extends OAuthDataStore {
      * Nonce values are not checked so just return a null
      *
      * @param object $consumer     Consumer
-     * @param string $tokentype    Type of token
      * @param string $token        Token ID
+     * @param string $nonce        Nonce value
+     * @param string $timestamp    Timestamp
      *
-     * @return object OAuthToken object
+     * @return null
      */
     public function lookup_nonce($consumer, $token, $nonce, $timestamp) {
         // Should add some clever logic to keep nonces from
