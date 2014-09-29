@@ -51,12 +51,27 @@ defined('MOODLE_INTERNAL') || die;
  * A Trivial memory-based store - no support for tokens.
  */
 class TrivialOAuthDataStore extends OAuthDataStore {
+
+    /** @var array $consumers  Array of tool consumer keys and secrets */
     private $consumers = array();
 
+    /**
+     * Add a consumer to the array
+     *
+     * @param string $consumerkey     Consumer key
+     * @param string $consumersecret  Consumer secret
+     */
     public function add_consumer($consumerkey, $consumersecret) {
         $this->consumers[$consumerkey] = $consumersecret;
     }
 
+    /**
+     * Get OAuth consumer given its key
+     *
+     * @param string $consumerkey     Consumer key
+     *
+     * @return object OAuthConsumer object
+     */
     public function lookup_consumer($consumerkey) {
         if (strpos($consumerkey, "http://" ) === 0) {
             $consumer = new OAuthConsumer($consumerkey, "secret", null);
@@ -69,23 +84,54 @@ class TrivialOAuthDataStore extends OAuthDataStore {
         return null;
     }
 
+    /**
+     * Create a dummy OAuthToken object for a consumer
+     *
+     * @param object $consumer     Consumer
+     * @param string $tokentype    Type of token
+     * @param string $token        Token ID
+     *
+     * @return object OAuthToken object
+     */
     public function lookup_token($consumer, $tokentype, $token) {
         return new OAuthToken($consumer, '');
     }
 
-    // Return NULL if the nonce has not been used
-    // Return $nonce if the nonce was previously used.
+    /**
+     * Nonce values are not checked so just return a null
+     *
+     * @param object $consumer     Consumer
+     * @param string $tokentype    Type of token
+     * @param string $token        Token ID
+     *
+     * @return object OAuthToken object
+     */
     public function lookup_nonce($consumer, $token, $nonce, $timestamp) {
         // Should add some clever logic to keep nonces from
-        // being reused - for no we are really trusting
+        // being reused - for now we are really trusting
         // that the timestamp will save us.
         return null;
     }
 
+    /**
+     * Tokens are not used so just return a null.
+     *
+     * @param object $consumer     Consumer
+     *
+     * @return null
+     */
     public function new_request_token($consumer) {
         return null;
     }
 
+    /**
+     * Tokens are not used so just return a null.
+     *
+     * @param string $token        Token ID
+     * @param object $consumer     Consumer
+     *
+     * @return null
+     */
     public function new_access_token($token, $consumer) {
         return null;
     }

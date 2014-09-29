@@ -35,7 +35,6 @@ namespace mod_lti\ltiservice;
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class response {
 
     /** @var int HTTP response code. */

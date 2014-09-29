@@ -16,7 +16,7 @@
 
 /**
  * AJAX service used when adding an External Tool.
-
+ *
  * It is used to provide immediate feedback
  * of which tool provider is to be used based on the Launch URL.
  *
