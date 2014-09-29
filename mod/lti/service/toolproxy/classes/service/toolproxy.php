@@ -17,7 +17,7 @@
 /**
  * This file contains a class definition for the Tool Proxy service
  *
- * @package    mod_lti
+ * @package    ltiservice_toolproxy
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * A service implementing the Tool Proxy.
  *
- * @package    mod_lti
+ * @package    ltiservice_toolproxy
  * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

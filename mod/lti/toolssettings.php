@@ -16,6 +16,7 @@
 
 /**
  * This file contains the script used to register a new external tool.
+ *
  * It is used to create a new form used to configure the capabilities
  * and services to be offered to the tool provider.
  *

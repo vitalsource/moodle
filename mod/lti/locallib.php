@@ -149,7 +149,7 @@ function lti_view($instance) {
     }
 
     // If SSL is forced, use the secure tool url if specified. Otherwise, make sure https is on the normal launch URL.
-    if ($typeconfig['forcessl'] == '1') {
+    if (isset($typeconfig['forcessl']) && ($typeconfig['forcessl'] == '1')) {
         if (!empty($instance->securetoolurl)) {
             $endpoint = trim($instance->securetoolurl);
         }
@@ -186,7 +186,7 @@ function lti_view($instance) {
     $url = new \moodle_url('/mod/lti/return.php', $returnurlparams);
     $returnurl = $url->out(false);
 
-    if ($typeconfig['forcessl'] == '1') {
+    if (isset($typeconfig['forcessl']) && ($typeconfig['forcessl'] == '1')) {
         $returnurl = lti_ensure_url_is_https($returnurl);
     }
 
@@ -327,7 +327,7 @@ function lti_build_sourcedid($instanceid, $userid, $servicesalt, $typeid = null,
  * @param int|null  $typeid         Basic LTI tool ID
  * @param boolean   $islti2         True if an LTI 2 tool is being launched
  *
- * @return array    $request        Request details
+ * @return array                    Request details
  */
 function lti_build_request($instance, $typeconfig, $course, $typeid = null, $islti2 = false) {
     global $USER, $CFG;
@@ -383,7 +383,7 @@ function lti_build_request($instance, $typeconfig, $course, $typeid = null, $isl
             $forcessl = true;
         }
 
-        if ($typeconfig['forcessl'] == '1' or $forcessl) {
+        if ((isset($typeconfig['forcessl']) && ($typeconfig['forcessl'] == '1')) or $forcessl) {
             $serviceurl = lti_ensure_url_is_https($serviceurl);
         }
 
@@ -413,7 +413,7 @@ function lti_build_request($instance, $typeconfig, $course, $typeid = null, $isl
  * @param object    $tool           Basic LTI tool object
  * @param array     $params         Custom launch parameters
  *
- * @return array    $request        Request details
+ * @return array                    Request details
  */
 function lti_build_request_lti2($tool, $params) {
 
@@ -443,7 +443,7 @@ function lti_build_request_lti2($tool, $params) {
  * @param string    $orgid          Organisation ID
  * @param boolean   $islti2         True if an LTI 2 tool is being launched
  *
- * @return array    $request        Request details
+ * @return array                    Request details
  */
 function lti_build_standard_request($instance, $orgid, $islti2) {
     global $CFG;
@@ -484,6 +484,19 @@ function lti_build_standard_request($instance, $orgid, $islti2) {
     return $requestparams;
 }
 
+/**
+ * This function builds the custom parameters
+ *
+ * @param object    $toolproxy      Tool proxy instance object
+ * @param object    $tool           Tool instance object
+ * @param object    $instance       Tool placement instance object
+ * @param array     $params         LTI launch parameters
+ * @param string    $customstr      Custom parameters defined for tool
+ * @param string    $instructorcustomstr      Custom parameters defined for this placement
+ * @param boolean   $islti2         True if an LTI 2 tool is being launched
+ *
+ * @return array                    Custom parameters
+ */
 function lti_build_custom_parameters($toolproxy, $tool, $instance, $params, $customstr, $instructorcustomstr, $islti2) {
 
     // Concatenate the custom parameters from the administrator and the instructor
@@ -613,6 +626,14 @@ function lti_get_tool_table($tools, $id) {
     return $html;
 }
 
+/**
+ * This function builds the tab for a category of tool proxies
+ *
+ * @param object    $toolproxies    Tool proxy instance objects
+ * @param string    $id             Category ID
+ *
+ * @return string                   HTML for tab
+ */
 function lti_get_tool_proxy_table($toolproxies, $id) {
     global $OUTPUT;
 
@@ -723,7 +744,7 @@ function lti_split_custom_parameters($toolproxy, $tool, $params, $customstr, $is
         }
         $key = trim(core_text::substr($line, 0, $pos));
         $val = trim(core_text::substr($line, $pos + 1, strlen($line)));
-        $val = lti_parse_custom_parameter($toolproxy, $tool, $params, $val);
+        $val = lti_parse_custom_parameter($toolproxy, $tool, $params, $val, $islti2);
         $key2 = lti_map_keyname($key);
         $retval['custom_'.$key2] = $val;
         if ($islti2 && ($key != $key2)) {
@@ -736,15 +757,18 @@ function lti_split_custom_parameters($toolproxy, $tool, $params, $customstr, $is
 /**
  * Adds the custom parameters to an array
  *
- * @param array $parameters     Array containing the parameters
+ * @param object    $toolproxy      Tool proxy instance object
+ * @param object    $tool           Tool instance object
+ * @param array     $params         LTI launch parameters
+ * @param array     $parameters     Array containing the parameters
  *
- * @return Array of custom parameters
+ * @return array    Array of custom parameters
  */
 function lti_get_custom_parameters($toolproxy, $tool, $params, $parameters) {
     $retval = array();
     foreach ($parameters as $key => $val) {
         $key2 = lti_map_keyname($key);
-        $val = lti_parse_custom_parameter($toolproxy, $tool, $params, $val);
+        $val = lti_parse_custom_parameter($toolproxy, $tool, $params, $val, true);
         $retval['custom_'.$key2] = $val;
         if ($key != $key2) {
             $retval['custom_'.$key] = $val;
@@ -753,7 +777,18 @@ function lti_get_custom_parameters($toolproxy, $tool, $params, $parameters) {
     return $retval;
 }
 
-function lti_parse_custom_parameter($toolproxy, $tool, $params, $value) {
+/**
+ * Parse a custom parameter to replace any substitution variables
+ *
+ * @param object    $toolproxy      Tool proxy instance object
+ * @param object    $tool           Tool instance object
+ * @param array     $params         LTI launch parameters
+ * @param string    $value          Custom parameter value
+ * @param boolean   $islti2         True if an LTI 2 tool is being launched
+ *
+ * @return Parsed value of custom parameter
+ */
+function lti_parse_custom_parameter($toolproxy, $tool, $params, $value, $islti2) {
     global $USER, $COURSE;
 
     if ($value) {
@@ -762,7 +797,7 @@ function lti_parse_custom_parameter($toolproxy, $tool, $params, $value) {
         } else if (substr($value, 0, 1) == '$') {
             $value1 = substr($value, 1);
             $enabledcapabilities = explode("\n", $tool->enabledcapability);
-            if (in_array($value1, $enabledcapabilities)) {
+            if (!$islti2 || in_array($value1, $enabledcapabilities)) {
                 $capabilities = lti_get_capabilities();
                 if (array_key_exists($value1, $capabilities)) {
                     $val = $capabilities[$value1];
@@ -770,10 +805,14 @@ function lti_parse_custom_parameter($toolproxy, $tool, $params, $value) {
                         if (substr($val, 0, 1) != '$') {
                             $value = $params[$val];
                         } else {
-                            eval("\$value = {$val};");
+                            $valarr = explode('->', substr($val, 1), 2);
+                            $value = "{${$valarr[0]}->$valarr[1]}";
+                            $value = str_replace('<br />' , ' ', $value);
+                            $value = str_replace('<br>' , ' ', $value);
+                            $value = format_string($value);
                         }
                     }
-                } else {
+                } else if ($islti2) {
                     $val = $value;
                     $services = lti_get_services();
                     foreach ($services as $service) {
@@ -1353,8 +1392,9 @@ function lti_add_type($type, $config) {
 /**
  * Given an array of tool proxies, filter them based on their state
  *
- * @param array $tool_proxies An array of lti_tool_proxies records
+ * @param array $toolproxies An array of lti_tool_proxies records
  * @param int $state One of the LTI_TOOL_PROXY_STATE_* constants
+ *
  * @return array
  */
 function lti_filter_tool_proxy_types(array $toolproxies, $state) {
@@ -1367,6 +1407,13 @@ function lti_filter_tool_proxy_types(array $toolproxies, $state) {
     return $return;
 }
 
+/**
+ * Get the tool proxy instance given its GUID
+ *
+ * @param string  $toolproxyguid   Tool proxy GUID value
+ *
+ * @return object
+ */
 function lti_get_tool_proxy_from_guid($toolproxyguid) {
     global $DB;
 
@@ -1410,6 +1457,13 @@ function lti_get_tool_proxy_config($id) {
     return $tp;
 }
 
+/**
+ * Update the database with a tool proxy instance
+ *
+ * @param object   $config    Tool proxy definition
+ *
+ * @return int  Record id number
+ */
 function lti_add_tool_proxy($config) {
     global $USER, $DB;
 
@@ -1452,9 +1506,9 @@ function lti_add_tool_proxy($config) {
 /**
  * Updates a tool proxy in the database
  *
- * @param $config   Tool proxy
+ * @param object  $toolproxy   Tool proxy
  *
- * @return Record id number
+ * @return int    Record id number
  */
 function lti_update_tool_proxy($toolproxy) {
     global $DB;
@@ -1483,7 +1537,7 @@ function lti_delete_tool_proxy($id) {
 /**
  * Add a tool configuration in the database
  *
- * @param $config   Tool configuration
+ * @param object $config   Tool configuration
  *
  * @return int Record id number
  */
@@ -1496,7 +1550,7 @@ function lti_add_config($config) {
 /**
  * Updates a tool configuration in the database
  *
- * @param $config   Tool configuration
+ * @param object  $config   Tool configuration
  *
  * @return Record id number
  */
@@ -1518,11 +1572,11 @@ function lti_update_config($config) {
 /**
  * Gets the tool settings
  *
- * @param $toolproxyid   Id of tool proxy record
- * @param $courseid      Id of course (null if system settings)
- * @param $instanceid    Id of course module (null if system or context settings)
+ * @param int  $toolproxyid   Id of tool proxy record
+ * @param int  $courseid      Id of course (null if system settings)
+ * @param int  $instanceid    Id of course module (null if system or context settings)
  *
- * @return Array settings
+ * @return array  Array settings
  */
 function lti_get_tool_settings($toolproxyid, $courseid = null, $instanceid = null) {
     global $DB;
@@ -1539,10 +1593,10 @@ function lti_get_tool_settings($toolproxyid, $courseid = null, $instanceid = nul
 /**
  * Sets the tool settings (
  *
- * @param $settings      Array of settings
- * @param $toolproxyid   Id of tool proxy record
- * @param $courseid      Id of course (null if system settings)
- * @param $instanceid    Id of course module (null if system or context settings)
+ * @param array  $settings      Array of settings
+ * @param int    $toolproxyid   Id of tool proxy record
+ * @param int    $courseid      Id of course (null if system settings)
+ * @param int    $instanceid    Id of course module (null if system or context settings)
  */
 function lti_set_tool_settings($settings, $toolproxyid, $courseid = null, $instanceid = null) {
     global $DB;
@@ -1820,26 +1874,26 @@ function lti_get_capabilities() {
        'CourseSection.title' => 'context_title',
        'CourseSection.label' => 'context_label',
        'CourseSection.sourcedId' => 'lis_course_section_sourcedid',
-       'CourseSection.longDescription' => 'format_text($COURSE->summary)',
-       'CourseSection.timeFrame.begin' => 'format_string($COURSE->startdate)',
+       'CourseSection.longDescription' => '$COURSE->summary',
+       'CourseSection.timeFrame.begin' => '$COURSE->startdate',
        'ResourceLink.id' => 'resource_link_id',
        'ResourceLink.title' => 'resource_link_title',
        'ResourceLink.description' => 'resource_link_description',
        'User.id' => 'user_id',
-       'User.username' => 'format_string($USER->username)',
+       'User.username' => '$USER->username',
        'Person.name.full' => 'lis_person_name_full',
        'Person.name.given' => 'lis_person_name_given',
        'Person.name.family' => 'lis_person_name_family',
        'Person.email.primary' => 'lis_person_contact_email_primary',
        'Person.sourcedId' => 'lis_person_sourcedid',
-       'Person.name.middle' => 'format_string($USER->middlename)',
-       'Person.address.street1' => 'format_string($USER->address)',
-       'Person.address.locality' => 'format_string($USER->city)',
-       'Person.address.country' => 'format_string($USER->country)',
-       'Person.address.timezone' => 'format_string($USER->timezone)',
-       'Person.phone.primary' => 'format_string($USER->phone1)',
-       'Person.phone.mobile' => 'format_string($USER->phone2)',
-       'Person.webaddress' => 'format_string($USER->url)',
+       'Person.name.middle' => '$USER->middlename',
+       'Person.address.street1' => '$USER->address',
+       'Person.address.locality' => '$USER->city',
+       'Person.address.country' => '$USER->country',
+       'Person.address.timezone' => '$USER->timezone',
+       'Person.phone.primary' => '$USER->phone1',
+       'Person.phone.mobile' => '$USER->phone2',
+       'Person.webaddress' => '$USER->url',
        'Membership.role' => 'roles',
        'Result.sourcedId' => 'lis_result_sourcedid',
        'Result.autocreate' => 'lis_outcome_service_url');
@@ -1870,6 +1924,8 @@ function lti_get_services() {
 /**
  * Initializes an instance of the named service
  *
+ * @param string $servicename Name of service
+ *
  * @return object Service
  */
 function lti_get_service_by_name($servicename) {
@@ -1886,6 +1942,9 @@ function lti_get_service_by_name($servicename) {
 
 /**
  * Finds a service by id
+ *
+ * @param array  $services    Array of services
+ * @param string $resourceid  ID of resource
  *
  * @return object Service
  */

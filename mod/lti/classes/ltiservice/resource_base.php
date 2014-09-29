@@ -39,7 +39,6 @@ require_once($CFG->dirroot . '/mod/lti/locallib.php');
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 abstract class resource_base {
 
     /** @var object Service associated with this resource. */
@@ -63,7 +62,7 @@ abstract class resource_base {
     /**
      * Class constructor.
      *
-     * @param object Service instance
+     * @param object $service Service instance
      */
     public function __construct($service) {
 
@@ -199,6 +198,9 @@ abstract class resource_base {
 
     /**
      * Check to make sure the request is valid.
+     *
+     * @param string $toolproxyguid Consumer key
+     * @param string $body          Body of HTTP request message
      *
      * @return boolean
      */

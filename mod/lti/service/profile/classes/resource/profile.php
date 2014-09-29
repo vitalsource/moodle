@@ -17,7 +17,7 @@
 /**
  * This file contains a class definition for the Tool Consumer Profile resource
  *
- * @package    mod_lti
+ * @package    ltiservice_profile
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * A resource implementing the Tool Consumer Profile.
  *
- * @package    mod_lti
+ * @package    ltiservice_profile
  * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -43,7 +43,7 @@ class profile extends \mod_lti\ltiservice\resource_base {
     /**
      * Class constructor.
      *
-     * @param object Service instance
+     * @param object $service Service instance
      */
     public function __construct($service) {
 
@@ -56,6 +56,11 @@ class profile extends \mod_lti\ltiservice\resource_base {
 
     }
 
+    /**
+     * Get the path for this resource.
+     *
+     * @return string
+     */
     public function get_path() {
 
         $path = $this->template;

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines de main basiclti configuration form
+ * This file defines the main tool registration configuration form
  *
  * @package mod_lti
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
@@ -28,8 +28,19 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir.'/formslib.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
 
+/**
+ * The mod_lti_register_types_form class.
+ *
+ * @package    mod_lti
+ * @since      Moodle 2.8
+ * @copyright  2014 Vital Source Technologies http://vitalsource.com
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class mod_lti_register_types_form extends moodleform {
 
+    /**
+     * Set up the form definition.
+     */
     public function definition() {
         global $CFG;
 
@@ -89,6 +100,9 @@ class mod_lti_register_types_form extends moodleform {
 
     }
 
+    /**
+     * Set up rules for disabling fields.
+     */
     public function disable_fields() {
 
         $mform    =& $this->_form;
@@ -99,6 +113,9 @@ class mod_lti_register_types_form extends moodleform {
 
     }
 
+    /**
+     * Set up rules for required fields.
+     */
     public function required_fields() {
 
         $mform    =& $this->_form;

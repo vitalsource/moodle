@@ -34,6 +34,7 @@
 
 /**
  * This file contains the script used to clone Moodle admin setting page.
+ *
  * It is used to create a new form used to pre-configure lti activities
  *
  * @package mod_lti

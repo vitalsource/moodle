@@ -43,9 +43,9 @@ use moodle\mod\lti as lti;
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 abstract class service_base {
 
+    /** Label representing an LTI 2 message type */
     const LTI_VERSION2P0 = 'LTI-2p0';
 
     /** @var string ID for the service. */
@@ -119,6 +119,8 @@ abstract class service_base {
 
     /**
      * Set the tool proxy object.
+     *
+     * @param object $toolproxy The tool proxy for this service request
      *
      * @var stdClass
      */

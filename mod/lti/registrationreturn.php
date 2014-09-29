@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the script used on return from the Tool Provider
- * after registering a tool proxy.
+ * Handle the return from the Tool Provider after registering a tool proxy.
  *
  * @package mod_lti
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
