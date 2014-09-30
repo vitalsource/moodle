@@ -73,7 +73,7 @@ class toolproxy extends \mod_lti\ltiservice\resource_base {
         // Ensure all required elements are present in the Tool Proxy.
         if ($ok) {
             $toolproxyjson = json_decode($response->get_request_data());
-            $ok = !is_null($toolproxyjson);
+            $ok = !empty($toolproxyjson);
             if (!$ok) {
                 debugging('Tool proxy is not properly formed JSON');
             } else {
@@ -130,7 +130,7 @@ class toolproxy extends \mod_lti\ltiservice\resource_base {
                     $id = explode('#', $fqid, 2);
                     $aservice = lti_get_service_by_resource_id($services, $id[1]);
                     $classname = explode('\\', get_class($aservice));
-                    if (is_null($aservice) || !in_array($classname[count($classname) - 1], $offeredservices)) {
+                    if (empty($aservice) || !in_array($classname[count($classname) - 1], $offeredservices)) {
                         $errors[] = $service->service;
                     }
                 }

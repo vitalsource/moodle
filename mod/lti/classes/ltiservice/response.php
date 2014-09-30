@@ -60,12 +60,12 @@ class response {
     public function __construct() {
 
         $this->code = 200;
-        $this->reason = null;
+        $this->reason = '';
         $this->requestmethod = $_SERVER['REQUEST_METHOD'];
-        $this->accept = null;
-        $this->contenttype = null;
-        $this->data = null;
-        $this->body = null;
+        $this->accept = '';
+        $this->contenttype = '';
+        $this->data = '';
+        $this->body = '';
         $this->responsecodes = array(
             200 => 'OK',
             201 => 'Created',
@@ -101,7 +101,7 @@ class response {
      */
     public function set_code($code) {
         $this->code = $code;
-        $this->reason = null;
+        $this->reason = '';
     }
 
     /**
@@ -110,10 +110,10 @@ class response {
      * @return string
      */
     public function get_reason() {
-        if (is_null($this->reason)) {
+        if (empty($this->reason)) {
             $this->reason = $this->responsecodes[$this->code];
         }
-        if (is_null($this->reason)) {
+        if (empty($this->reason)) {
             $this->reason = $this->responsecodes[($this->code / 100) * 100];
         }
         return $this->reason;
@@ -206,10 +206,10 @@ class response {
     public function send() {
         header("HTTP/1.0 {$this->code} {$this->get_reason()}");
         if (($this->code >= 200) && ($this->code < 300)) {
-            if (!is_null($this->contenttype)) {
+            if (!empty($this->contenttype)) {
                 header("Content-Type: {$this->contenttype};charset=UTF-8");
             }
-            if (!is_null($this->body)) {
+            if (!empty($this->body)) {
                 echo $this->body;
             }
         }

@@ -70,12 +70,12 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
 
         $params = $this->parse_template();
         $linkid = $params['link_id'];
-        $bubble = optional_param('bubble', null, PARAM_ALPHA);
+        $bubble = optional_param('bubble', '', PARAM_ALPHA);
         $contenttype = $response->get_accept();
-        $simpleformat = !is_null($contenttype) && ($contenttype == $this->formats[1]);
-        $ok = (is_null($bubble) || ((($bubble == 'distinct') || ($bubble == 'all')))) &&
-             (!$simpleformat || is_null($bubble) || ($bubble != 'all')) &&
-             (is_null($bubble) || ($response->get_request_method() == 'GET'));
+        $simpleformat = !empty($contenttype) && ($contenttype == $this->formats[1]);
+        $ok = (empty($bubble) || ((($bubble == 'distinct') || ($bubble == 'all')))) &&
+             (!$simpleformat || empty($bubble) || ($bubble != 'all')) &&
+             (empty($bubble) || ($response->get_request_method() == 'GET'));
         if (!$ok) {
             $response->set_code(406);
         }
@@ -96,7 +96,7 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
         }
         if ($ok) {
             $linksettings = lti_get_tool_settings($this->get_service()->get_tool_proxy()->id, $lti->course, $linkid);
-            if (!is_null($bubble)) {
+            if (!empty($bubble)) {
                 $contextsetting = new contextsettings($this->get_service());
                 if ($COURSE == 'site') {
                     $contextsetting->params['context_type'] = 'Group';
@@ -152,7 +152,7 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
                 $settings = null;
                 if ($response->get_content_type() == $this->formats[0]) {
                     $json = json_decode($response->get_request_data());
-                    $ok = !is_null($json);
+                    $ok = !empty($json);
                     if ($ok) {
                         $ok = isset($json->{"@graph"}) && is_array($json->{"@graph"}) && (count($json->{"@graph"}) == 1) &&
                               ($json->{"@graph"}[0]->{"@type"} == 'LtiLink');
@@ -162,7 +162,7 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
                     }
                 } else {  // Simple JSON.
                     $json = json_decode($response->get_request_data(), true);
-                    $ok = !is_null($json);
+                    $ok = !empty($json);
                     if ($ok) {
                         $ok = is_array($json);
                     }

@@ -190,7 +190,7 @@ function lti_view($instance) {
         $returnurl = lti_ensure_url_is_https($returnurl);
     }
 
-    $target = null;
+    $target = '';
     switch($launchcontainer) {
         case LTI_LAUNCH_CONTAINER_EMBED:
         case LTI_LAUNCH_CONTAINER_EMBED_NO_BLOCKS:
@@ -203,7 +203,7 @@ function lti_view($instance) {
             $target = 'window';
             break;
     }
-    if (!is_null($target)) {
+    if (!empty($target)) {
         $requestparams['launch_presentation_document_target'] = $target;
     }
 
@@ -1930,7 +1930,7 @@ function lti_get_services() {
  */
 function lti_get_service_by_name($servicename) {
 
-    $service = null;
+    $service = false;
     $classname = "\\ltiservice_{$servicename}\\service\\{$servicename}";
     if (class_exists($classname)) {
         $service = new $classname();
@@ -1950,7 +1950,7 @@ function lti_get_service_by_name($servicename) {
  */
 function lti_get_service_by_resource_id($services, $resourceid) {
 
-    $service = null;
+    $service = false;
     foreach ($services as $aservice) {
         foreach ($aservice->get_resources() as $resource) {
             if ($resource->get_id() === $resourceid) {

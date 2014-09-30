@@ -57,7 +57,7 @@ if ($duplicate) {
 
 
 $profileservice = lti_get_service_by_name('profile');
-if (is_null($profileservice)) {
+if (empty($profileservice)) {
     redirect($redirect,  get_string('noprofileservice', 'lti'));
 }
 

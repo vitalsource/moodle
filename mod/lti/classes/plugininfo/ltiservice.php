@@ -38,5 +38,15 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class ltiservice extends base {
-    // No need for any code here as everything is handled by the parent class.
+
+    public function is_uninstall_allowed() {
+
+        if ($this->is_standard()) {
+            return false;
+        }
+
+        return true;
+
+    }
+
 }

@@ -65,7 +65,7 @@ class profile extends \mod_lti\ltiservice\resource_base {
 
         $path = $this->template;
         $toolproxy = $this->get_service()->get_tool_proxy();
-        if (!is_null($toolproxy)) {
+        if (!empty($toolproxy)) {
             $path = str_replace('{tool_proxy_id}', $toolproxy->guid, $path);
         }
 

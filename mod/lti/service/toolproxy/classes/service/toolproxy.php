@@ -56,7 +56,7 @@ class toolproxy extends \mod_lti\ltiservice\service_base {
      */
     public function get_resources() {
 
-        if (is_null($this->resources)) {
+        if (empty($this->resources)) {
             $this->resources = array();
             $this->resources[] = new \ltiservice_toolproxy\resource\toolproxy($this);
         }

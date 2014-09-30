@@ -56,7 +56,7 @@ class toolsettings extends \mod_lti\ltiservice\service_base {
      */
     public function get_resources() {
 
-        if (is_null($this->resources)) {
+        if (empty($this->resources)) {
             $this->resources = array();
             $this->resources[] = new \ltiservice_toolsettings\resource\systemsettings($this);
             $this->resources[] = new \ltiservice_toolsettings\resource\contextsettings($this);
@@ -76,17 +76,17 @@ class toolsettings extends \mod_lti\ltiservice\service_base {
      */
     public static function distinct_settings(&$systemsettings, &$contextsettings, $linksettings) {
 
-        if (!is_null($systemsettings)) {
+        if (!empty($systemsettings)) {
             foreach ($systemsettings as $key => $value) {
-                if ((!is_null($contextsettings) && array_key_exists($key, $contextsettings)) ||
-                    (!is_null($linksettings) && array_key_exists($key, $linksettings))) {
+                if ((!empty($contextsettings) && array_key_exists($key, $contextsettings)) ||
+                    (!empty($linksettings) && array_key_exists($key, $linksettings))) {
                     unset($systemsettings[$key]);
                 }
             }
         }
-        if (!is_null($contextsettings)) {
+        if (!empty($contextsettings)) {
             foreach ($contextsettings as $key => $value) {
-                if (!is_null($linksettings) && array_key_exists($key, $linksettings)) {
+                if (!empty($linksettings) && array_key_exists($key, $linksettings)) {
                     unset($contextsettings[$key]);
                 }
             }
@@ -106,7 +106,7 @@ class toolsettings extends \mod_lti\ltiservice\service_base {
     public static function settings_to_json($settings, $simpleformat, $type, $resource) {
 
         $json = '';
-        if (!is_null($resource)) {
+        if (!empty($resource)) {
             $indent = '';
             if (!$simpleformat) {
                 $json .= "    {\n      \"@type\":\"{$type}\",\n";
@@ -116,7 +116,7 @@ class toolsettings extends \mod_lti\ltiservice\service_base {
                 $indent = '      ';
             }
             $isfirst = true;
-            if (!is_null($settings)) {
+            if (!empty($settings)) {
                 foreach ($settings as $key => $value) {
                     if (!$isfirst) {
                         $json .= ",";

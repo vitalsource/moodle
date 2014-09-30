@@ -33,7 +33,7 @@ $response = new \mod_lti\ltiservice\response();
 $isget = $response->get_request_method() == 'GET';
 
 if ($isget) {
-    $response->set_accept(isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : null);
+    $response->set_accept(isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '');
 } else {
     $response->set_content_type(isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '');
 }
@@ -45,7 +45,7 @@ $services = lti_get_services();
 foreach ($services as $service) {
     $resources = $service->get_resources();
     foreach ($resources as $resource) {
-        if (($isget && !is_null($response->get_accept()) && (strpos($response->get_accept(), '*/*') === false) &&
+        if (($isget && !empty($response->get_accept()) && (strpos($response->get_accept(), '*/*') === false) &&
              !in_array($response->get_accept(), $resource->get_formats())) ||
             (!$isget && !in_array($response->get_content_type(), $resource->get_formats()))) {
             continue;

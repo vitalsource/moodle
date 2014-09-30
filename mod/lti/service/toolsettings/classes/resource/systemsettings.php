@@ -67,17 +67,17 @@ class systemsettings extends \mod_lti\ltiservice\resource_base {
 
         $params = $this->parse_template();
         $tpid = $params['tool_proxy_id'];
-        $bubble = optional_param('bubble', null, PARAM_ALPHA);
+        $bubble = optional_param('bubble', '', PARAM_ALPHA);
         $ok = !empty($tpid) && $this->check_tool_proxy($tpid, $response->get_request_data());
         if (!$ok) {
             $response->set_code(401);
         }
         $contenttype = $response->get_accept();
-        $simpleformat = !is_null($contenttype) && ($contenttype == $this->formats[1]);
+        $simpleformat = !empty($contenttype) && ($contenttype == $this->formats[1]);
         if ($ok) {
-            $ok = (is_null($bubble) || ((($bubble == 'distinct') || ($bubble == 'all')))) &&
-               (!$simpleformat || is_null($bubble) || ($bubble != 'all')) &&
-               (is_null($bubble) || ($response->get_request_method() == 'GET'));
+            $ok = (empty($bubble) || ((($bubble == 'distinct') || ($bubble == 'all')))) &&
+               (!$simpleformat || empty($bubble) || ($bubble != 'all')) &&
+               (empty($bubble) || ($response->get_request_method() == 'GET'));
             if (!$ok) {
                 $response->set_code(406);
             }
@@ -106,7 +106,7 @@ class systemsettings extends \mod_lti\ltiservice\resource_base {
                 $settings = null;
                 if ($response->get_content_type() == $this->formats[0]) {
                     $json = json_decode($response->get_request_data());
-                    $ok = !is_null($json);
+                    $ok = !empty($json);
                     if ($ok) {
                         $ok = isset($json->{"@graph"}) && is_array($json->{"@graph"}) && (count($json->{"@graph"}) == 1) &&
                               ($json->{"@graph"}[0]->{"@type"} == 'ToolProxy');
@@ -116,7 +116,7 @@ class systemsettings extends \mod_lti\ltiservice\resource_base {
                     }
                 } else {  // Simple JSON.
                     $json = json_decode($response->get_request_data(), true);
-                    $ok = !is_null($json);
+                    $ok = !empty($json);
                     if ($ok) {
                         $ok = is_array($json);
                     }

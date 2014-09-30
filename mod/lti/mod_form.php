@@ -98,7 +98,7 @@ class mod_lti_mod_form extends moodleform_mod {
         $toolproxy = array();
 
         foreach (lti_get_types_for_add_instance() as $id => $type) {
-            if (!is_null($type->toolproxyid)) {
+            if (!empty($type->toolproxyid)) {
                 $toolproxy[] = $type->id;
                 $attributes = array( 'globalTool' => 1, 'toolproxy' => 1);
                 $enabledcapabilities = explode("\n", $type->enabledcapability);

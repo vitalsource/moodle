@@ -159,10 +159,10 @@ abstract class service_base {
      */
     public function parse_value($value) {
 
-        if (is_null($this->resources)) {
+        if (empty($this->resources)) {
             $this->resources = $this->get_resources();
         }
-        if (!is_null($this->resources)) {
+        if (!empty($this->resources)) {
             foreach ($this->resources as $resource) {
                 $value = $resource->parse_value($value);
             }
@@ -186,11 +186,11 @@ abstract class service_base {
         $toolproxy = null;
         $h = lti\OAuthUtil::get_headers();
         $consumerkey = lti\get_oauth_key_from_headers();
-        if (is_null($toolproxyguid)) {
+        if (empty($toolproxyguid)) {
             $toolproxyguid = $consumerkey;
         }
 
-        if (!is_null($toolproxyguid)) {
+        if (!empty($toolproxyguid)) {
             $toolproxy = lti_get_tool_proxy_from_guid($toolproxyguid);
             if ($toolproxy !== false) {
                 if (!$this->is_unsigned() && ($toolproxy->guid == $consumerkey)) {

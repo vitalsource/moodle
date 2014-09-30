@@ -181,7 +181,7 @@ abstract class resource_base {
             $url = str_replace('{' . $key . '}', $value, $url);
         }
         $toolproxy = $this->get_service()->get_tool_proxy();
-        if (!is_null($toolproxy)) {
+        if (!empty($toolproxy)) {
             $url = str_replace('{tool_proxy_id}', $toolproxy->guid, $url);
         }
 
@@ -209,11 +209,11 @@ abstract class resource_base {
         $ok = false;
         if ($this->get_service()->check_tool_proxy($toolproxyguid, $body)) {
             $toolproxyjson = $this->get_service()->get_tool_proxy()->toolproxy;
-            if (is_null($toolproxyjson)) {
+            if (empty($toolproxyjson)) {
                 $ok = true;
             } else {
                 $toolproxy = json_decode($toolproxyjson);
-                if (!is_null($toolproxy) && isset($toolproxy->security_contract->tool_service)) {
+                if (!empty($toolproxy) && isset($toolproxy->security_contract->tool_service)) {
                     $contexts = lti_get_contexts($toolproxy);
                     $tpservices = $toolproxy->security_contract->tool_service;
                     foreach ($tpservices as $service) {
@@ -255,7 +255,7 @@ abstract class resource_base {
      */
     protected function parse_template() {
 
-        if (is_null($this->params)) {
+        if (empty($this->params)) {
             $this->params = array();
             if (isset($_SERVER['PATH_INFO'])) {
                 $path = explode('/', $_SERVER['PATH_INFO']);

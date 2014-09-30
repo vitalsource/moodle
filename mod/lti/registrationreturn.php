@@ -26,25 +26,25 @@
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
 
-$top = optional_param('top', null, PARAM_INT);
-$msg = optional_param('lti_msg', null, PARAM_RAW);
-$err = optional_param('lti_errormsg', null, PARAM_RAW);
-$id = optional_param('id', null, PARAM_INT);
+$top = optional_param('top', 0, PARAM_INT);
+$msg = optional_param('lti_msg', '', PARAM_RAW);
+$err = optional_param('lti_errormsg', '', PARAM_RAW);
+$id = optional_param('id', 0, PARAM_INT);
 
 // No guest autologin.
 require_login(0, false);
 
-if (is_null($top)) {
+if (empty($top)) {
 
     $params = array();
     $params['top'] = '1';
-    if (!is_null($msg)) {
+    if (!empty($msg)) {
         $params['lti_msg'] = $msg;
     }
-    if (!is_null($err)) {
+    if (!empty($err)) {
         $params['lti_errormsg'] = $err;
     }
-    if (!is_null($id)) {
+    if (!empty($id)) {
         $params['id'] = $id;
     }
     $redirect = new moodle_url('/mod/lti/registrationreturn.php', $params);
@@ -69,14 +69,14 @@ top.location.href = '{$redirect}';
 EOD;
     echo $html;
 
-} else if (!is_null($msg) && !is_null($err)) {
+} else if (!empty($msg) && !empty($err)) {
 
     $params = array();
     $params['top'] = '1';
-    if (!is_null($err)) {
+    if (!empty($err)) {
         $params['lti_errormsg'] = $err;
     }
-    if (!is_null($id)) {
+    if (!empty($id)) {
         $params['id'] = $id;
     }
     $redirect = new moodle_url('/mod/lti/registrationreturn.php', $params);
@@ -102,7 +102,7 @@ EOD;
     }
     $redirect = $redirect->out();
 
-    if (is_null($msg)) {
+    if (empty($msg)) {
         $msg = $err;
     }
     redirect($redirect, $msg);

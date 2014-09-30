@@ -99,8 +99,9 @@ class backup_lti_activity_structure_step extends backup_activity_structure_step 
         // Define file annotations.
         $lti->annotate_files('mod_lti', 'intro', null); // This file areas haven't itemid.
 
-        // Add support for subplugin structure.
+        // Add support for subplugin structures.
         $this->add_subplugin_structure('ltisource', $lti, true);
+        $this->add_subplugin_structure('ltiservice', $lti, true);
 
         // Return the root element (lti), wrapped into standard activity structure.
         return $this->prepare_activity_structure($lti);

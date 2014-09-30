@@ -130,7 +130,7 @@ function lti_accepts_grades($ltiinstance) {
     $acceptsgrades = true;
     $ltitype = $DB->get_record('lti_types', array('id' => $ltiinstance->typeid));
 
-    if (is_null($ltitype->toolproxyid)) {
+    if (empty($ltitype->toolproxyid)) {
         $typeconfig = lti_get_config($ltiinstance);
 
         $typeacceptgrades = isset($typeconfig['acceptgrades']) ? $typeconfig['acceptgrades'] : LTI_SETTING_DELEGATE;
