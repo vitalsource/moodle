@@ -39,6 +39,13 @@ defined('MOODLE_INTERNAL') || die();
  */
 class ltiservice extends base {
 
+    /**
+     * Should there be a way to uninstall the plugin via the administration UI?
+     *
+     * Uninstallation is not allowed for core subplugins.
+     *
+     * @return boolean
+     */
     public function is_uninstall_allowed() {
 
         if ($this->is_standard()) {
