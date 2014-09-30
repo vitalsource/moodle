@@ -202,7 +202,7 @@ $template = <<< EOD
     });
 //]]
 </script>
-";
+EOD;
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('toolproxy', 'lti'));

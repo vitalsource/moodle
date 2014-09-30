@@ -101,7 +101,7 @@ class profile extends \mod_lti\ltiservice\resource_base {
             $serviceofferedarr = explode("\n", $toolproxy->serviceoffered);
             $serviceoffered = '';
             $sep = '';
-            $services = core_component::get_plugin_list('ltiservice');
+            $services = \core_component::get_plugin_list('ltiservice');
             foreach ($services as $name => $location) {
                 if (in_array($name, $serviceofferedarr)) {
                     $classname = "\\ltiservice_{$name}\\service\\{$name}";
