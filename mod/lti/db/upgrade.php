@@ -190,6 +190,8 @@ function xmldb_lti_upgrade($oldversion) {
                '(instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(13), \'%\')) AND ' .
                '(instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(10), \'%\'))';
         $DB->execute($sql, $params);
+
+        upgrade_mod_savepoint(true, 2014100100, 'lti');
     }
 
     return true;
