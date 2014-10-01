@@ -740,8 +740,7 @@ EOD;
  */
 function lti_split_custom_parameters($toolproxy, $tool, $params, $customstr, $islti2 = false) {
 
-//    $lines = preg_split("/[\n;]/", $customstr);
-    $lines = explode("\n", $customstr);
+    $lines = explode("\n", $customstr);  // Or should this split on "/[\n;]/"?
     $retval = array();
     foreach ($lines as $line) {
         $pos = strpos($line, "=");

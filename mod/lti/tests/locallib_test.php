@@ -68,16 +68,13 @@ class mod_lti_locallib_testcase extends advanced_testcase {
         $this->assertEquals(lti_split_custom_parameters(null, $tool, array(), "x=1\ny=2", false),
             array('custom_x' => '1', 'custom_y' => '2'));
 
-//        $this->assertEquals(lti_split_custom_parameters(null, $tool, array(), 'x=1;y=2', false),
-//            array('custom_x' => '1', 'custom_y' => '2'));
+        // Removed repeat of previous test with a semicolon separator.
 
         $this->assertEquals(lti_split_custom_parameters(null, $tool, array(), 'Review:Chapter=1.2.56', false),
             array('custom_review_chapter' => '1.2.56'));
 
-//        $this->assertEquals(lti_split_custom_parameters(null, $tool, array(), 'Complex!@#$^*(){}[]KEY=Complex!@#$^*(){}[]Value', false),
-//            array('custom_complex____________key' => 'Complex!@#$^*(){}[]Value'));
-
-        $this->assertEquals(lti_split_custom_parameters(null, $tool, array(), 'Complex!@#$^*(){}[]KEY=Complex!@#$^*;(){}[]½Value', false),
+        $this->assertEquals(lti_split_custom_parameters(null, $tool, array(),
+            'Complex!@#$^*(){}[]KEY=Complex!@#$^*;(){}[]½Value', false),
             array('custom_complex____________key' => 'Complex!@#$^*;(){}[]½Value'));
     }
 
