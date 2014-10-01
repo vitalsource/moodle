@@ -180,13 +180,15 @@ function xmldb_lti_upgrade($oldversion) {
 
         $sql = 'UPDATE {lti_types_config} ' .
                'SET value = REPLACE(value, :semicolon, CHAR(10)) ' .
-               'WHERE (name = \'customparameters\') AND (value NOT LIKE CONCAT(\'%\', CHAR(13), \'%\')) AND (value NOT LIKE CONCAT(\'%\', CHAR(10), \'%\'))';
+               'WHERE (name = \'customparameters\') AND (value NOT LIKE CONCAT(\'%\', CHAR(13), \'%\')) AND ' .
+               '(value NOT LIKE CONCAT(\'%\', CHAR(10), \'%\'))';
         $DB->execute($sql, $params);
 
         $sql = 'UPDATE {lti} ' .
                'SET instructorcustomparameters = REPLACE(instructorcustomparameters, :semicolon, CHAR(10)) ' .
-               'WHERE (instructorcustomparameters IS NOT NULL) AND (instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(13), \'%\')) ' .
-               'AND (instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(10), \'%\'))';
+               'WHERE (instructorcustomparameters IS NOT NULL) AND ' .
+               '(instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(13), \'%\')) AND ' .
+               '(instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(10), \'%\'))';
         $DB->execute($sql, $params);
     }
 
