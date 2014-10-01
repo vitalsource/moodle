@@ -730,11 +730,17 @@ EOD;
 /**
  * Splits the custom parameters field to the various parameters
  *
- * @param string $customstr     String containing the parameters
+ * @param object    $toolproxy      Tool proxy instance object
+ * @param object    $tool           Tool instance object
+ * @param array     $params         LTI launch parameters
+ * @param string    $customstr      String containing the parameters
+ * @param boolean   $islti2         True if an LTI 2 tool is being launched
  *
  * @return Array of custom parameters
  */
 function lti_split_custom_parameters($toolproxy, $tool, $params, $customstr, $islti2 = false) {
+
+//    $lines = preg_split("/[\n;]/", $customstr);
     $lines = explode("\n", $customstr);
     $retval = array();
     foreach ($lines as $line) {
@@ -852,8 +858,11 @@ function lti_map_keyname($key) {
 /**
  * Gets the IMS role string for the specified user and LTI course module.
  *
- * @param mixed $user User object or user id
- * @param int $cmid The course module id of the LTI activity
+ * @param mixed    $user      User object or user id
+ * @param int      $cmid      The course module id of the LTI activity
+ * @param int      $courseid  The course id of the LTI activity
+ * @param boolean  $islti2    True if an LTI 2 tool is being launched
+ *
  * @return string A role string suitable for passing with an LTI launch
  */
 function lti_get_ims_role($user, $cmid, $courseid, $islti2) {

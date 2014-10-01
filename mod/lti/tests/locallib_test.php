@@ -63,17 +63,22 @@ require_once($CFG->dirroot . '/mod/lti/servicelib.php');
 class mod_lti_locallib_testcase extends advanced_testcase {
 
     public function test_split_custom_parameters() {
-        $this->assertEquals(lti_split_custom_parameters("x=1\ny=2"),
+        $tool = new stdClass();
+        $tool->enabledcapability = '';
+        $this->assertEquals(lti_split_custom_parameters(null, $tool, array(), "x=1\ny=2", false),
             array('custom_x' => '1', 'custom_y' => '2'));
 
-        $this->assertEquals(lti_split_custom_parameters('x=1;y=2'),
-            array('custom_x' => '1', 'custom_y' => '2'));
+//        $this->assertEquals(lti_split_custom_parameters(null, $tool, array(), 'x=1;y=2', false),
+//            array('custom_x' => '1', 'custom_y' => '2'));
 
-        $this->assertEquals(lti_split_custom_parameters('Review:Chapter=1.2.56'),
+        $this->assertEquals(lti_split_custom_parameters(null, $tool, array(), 'Review:Chapter=1.2.56', false),
             array('custom_review_chapter' => '1.2.56'));
 
-        $this->assertEquals(lti_split_custom_parameters('Complex!@#$^*(){}[]KEY=Complex!@#$^*(){}[]Value'),
-            array('custom_complex____________key' => 'Complex!@#$^*(){}[]Value'));
+//        $this->assertEquals(lti_split_custom_parameters(null, $tool, array(), 'Complex!@#$^*(){}[]KEY=Complex!@#$^*(){}[]Value', false),
+//            array('custom_complex____________key' => 'Complex!@#$^*(){}[]Value'));
+
+        $this->assertEquals(lti_split_custom_parameters(null, $tool, array(), 'Complex!@#$^*(){}[]KEY=Complex!@#$^*;(){}[]½Value', false),
+            array('custom_complex____________key' => 'Complex!@#$^*;(){}[]½Value'));
     }
 
     /**
