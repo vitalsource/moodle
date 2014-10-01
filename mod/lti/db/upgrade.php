@@ -175,6 +175,21 @@ function xmldb_lti_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2014061200, 'lti');
     }
 
+    if ($oldversion < 2014100100) {
+        $params = array('semicolon' => ';');
+
+        $sql = 'UPDATE {lti_types_config} ' .
+               'SET value = REPLACE(value, :semicolon, CHAR(10)) ' .
+               'WHERE (name = \'customparameters\') AND (value NOT LIKE CONCAT(\'%\', CHAR(13), \'%\')) AND (value NOT LIKE CONCAT(\'%\', CHAR(10), \'%\'))';
+        $DB->execute($sql, $params);
+
+        $sql = 'UPDATE {lti} ' .
+               'SET instructorcustomparameters = REPLACE(instructorcustomparameters, :semicolon, CHAR(10)) ' .
+               'WHERE (instructorcustomparameters IS NOT NULL) AND (instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(13), \'%\')) ' .
+               'AND (instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(10), \'%\'))';
+        $DB->execute($sql, $params);
+    }
+
     return true;
 }
 
