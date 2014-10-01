@@ -739,7 +739,9 @@ EOD;
  * @return Array of custom parameters
  */
 function lti_split_custom_parameters($toolproxy, $tool, $params, $customstr, $islti2 = false) {
-
+    $customstr = str_replace("\r\n", "\n", $customstr);
+    $customstr = str_replace("\n\r", "\n", $customstr);
+    $customstr = str_replace("\r", "\n", $customstr);
     $lines = explode("\n", $customstr);  // Or should this split on "/[\n;]/"?
     $retval = array();
     foreach ($lines as $line) {
@@ -973,14 +975,16 @@ function lti_filter_get_types($course) {
     global $DB;
 
     if (!empty($course)) {
-        $where = "WHERE t.course = {$course}";
+        $where = "WHERE t.course = :course";
+        $params = array('course' => $course);
     } else {
         $where = '';
+        $params = array();
     }
     $query = "SELECT t.id, t.name, t.baseurl, t.state, t.toolproxyid, t.timecreated, tp.name tpname
                 FROM {lti_types} t LEFT OUTER JOIN {lti_tool_proxies} tp ON t.toolproxyid = tp.id
                 {$where}";
-    return $DB->get_records_sql($query);
+    return $DB->get_records_sql($query, $params);
 }
 
 /**
@@ -1346,7 +1350,6 @@ function lti_update_type($type, $config) {
                 $record->typeid = $type->id;
                 $record->name = substr($key, 4);
                 $record->value = $value;
-
                 lti_update_config($record);
             }
         }
