@@ -34,6 +34,9 @@ $id = optional_param('id', 0, PARAM_INT);
 // No guest autologin.
 require_login(0, false);
 
+$systemcontext = context_system::instance();
+require_capability('moodle/site:config', $systemcontext);
+
 if (empty($top)) {
 
     $params = array();
