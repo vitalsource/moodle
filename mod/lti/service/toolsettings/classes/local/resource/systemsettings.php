@@ -24,9 +24,9 @@
  */
 
 
-namespace ltiservice_toolsettings\resource;
+namespace ltiservice_toolsettings\local\resource;
 
-use ltiservice_toolsettings\service\toolsettings;
+use ltiservice_toolsettings\local\service\toolsettings;
 
 defined('MOODLE_INTERNAL') || die();
 

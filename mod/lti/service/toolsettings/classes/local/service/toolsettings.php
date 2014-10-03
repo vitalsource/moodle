@@ -24,7 +24,7 @@
  */
 
 
-namespace ltiservice_toolsettings\service;
+namespace ltiservice_toolsettings\local\service;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -58,9 +58,9 @@ class toolsettings extends \mod_lti\ltiservice\service_base {
 
         if (empty($this->resources)) {
             $this->resources = array();
-            $this->resources[] = new \ltiservice_toolsettings\resource\systemsettings($this);
-            $this->resources[] = new \ltiservice_toolsettings\resource\contextsettings($this);
-            $this->resources[] = new \ltiservice_toolsettings\resource\linksettings($this);
+            $this->resources[] = new \ltiservice_toolsettings\local\resource\systemsettings($this);
+            $this->resources[] = new \ltiservice_toolsettings\local\resource\contextsettings($this);
+            $this->resources[] = new \ltiservice_toolsettings\local\resource\linksettings($this);
         }
 
         return $this->resources;

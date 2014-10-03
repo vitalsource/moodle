@@ -24,7 +24,7 @@
  */
 
 
-namespace ltiservice_profile\resource;
+namespace ltiservice_profile\local\resource;
 
 use \mod_lti\ltiservice\service_base;
 
@@ -104,7 +104,7 @@ class profile extends \mod_lti\ltiservice\resource_base {
             $services = \core_component::get_plugin_list('ltiservice');
             foreach ($services as $name => $location) {
                 if (in_array($name, $serviceofferedarr)) {
-                    $classname = "\\ltiservice_{$name}\\service\\{$name}";
+                    $classname = "\\ltiservice_{$name}\\local\\service\\{$name}";
                     $service = new $classname();
                     $service->set_tool_proxy($toolproxy);
                     $resources = $service->get_resources();

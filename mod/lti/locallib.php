@@ -1924,7 +1924,7 @@ function lti_get_services() {
     $services = array();
     $definedservices = core_component::get_plugin_list('ltiservice');
     foreach ($definedservices as $name => $location) {
-        $classname = "\\ltiservice_{$name}\\service\\{$name}";
+        $classname = "\\ltiservice_{$name}\\local\\service\\{$name}";
         $services[] = new $classname();
     }
 
@@ -1942,7 +1942,7 @@ function lti_get_services() {
 function lti_get_service_by_name($servicename) {
 
     $service = false;
-    $classname = "\\ltiservice_{$servicename}\\service\\{$servicename}";
+    $classname = "\\ltiservice_{$servicename}\\local\\service\\{$servicename}";
     if (class_exists($classname)) {
         $service = new $classname();
     }

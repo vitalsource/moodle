@@ -61,6 +61,9 @@
 function xmldb_lti_upgrade($oldversion) {
     global $CFG, $DB;
 
+    require_once(__DIR__ . '/upgradelib.php');
+
+
     $dbman = $DB->get_manager();
 
     // Moodle v2.2.0 release upgrade line
@@ -175,23 +178,11 @@ function xmldb_lti_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2014061200, 'lti');
     }
 
-    if ($oldversion < 2014100100) {
-        $params = array('semicolon' => ';');
+    if ($oldversion < 2014100200) {
 
-        $sql = 'UPDATE {lti_types_config} ' .
-               'SET value = REPLACE(value, :semicolon, CHAR(10)) ' .
-               'WHERE (name = \'customparameters\') AND (value NOT LIKE CONCAT(\'%\', CHAR(13), \'%\')) AND ' .
-               '(value NOT LIKE CONCAT(\'%\', CHAR(10), \'%\'))';
-        $DB->execute($sql, $params);
+        mod_lti_upgrade_custom_separator();
 
-        $sql = 'UPDATE {lti} ' .
-               'SET instructorcustomparameters = REPLACE(instructorcustomparameters, :semicolon, CHAR(10)) ' .
-               'WHERE (instructorcustomparameters IS NOT NULL) AND ' .
-               '(instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(13), \'%\')) AND ' .
-               '(instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(10), \'%\'))';
-        $DB->execute($sql, $params);
-
-        upgrade_mod_savepoint(true, 2014100100, 'lti');
+        upgrade_mod_savepoint(true, 2014100200, 'lti');
     }
 
     return true;

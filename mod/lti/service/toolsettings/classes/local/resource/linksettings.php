@@ -24,11 +24,11 @@
  */
 
 
-namespace ltiservice_toolsettings\resource;
+namespace ltiservice_toolsettings\local\resource;
 
-use ltiservice_toolsettings\resource\systemsettings;
-use ltiservice_toolsettings\resource\contextsettings;
-use ltiservice_toolsettings\service\toolsettings;
+use ltiservice_toolsettings\local\resource\systemsettings;
+use ltiservice_toolsettings\local\resource\contextsettings;
+use ltiservice_toolsettings\local\service\toolsettings;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -133,6 +133,9 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
                 if (strlen($settings) > 0) {
                     if (!$isfirst) {
                         $json .= ",";
+                        if (!$simpleformat) {
+                            $json .= "\n";
+                        }
                     }
                     $isfirst = false;
                 }
@@ -140,6 +143,9 @@ class linksettings extends \mod_lti\ltiservice\resource_base {
                 $settings = toolsettings::settings_to_json($linksettings, $simpleformat, 'LtiLink', $this);
                 if ((strlen($settings) > 0) && !$isfirst) {
                     $json .= ",";
+                    if (!$simpleformat) {
+                        $json .= "\n";
+                    }
                 }
                 $json .= $settings;
                 if ($simpleformat) {

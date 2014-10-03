@@ -24,7 +24,7 @@
  */
 
 
-namespace ltiservice_toolproxy\resource;
+namespace ltiservice_toolproxy\local\resource;
 
 defined('MOODLE_INTERNAL') || die();
 
