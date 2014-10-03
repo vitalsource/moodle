@@ -51,7 +51,6 @@ foreach ($toolproxies as $key => $toolproxy) {
 
 $redirect = new moodle_url('/mod/lti/toolproxies.php');
 if ($duplicate) {
-    $sesskey = required_param('sesskey', PARAM_RAW);
     redirect($redirect,  get_string('duplicateregurl', 'lti'));
 }
 
@@ -79,7 +78,9 @@ echo $OUTPUT->heading(get_string('toolproxyregistration', 'lti'));
 echo $OUTPUT->box_start('generalbox');
 
 // Request the registration request content with an object tag.
-echo '<object id="contentframe" height="600px" width="100%" type="text/html" data="registration.php?id='.$id.'"></object>';
+$registration = new moodle_url('/mod/lti/registration.php',
+    array('id' => $id, 'sesskey' => sesskey()));
+echo '<object id="contentframe" height="600px" width="100%" type="text/html" data="' . $registration->out() . '"></object>';
 
 // Output script to make the object tag be as large as possible.
 $resize = '

@@ -47,9 +47,8 @@ if (!$err) {
     $err = empty($type->toolproxyid);
 }
 if ($err) {
-    $sesskey = required_param('sesskey', PARAM_RAW);
     $redirect = new moodle_url('/mod/lti/typessettings.php',
-        array('action' => $action, 'id' => $id, 'sesskey' => $sesskey, 'tab' => $tab));
+        array('action' => $action, 'id' => $id, 'sesskey' => sesskey(), 'tab' => $tab));
     redirect($redirect);
 }
 
