@@ -32,19 +32,31 @@ defined('MOODLE_INTERNAL') || die();
 function mod_lti_upgrade_custom_separator() {
     global $DB;
 
-    $params = array('semicolon' => ';');
+    if ($DB->replace_all_text_supported()) {
 
-    $sql = 'UPDATE {lti_types_config} ' .
-           'SET value = REPLACE(value, :semicolon, CHAR(10)) ' .
-           'WHERE (name = \'customparameters\') AND (value NOT LIKE CONCAT(\'%\', CHAR(13), \'%\')) AND ' .
-           '(value NOT LIKE CONCAT(\'%\', CHAR(10), \'%\'))';
-    $DB->execute($sql, $params);
+        // Initialise parameter array.
+        $params = array('semicolon' => ';', 'likecr' => "%\r%", 'likelf' => "%\n%", 'lf' => "\n");
 
-    $sql = 'UPDATE {lti} ' .
-           'SET instructorcustomparameters = REPLACE(instructorcustomparameters, :semicolon, CHAR(10)) ' .
-           'WHERE (instructorcustomparameters IS NOT NULL) AND ' .
-           '(instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(13), \'%\')) AND ' .
-           '(instructorcustomparameters NOT LIKE CONCAT(\'%\', CHAR(10), \'%\'))';
-    $DB->execute($sql, $params);
+        // Initialise NOT LIKE clauses to check for CR and LF characters.
+        $notlikecr = $DB->sql_like('value', ':likecr', true, true, true);
+        $notlikelf = $DB->sql_like('value', ':likelf', true, true, true);
+
+        // Update any instances in the lti_types_config table.
+        $sql = 'UPDATE {lti_types_config} ' .
+               'SET value = REPLACE(value, :semicolon, :lf) ' .
+               'WHERE (name = \'customparameters\') AND (' . $notlikecr . ') AND (' . $notlikelf . ')';
+        $DB->execute($sql, $params);
+
+        // Initialise NOT LIKE clauses to check for CR and LF characters.
+        $notlikecr = $DB->sql_like('instructorcustomparameters', ':likecr', true, true, true);
+        $notlikelf = $DB->sql_like('instructorcustomparameters', ':likelf', true, true, true);
+
+        // Update any instances in the lti table.
+        $sql = 'UPDATE {lti} ' .
+               'SET instructorcustomparameters = REPLACE(instructorcustomparameters, :semicolon, :lf) ' .
+               'WHERE (instructorcustomparameters IS NOT NULL) AND (' . $notlikecr . ') AND (' . $notlikelf . ')';
+        $DB->execute($sql, $params);
+
+    }
 
 }

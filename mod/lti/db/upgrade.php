@@ -142,6 +142,14 @@ function xmldb_lti_upgrade($oldversion) {
 
         // Adding keys to table lti_tool_settings.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('toolproxy', XMLDB_KEY_FOREIGN, array('toolproxyid'), 'lti_tool_proxies', array('id'));
+        $table->add_key('course', XMLDB_KEY_FOREIGN, array('course'), 'course', array('id'));
+        $table->add_key('coursemodule', XMLDB_KEY_FOREIGN, array('coursemoduleid'), 'lti', array('id'));
+
+        // Adding indexes to table lti_tool_settings.
+        $table->add_index('toolproxy', XMLDB_INDEX_UNIQUE, array('toolproxyid'));
+        $table->add_index('course', XMLDB_INDEX_UNIQUE, array('course'));
+        $table->add_index('coursemodule', XMLDB_INDEX_UNIQUE, array('coursemoduleid'));
 
         // Conditionally launch create table for lti_tool_settings.
         if (!$dbman->table_exists($table)) {
@@ -177,11 +185,12 @@ function xmldb_lti_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2014061200, 'lti');
     }
 
-    if ($oldversion < 2014100200) {
+    if ($oldversion < 2014100300) {
 
         mod_lti_upgrade_custom_separator();
 
-        upgrade_mod_savepoint(true, 2014100200, 'lti');
+        // Lti savepoint reached.
+        upgrade_mod_savepoint(true, 2014100300, 'lti');
     }
 
     return true;

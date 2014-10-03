@@ -45,6 +45,7 @@ class mod_lti_upgradelib_testcase extends advanced_testcase {
      * Test conversion of semicolon separated custom parameters.
      */
     public function test_custom_parameter() {
+        global $DB, $SITE, $USER;
 
         $custom1 = 'a=one;b=two;three=3';
         $custom2 = "a=one\nb=two\nthree=3";
@@ -64,9 +65,9 @@ class mod_lti_upgradelib_testcase extends advanced_testcase {
             'value' => $custom2));
 
         // Create 2 instances with custom parameters.
-        $activity1 = $ltigenerator->create_instance(array('course' => $course->id, 'name' => 'LTI activity 1',
+        $activity1 = $ltigenerator->create_instance(array('course' => $SITE->id, 'name' => 'LTI activity 1',
             'typeid' => $toolid1, 'toolurl' => '', 'instructorcustomparameters' => $custom1));
-        $activity2 = $ltigenerator->create_instance(array('course' => $course->id, 'name' => 'LTI activity 2',
+        $activity2 = $ltigenerator->create_instance(array('course' => $SITE->id, 'name' => 'LTI activity 2',
             'typeid' => $toolid2, 'toolurl' => '', 'instructorcustomparameters' => $custom2));
 
         // Run upgrade script.
@@ -74,16 +75,16 @@ class mod_lti_upgradelib_testcase extends advanced_testcase {
 
         // Check semicolon-separated custom parameters have been updated but others have not.
         $config = $DB->get_record('lti_types_config', array('id' => $configid1));
-        $this->assertEquals($config->customparameters, $custom2);
+        $this->assertEquals($config->value, $custom2);
 
         $config = $DB->get_record('lti_types_config', array('id' => $configid2));
-        $this->assertEquals($config->customparameters, $custom2);
+        $this->assertEquals($config->value, $custom2);
 
-        $config = $DB->get_record('lti', array('id' => $activity1));
-        $this->assertEquals($config->customparameters, $custom2);
+        $config = $DB->get_record('lti', array('id' => $activity1->id));
+        $this->assertEquals($config->instructorcustomparameters, $custom2);
 
-        $config = $DB->get_record('lti', array('id' => $activity2));
-        $this->assertEquals($config->customparameters, $custom2);
+        $config = $DB->get_record('lti', array('id' => $activity2->id));
+        $this->assertEquals($config->instructorcustomparameters, $custom2);
     }
 
 }
