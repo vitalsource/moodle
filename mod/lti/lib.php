@@ -370,7 +370,15 @@ function lti_grades($basicltiid) {
  * @TODO: implement this moodle function (if needed)
  **/
 function lti_scale_used ($basicltiid, $scaleid) {
-    return false;
+    $return = false;
+
+    // $rec = get_record("basiclti","id","$basicltiid","scale","-$scaleid");
+    //
+    // if (!empty($rec)  && !empty($scaleid)) {
+    //     $return = true;
+    // }
+
+    return $return;
 }
 
 /**
