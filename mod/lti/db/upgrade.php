@@ -63,7 +63,6 @@ function xmldb_lti_upgrade($oldversion) {
 
     require_once(__DIR__ . '/upgradelib.php');
 
-
     $dbman = $DB->get_manager();
 
     // Moodle v2.2.0 release upgrade line

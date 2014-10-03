@@ -41,14 +41,17 @@ require_once($CFG->dirroot . '/mod/lti/db/upgradelib.php');
  */
 class mod_lti_upgradelib_testcase extends advanced_testcase {
 
-    function test_custom_parameter() {
+    /**
+     * Test conversion of semicolon separated custom parameters.
+     */
+    public function test_custom_parameter() {
 
         $custom1 = 'a=one;b=two;three=3';
         $custom2 = "a=one\nb=two\nthree=3";
 
         $this->resetAfterTest(true);
 
-        $lti_generator = $this->getDataGenerator()->get_plugin_generator('mod_lti');
+        $ltigenerator = $this->getDataGenerator()->get_plugin_generator('mod_lti');
 
         // Create 2 tools with custom parameters.
         $toolid1 = $DB->insert_record('lti_types', array('course' => $SITE->id, 'baseurl' => '', 'createdby' => $USER->id,
@@ -61,10 +64,10 @@ class mod_lti_upgradelib_testcase extends advanced_testcase {
             'value' => $custom2));
 
         // Create 2 instances with custom parameters.
-        $activity1 = $lti_generator->create_instance(array('course' => $course->id, 'name' => 'LTI activity 1',
-            'typeid' => $toolid1, 'toolurl' => '', 'instructorcustomparameters' = $custom1>));
-        $activity2 = $lti_generator->create_instance(array('course' => $course->id, 'name' => 'LTI activity 2',
-            'typeid' => $toolid2, 'toolurl' => '', 'instructorcustomparameters' = $custom2>));
+        $activity1 = $ltigenerator->create_instance(array('course' => $course->id, 'name' => 'LTI activity 1',
+            'typeid' => $toolid1, 'toolurl' => '', 'instructorcustomparameters' => $custom1));
+        $activity2 = $ltigenerator->create_instance(array('course' => $course->id, 'name' => 'LTI activity 2',
+            'typeid' => $toolid2, 'toolurl' => '', 'instructorcustomparameters' => $custom2));
 
         // Run upgrade script.
         mod_lti_upgrade_custom_separator();
