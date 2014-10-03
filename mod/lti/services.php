@@ -28,7 +28,7 @@ require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
 
 
-$response = new \mod_lti\ltiservice\response();
+$response = new \mod_lti\local\ltiservice\response();
 
 $isget = $response->get_request_method() == 'GET';
 
@@ -39,7 +39,7 @@ if ($isget) {
 }
 
 $ok = false;
-$path = $_SERVER['PATH_INFO'];
+$path = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
 
 $services = lti_get_services();
 foreach ($services as $service) {
