@@ -42,12 +42,14 @@ if ($isget) {
 $ok = false;
 $path = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
 
+$accept = $response->get_accept();
+
 $services = lti_get_services();
 foreach ($services as $service) {
     $resources = $service->get_resources();
     foreach ($resources as $resource) {
-        if (($isget && !empty($response->get_accept()) && (strpos($response->get_accept(), '*/*') === false) &&
-             !in_array($response->get_accept(), $resource->get_formats())) ||
+        if (($isget && !empty($accept) && (strpos($accept, '*/*') === false) &&
+             !in_array($accept, $resource->get_formats())) ||
             (!$isget && !in_array($response->get_content_type(), $resource->get_formats()))) {
             continue;
         }
