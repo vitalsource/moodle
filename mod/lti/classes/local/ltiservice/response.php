@@ -24,11 +24,11 @@
  */
 
 
-namespace mod_lti\ltiservice;
+namespace mod_lti\local\ltiservice;
 
 
 /**
- * The mod_lti\ltiservice\response class.
+ * The mod_lti\local\ltiservice\response class.
  *
  * @package    mod_lti
  * @since      Moodle 2.8

@@ -40,7 +40,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class linksettings extends \mod_lti\ltiservice\resource_base {
+class linksettings extends \mod_lti\local\ltiservice\resource_base {
 
     /**
      * Class constructor.

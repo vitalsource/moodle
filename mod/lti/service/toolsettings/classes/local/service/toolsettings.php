@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class toolsettings extends \mod_lti\ltiservice\service_base {
+class toolsettings extends \mod_lti\local\ltiservice\service_base {
 
     /**
      * Class constructor.

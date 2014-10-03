@@ -24,7 +24,7 @@
  */
 
 
-namespace mod_lti\ltiservice;
+namespace mod_lti\local\ltiservice;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -32,7 +32,7 @@ require_once($CFG->dirroot . '/mod/lti/locallib.php');
 
 
 /**
- * The mod_lti\ltiservice\resource_base class.
+ * The mod_lti\local\ltiservice\resource_base class.
  *
  * @package    mod_lti
  * @since      Moodle 2.8

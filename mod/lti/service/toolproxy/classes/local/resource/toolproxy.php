@@ -42,7 +42,7 @@ use moodle\mod\lti as lti;
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class toolproxy extends \mod_lti\ltiservice\resource_base {
+class toolproxy extends \mod_lti\local\ltiservice\resource_base {
 
     /**
      * Class constructor.

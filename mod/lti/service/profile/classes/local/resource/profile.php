@@ -26,7 +26,7 @@
 
 namespace ltiservice_profile\local\resource;
 
-use \mod_lti\ltiservice\service_base;
+use \mod_lti\local\ltiservice\service_base;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -38,7 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class profile extends \mod_lti\ltiservice\resource_base {
+class profile extends \mod_lti\local\ltiservice\resource_base {
 
     /**
      * Class constructor.

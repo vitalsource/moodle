@@ -24,7 +24,7 @@
  */
 
 
-namespace mod_lti\ltiservice;
+namespace mod_lti\local\ltiservice;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,7 +36,7 @@ use moodle\mod\lti as lti;
 
 
 /**
- * The mod_lti\ltiservice\service_base class.
+ * The mod_lti\local\ltiservice\service_base class.
  *
  * @package    mod_lti
  * @since      Moodle 2.8
