@@ -146,11 +146,6 @@ function xmldb_lti_upgrade($oldversion) {
         $table->add_key('course', XMLDB_KEY_FOREIGN, array('course'), 'course', array('id'));
         $table->add_key('coursemodule', XMLDB_KEY_FOREIGN, array('coursemoduleid'), 'lti', array('id'));
 
-        // Adding indexes to table lti_tool_settings.
-        $table->add_index('toolproxy', XMLDB_INDEX_UNIQUE, array('toolproxyid'));
-        $table->add_index('course', XMLDB_INDEX_UNIQUE, array('course'));
-        $table->add_index('coursemodule', XMLDB_INDEX_UNIQUE, array('coursemoduleid'));
-
         // Conditionally launch create table for lti_tool_settings.
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);

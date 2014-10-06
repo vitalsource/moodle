@@ -119,11 +119,6 @@
         <KEY NAME="course" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id" COMMENT="The course to which the setting relates"/>
         <KEY NAME="coursemodule" TYPE="foreign" FIELDS="coursemoduleid" REFTABLE="lti" REFFIELDS="id" COMMENT="The module instance to which the setting relates"/>
       </KEYS>
-      <INDEXES>
-        <INDEX NAME="toolproxy" UNIQUE="false" FIELDS="toolproxyid"/>
-        <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
-        <INDEX NAME="coursemodule" UNIQUE="false" FIELDS="coursemoduleid"/>
-      </INDEXES>
     </TABLE>
     <TABLE NAME="lti_submission" COMMENT="Keeps track of individual submissions for LTI activities.">
       <FIELDS>
