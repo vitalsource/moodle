@@ -93,16 +93,18 @@ EOD;
         $toolproxy = $DB->get_record('lti_tool_proxies', array('id' => $id));
         switch($toolproxy->state) {
             case LTI_TOOL_PROXY_STATE_ACCEPTED:
-                $tab = 'tp_accepted';
+                $redirect->param('tab', 'tp_accepted');
                 break;
             case LTI_TOOL_PROXY_STATE_REJECTED:
-                $tab = 'tp_rejected';
+                $redirect->param('tab', 'tp_rejected');
                 break;
-            default:
-                $tab = '';
+            case LTI_TOOL_PROXY_STATE_PENDING:
+                // Change the status to configured.
+                $toolproxy->state = LTI_TOOL_PROXY_STATE_CONFIGURED;
+                lti_update_tool_proxy($toolproxy);
         }
-        $redirect->param('tab', $tab);
     }
+
     $redirect = $redirect->out();
 
     if (empty($msg)) {

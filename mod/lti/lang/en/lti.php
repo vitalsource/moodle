@@ -338,6 +338,7 @@ $string['quickgrade'] = 'Allow quick grading';
 $string['quickgrade_help'] = 'If enabled, multiple tools can be graded on one page. Add grades and comments then click the "Save all my feedback" button to save all changes for that page.';
 $string['redirect'] = 'You will be redirected in few seconds. If you are not, press the button.';
 $string['register'] = 'Register';
+$string['register_warning'] = 'The registration page seems to be taking a while to open.  If it does not appear, check that you entered the correct URL in the configuration settings.';
 $string['registertype'] = 'Configure a new External Tool Registration';
 $string['registration_options'] = 'Registration Options';
 $string['registrationname'] = 'Tool Provider name';

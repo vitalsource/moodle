@@ -265,10 +265,11 @@ function lti_register($toolproxy) {
     $requestparams['reg_key'] = $key;
     $requestparams['reg_password'] = $secret;
 
-    // Add the profile URL.
+    // Change the status to pending.
     $toolproxy->state = LTI_TOOL_PROXY_STATE_PENDING;
     lti_update_tool_proxy($toolproxy);
 
+    // Add the profile URL.
     $profileservice = lti_get_service_by_name('profile');
     $profileservice->set_tool_proxy($toolproxy);
     $requestparams['tc_profile_url'] = $profileservice->parse_value('$ToolConsumerProfile.url');

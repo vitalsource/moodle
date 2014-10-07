@@ -68,7 +68,6 @@ admin_externalpage_setup('ltitoolproxies');
 
 $PAGE->set_heading(get_string('toolproxyregistration', 'lti'));
 $PAGE->set_title("{$SITE->shortname}: " . get_string('toolproxyregistration', 'lti'));
-$PAGE->navbar->add(get_string('lti_administration', 'lti'), $redirect);
 
 // Print the page header.
 echo $OUTPUT->header();
@@ -80,12 +79,25 @@ echo $OUTPUT->box_start('generalbox');
 // Request the registration request content with an object tag.
 $registration = new moodle_url('/mod/lti/registration.php',
     array('id' => $id, 'sesskey' => sesskey()));
-echo '<iframe id="contentframe" height="600px" width="100%" src="' . $registration->out() . '"></iframe>';
+
+echo "<p id=\"id_warning\" style=\"display: none; color: red; font-weight: bold; margin-top: 1em; padding-top: 1em;\">\n";
+echo get_string('register_warning', 'lti');
+echo "\n</p>\n";
+
+echo '<iframe id="contentframe" height="600px" width="100%" src="' . $registration->out() . '" onload="doOnload()"></iframe>';
 
 // Output script to make the object tag be as large as possible.
 $resize = '
         <script type="text/javascript">
         //<![CDATA[
+            function doReveal() {
+              var el = document.getElementById(\'id_warning\');
+              el.style.display = \'block\';
+            }
+            function doOnload() {
+                window.clearTimeout(mod_lti_timer);
+            }
+            var mod_lti_timer = window.setTimeout(doReveal, 20000);
             YUI().use("node", "event", function(Y) {
                 //Take scrollbars off the outer document to prevent double scroll bar effect
                 var doc = Y.one("body");
