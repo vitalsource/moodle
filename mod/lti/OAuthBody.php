@@ -45,7 +45,7 @@ function get_oauth_key_from_headers() {
     if (@substr($requestheaders['Authorization'], 0, 6) == "OAuth ") {
         $headerparameters = OAuthUtil::split_header($requestheaders['Authorization']);
 
-        return $headerparameters['oauth_consumer_key'];
+        return format_string($headerparameters['oauth_consumer_key']);
     }
     return false;
 }

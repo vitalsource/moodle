@@ -1919,7 +1919,6 @@ function lti_get_capabilities() {
  * @return array List of services
  */
 function lti_get_services() {
-    global $CFG;
 
     $services = array();
     $definedservices = core_component::get_plugin_list('ltiservice');

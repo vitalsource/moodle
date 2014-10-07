@@ -93,7 +93,6 @@ class profile extends \mod_lti\local\ltiservice\resource_base {
             $toolproxy = $this->get_service()->get_tool_proxy();
             $response->set_content_type($this->formats[0]);
 
-            $serverpath = $CFG->wwwroot;
             $servicepath = $this->get_service()->get_service_path();
             $id = $servicepath . $this->get_path();
             $now = date('Y-m-d\TH:iO');

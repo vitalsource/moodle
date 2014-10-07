@@ -184,7 +184,6 @@ abstract class service_base {
 
         $ok = false;
         $toolproxy = null;
-        $h = lti\OAuthUtil::get_headers();
         $consumerkey = lti\get_oauth_key_from_headers();
         if (empty($toolproxyguid)) {
             $toolproxyguid = $consumerkey;

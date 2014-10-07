@@ -26,6 +26,7 @@
 
 namespace mod_lti\local\ltiservice;
 
+defined('MOODLE_INTERNAL') || die;
 
 /**
  * The mod_lti\local\ltiservice\response class.
@@ -194,7 +195,7 @@ class response {
     /**
      * Set the response body.
      *
-     * @param atring $body Body data
+     * @param string $body Body data
      */
     public function set_body($body) {
         $this->body = $body;

@@ -173,8 +173,6 @@ abstract class resource_base {
      */
     public function get_endpoint() {
 
-        global $CFG;
-
         $this->parse_template();
         $url = $this->get_service()->get_service_path() . $this->get_template();
         foreach ($this->params as $key => $value) {
