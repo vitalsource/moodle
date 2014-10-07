@@ -99,7 +99,7 @@ class toolsettings extends \mod_lti\local\ltiservice\service_base {
      * @param array $settings        Settings
      * @param boolean $simpleformat  <code>true</code> if simple JSON is to be returned
      * @param string $type           JSON-LD type
-     * @param object $resource       Resource handling the request
+     * @param \mod_lti\local\ltiservice\resource_base $resource       Resource handling the request
      *
      * @return string
      */

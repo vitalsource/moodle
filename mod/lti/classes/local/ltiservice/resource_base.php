@@ -62,7 +62,7 @@ abstract class resource_base {
     /**
      * Class constructor.
      *
-     * @param object $service Service instance
+     * @param mod_lti\local\ltiservice\service_base $service Service instance
      */
     public function __construct($service) {
 
@@ -125,7 +125,7 @@ abstract class resource_base {
     /**
      * Get the resource's service.
      *
-     * @return object
+     * @return mod_lti\local\ltiservice\service_base
      */
     public function get_service() {
 
@@ -190,7 +190,7 @@ abstract class resource_base {
     /**
      * Execute the request for this resource.
      *
-     * @param object $response  Response object for this request.
+     * @param mod_lti\local\ltiservice\response $response  Response object for this request.
      */
     public abstract function execute($response);
 

@@ -1932,7 +1932,7 @@ function lti_get_services() {
  *
  * @param string $servicename Name of service
  *
- * @return object Service
+ * @return mod_lti\local\ltiservice\service_base Service
  */
 function lti_get_service_by_name($servicename) {
 
@@ -1952,7 +1952,7 @@ function lti_get_service_by_name($servicename) {
  * @param array  $services    Array of services
  * @param string $resourceid  ID of resource
  *
- * @return object Service
+ * @return mod_lti\local\ltiservice\service_base Service
  */
 function lti_get_service_by_resource_id($services, $resourceid) {
 

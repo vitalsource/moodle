@@ -47,7 +47,7 @@ class toolproxy extends \mod_lti\local\ltiservice\resource_base {
     /**
      * Class constructor.
      *
-     * @param object $service Service instance
+     * @param ltiservice_toolproxy\local\resource\toolproxy $service Service instance
      */
     public function __construct($service) {
 
@@ -62,7 +62,7 @@ class toolproxy extends \mod_lti\local\ltiservice\resource_base {
     /**
      * Execute the request for this resource.
      *
-     * @param object $response  Response object for this request.
+     * @param mod_lti\local\ltiservice\response $response  Response object for this request.
      */
     public function execute($response) {
 
