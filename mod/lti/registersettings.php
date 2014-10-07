@@ -45,7 +45,7 @@ if ($isupdate) {
 }
 $PAGE->set_url($pageurl);
 
-admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page.
+admin_externalpage_setup('ltitoolproxies');
 
 $redirect = new moodle_url('/mod/lti/toolproxies.php', array('tab' => $tab));
 $redirect = $redirect->out();

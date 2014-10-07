@@ -258,7 +258,7 @@ Tool types listed on this page are separated into three categories:
         Teachers may still use tools from these providers if they have a consumer key and shared secret, or if none is required.
 * **Rejected** - These tools providers are flagged as ones which an administrator has no intention of making available to the entire
         Moodle instance. Teachers may still use tools from these providers if they have a consumer key and shared secret, or if none is required.';
-$string['manage_tools'] = 'Manage External Tools';
+$string['manage_tools'] = 'Manage External Tool Types';
 $string['manage_tool_proxies'] = 'Manage External Tool Registrations';
 $string['miscellaneous'] = 'Miscellaneous';
 $string['misconfiguredtools'] = 'Misconfigured tool instances were detected';
@@ -434,6 +434,19 @@ $string['toggle_debug_data'] = 'Toggle Debug Data';
 $string['tool_config_not_found'] = 'Tool configuration not found for this URL.';
 $string['tool_settings'] = 'Tool Settings';
 $string['toolproxy'] = 'External Tool Registrations';
+$string['toolproxy_help'] = 'External tool registrations allow Moodle site administrators to configure external tools from a tool proxy obtained from
+a tool provider supporting LTI 2.0.  A registration URL provided by the tool provider is all that is required to initiate the process.  The capabilities
+and services offered to the tool provider are selected when configuring a new registration.
+
+Tool registrations listed on this page are separated into four categories:
+
+* **Configured** - These tool registrations have been set up but the registration process has not yet been started.
+* **Pending** - The regisitration process for these tool registrations has been started but has not completed.  Open and save the settings to move it
+        back to the \'Configured\' category.
+* **Accepted** - These tool registrations have been approved; the resources specified in the tool proxy will appear on the external tool types page
+        with an initial status of \'Pending\'.
+* **Rejected** - These tool registrations are ones which were rejected during the registration process.  Open and save the settings to move it
+        back to the \'Configured\' category so the registration process cna be restarted.';
 $string['toolproxyregistration'] = 'External Tool Registration';
 $string['toolregistration'] = 'External Tool Registration';
 $string['toolsetup'] = 'External Tool Configuration';

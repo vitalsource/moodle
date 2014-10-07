@@ -33,24 +33,19 @@ require_login(0, false);
 $pageurl = new moodle_url('/mod/lti/toolproxies.php');
 $PAGE->set_url($pageurl);
 
-$redirect = "$CFG->wwwroot/$CFG->admin/settings.php?section=modsettinglti";
-
-admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page.
+admin_externalpage_setup('ltitoolproxies');
 
 $PAGE->set_title("{$SITE->shortname}: " . get_string('toolregistration', 'lti'));
-$PAGE->navbar->add(get_string('lti_administration', 'lti'), $redirect);
 
 $configuredtoolproxieshtml = '';
 $pendingtoolproxieshtml = '';
 $acceptedtoolproxieshtml = '';
 $rejectedtoolproxieshtml = '';
-$cancelledtoolproxieshtml = '';
 
 $configured = get_string('configured', 'lti');
 $pending = get_string('pending', 'lti');
 $accepted = get_string('accepted', 'lti');
 $rejected = get_string('rejected', 'lti');
-$cancelled = get_string('cancelled', 'lti');
 
 $name = get_string('name', 'lti');
 $url = get_string('registrationurl', 'lti');
@@ -71,15 +66,11 @@ $acceptedtoolproxieshtml = lti_get_tool_proxy_table($acceptedtoolproxies, 'tp_ac
 $rejectedtoolproxies = lti_filter_tool_proxy_types($toolproxies, LTI_TOOL_PROXY_STATE_REJECTED);
 $rejectedtoolproxieshtml = lti_get_tool_proxy_table($rejectedtoolproxies, 'tp_rejected');
 
-$cancelledtoolproxies = lti_filter_tool_proxy_types($toolproxies, LTI_TOOL_PROXY_STATE_CANCELLED);
-$cancelledtoolproxieshtml = lti_get_tool_proxy_table($cancelledtoolproxies, 'tp_cancelled');
-
 $tab = optional_param('tab', '', PARAM_ALPHAEXT);
 $configuredselected = '';
 $pendingselected = '';
 $acceptedselected = '';
 $rejectedselected = '';
-$cancelledselected = '';
 switch ($tab) {
     case 'tp_pending':
         $pendingselected = 'class="selected"';
@@ -89,9 +80,6 @@ switch ($tab) {
         break;
     case 'tp_rejected':
         $rejectedselected = 'class="selected"';
-        break;
-    case 'tp_cancelled':
-        $cancelledselected = 'class="selected"';
         break;
     default:
         $configuredselected = 'class="selected"';
@@ -103,9 +91,6 @@ $config = get_string('manage_tools', 'lti');
 $registertypeurl = "{$CFG->wwwroot}/mod/lti/registersettings.php?action=add&amp;sesskey={$USER->sesskey}&amp;tab=tool_proxy";
 
 $template = <<< EOD
-<p>
-  <a href="{$redirect}">$config</a>
-</p>
 <div id="tp_tabs" class="yui-navset">
     <ul id="tp_tab_heading" class="yui-nav" style="display:none">
         <li {$configuredselected}>
@@ -128,11 +113,6 @@ $template = <<< EOD
                 <em>$rejected</em>
             </a>
         </li>
-        <li {$cancelledselected}>
-            <a href="#tab5">
-                <em>$cancelled</em>
-            </a>
-        </li>
     </ul>
     <div class="yui-content">
         <div>
@@ -147,9 +127,6 @@ $template = <<< EOD
         </div>
         <div>
             $rejectedtoolproxieshtml
-        </div>
-        <div>
-            $cancelledtoolproxieshtml
         </div>
     </div>
 </div>
@@ -198,14 +175,16 @@ $template = <<< EOD
         setupTools('tp_pending_tool_proxies', {key:'timecreated', dir:'desc'});
         setupTools('tp_accepted_tool_proxies', {key:'timecreated', dir:'desc'});
         setupTools('tp_rejected_tool_proxies', {key:'timecreated', dir:'desc'});
-        setupTools('tp_cancelled_tool_proxies', {key:'timecreated', dir:'desc'});
     });
 //]]
 </script>
 EOD;
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('toolproxy', 'lti'));
+echo $OUTPUT->heading(get_string('manage_tool_proxies', 'lti'), 2);
+echo $OUTPUT->heading(new lang_string('toolproxy', 'lti') .
+        $OUTPUT->help_icon('toolproxy', 'lti'), 3);
+
 echo $OUTPUT->box_start('generalbox');
 
 echo $template;

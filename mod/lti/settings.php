@@ -53,8 +53,11 @@ defined('MOODLE_INTERNAL') || die;
  */
 $modltifolder = new admin_category('modltifolder', new lang_string('pluginname', 'mod_lti'), $module->is_enabled() === false);
 $ADMIN->add('modsettings', $modltifolder);
-
+$settings->visiblename = new lang_string('manage_tools', 'mod_lti');
 $ADMIN->add('modltifolder', $settings);
+$ADMIN->add('modltifolder', new admin_externalpage('ltitoolproxies',
+        get_string('manage_tool_proxies', 'lti'),
+        new moodle_url('/mod/lti/toolproxies.php')));
 
 foreach (core_plugin_manager::instance()->get_plugins_of_type('ltisource') as $plugin) {
     /*
@@ -123,9 +126,6 @@ if ($ADMIN->fulltree) {
     $addtypeurl = "{$CFG->wwwroot}/mod/lti/typessettings.php?action=add&amp;sesskey={$USER->sesskey}";
 
     $template = <<< EOD
-<p>
-  <a href="{$toolproxiesurl}">$config</a>
-</p>
 <div id="lti_tabs" class="yui-navset">
     <ul id="lti_tab_heading" class="yui-nav" style="display:none">
         <li {$activeselected}>
@@ -209,13 +209,6 @@ EOD;
         $OUTPUT->help_icon('main_admin', 'lti'), $template));
 }
 
-if (count($modltifolder->children) <= 1) {
-    // No need for a folder, revert to default activity settings page.
-    $ADMIN->prune('modltifolder');
-} else {
-    // Using the folder, update settings name.
-    $settings->visiblename = new lang_string('ltisettings', 'mod_lti');
+// Tell core we already added the settings structure.
+$settings = null;
 
-    // Tell core we already added the settings structure.
-    $settings = null;
-}

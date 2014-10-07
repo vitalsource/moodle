@@ -63,7 +63,7 @@ if (empty($profileservice)) {
 $url = new moodle_url('/mod/lti/register.php', array('id' => $id));
 $PAGE->set_url($url);
 
-admin_externalpage_setup('managemodules'); // Hacky solution for printing the admin page.
+admin_externalpage_setup('ltitoolproxies');
 
 
 $PAGE->set_heading(get_string('toolproxyregistration', 'lti'));

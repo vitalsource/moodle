@@ -71,7 +71,6 @@ define('LTI_TOOL_PROXY_STATE_CONFIGURED', 1);
 define('LTI_TOOL_PROXY_STATE_PENDING', 2);
 define('LTI_TOOL_PROXY_STATE_ACCEPTED', 3);
 define('LTI_TOOL_PROXY_STATE_REJECTED', 4);
-define('LTI_TOOL_PROXY_STATE_CANCELLED', 5);
 
 define('LTI_SETTING_NEVER', 0);
 define('LTI_SETTING_ALWAYS', 1);
@@ -693,9 +692,6 @@ EOD;
             $updatehtml = $OUTPUT->action_icon($updateurl,
                     new \pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
                     array('title' => $update, 'class' => 'editing_update'));
-            if ($toolproxy->state == LTI_TOOL_PROXY_STATE_CANCELLED) {
-                $updatehtml = '';
-            }
 
             $deleteurl = clone($baseurl);
             $deleteurl->param('action', $deleteaction);
