@@ -80,7 +80,7 @@ echo $OUTPUT->box_start('generalbox');
 // Request the registration request content with an object tag.
 $registration = new moodle_url('/mod/lti/registration.php',
     array('id' => $id, 'sesskey' => sesskey()));
-echo '<object id="contentframe" height="600px" width="100%" type="text/html" data="' . $registration->out() . '"></object>';
+echo '<iframe id="contentframe" height="600px" width="100%" src="' . $registration->out() . '"></iframe>';
 
 // Output script to make the object tag be as large as possible.
 $resize = '
