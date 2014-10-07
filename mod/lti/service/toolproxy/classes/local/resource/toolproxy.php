@@ -67,7 +67,12 @@ class toolproxy extends \mod_lti\local\ltiservice\resource_base {
     public function execute($response) {
 
         $ok = $this->check_tool_proxy(null, $response->get_request_data());
-        $toolproxy = $this->get_service()->get_tool_proxy();
+        if ($ok) {
+            $toolproxy = $this->get_service()->get_tool_proxy();
+        } else {
+            $toolproxy = null;
+            $response->set_code(401);
+        }
         $tools = array();
 
         // Ensure all required elements are present in the Tool Proxy.
@@ -206,15 +211,16 @@ class toolproxy extends \mod_lti\local\ltiservice\resource_base {
             }
         }
 
-        if ($ok) {
-            // If all went OK accept the tool proxy.
-            $toolproxy->state = LTI_TOOL_PROXY_STATE_ACCEPTED;
-            $toolproxy->toolproxy = $response->get_request_data();
-            $toolproxy->secret = $toolproxyjson->security_contract->shared_secret;
-            $toolproxy->vendorcode = $toolproxyjson->tool_profile->product_instance->product_info->product_family->vendor->code;
+        if (!empty($toolproxy)) {
+            if ($ok) {
+                // If all went OK accept the tool proxy.
+                $toolproxy->state = LTI_TOOL_PROXY_STATE_ACCEPTED;
+                $toolproxy->toolproxy = $response->get_request_data();
+                $toolproxy->secret = $toolproxyjson->security_contract->shared_secret;
+                $toolproxy->vendorcode = $toolproxyjson->tool_profile->product_instance->product_info->product_family->vendor->code;
 
-            $url = $this->get_endpoint();
-            $body = <<< EOD
+                $url = $this->get_endpoint();
+                $body = <<< EOD
 {
   "@context" : "http://purl.imsglobal.org/ctx/lti/v2/ToolProxyId",
   "@type" : "ToolProxy",
@@ -222,15 +228,18 @@ class toolproxy extends \mod_lti\local\ltiservice\resource_base {
   "tool_proxy_guid" : "{$toolproxy->guid}"
 }
 EOD;
-            $response->set_code(201);
-            $response->set_content_type('application/vnd.ims.lti.v2.toolproxy.id+json');
-            $response->set_body($body);
+                $response->set_code(201);
+                $response->set_content_type('application/vnd.ims.lti.v2.toolproxy.id+json');
+                $response->set_body($body);
+            } else {
+                // Otherwise reject the tool proxy.
+                $toolproxy->state = LTI_TOOL_PROXY_STATE_REJECTED;
+                $response->set_code(400);
+            }
+            lti_update_tool_proxy($toolproxy);
         } else {
-            // Otherwise reject the tool proxy.
-            $toolproxy->state = LTI_TOOL_PROXY_STATE_REJECTED;
             $response->set_code(400);
         }
-        lti_update_tool_proxy($toolproxy);
     }
 
     /**
