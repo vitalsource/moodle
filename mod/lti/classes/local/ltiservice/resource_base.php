@@ -105,7 +105,7 @@ abstract class resource_base {
      *
      * @return string
      */
-    public function get_path() {  // TODO: duplicate of get_template, one could be removed.
+    public function get_path() {
 
         return $this->get_template();
 

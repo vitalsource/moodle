@@ -114,8 +114,9 @@ class response {
         if (empty($this->reason)) {
             $this->reason = $this->responsecodes[$this->code];
         }
+        // Use generic reason for this category (based on first digit) if a specific reason is not defined.
         if (empty($this->reason)) {
-            $this->reason = $this->responsecodes[($this->code / 100) * 100];
+            $this->reason = $this->responsecodes[intval($this->code / 100) * 100];
         }
         return $this->reason;
     }
